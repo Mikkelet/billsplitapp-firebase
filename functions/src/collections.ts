@@ -1,9 +1,10 @@
-import * as firebase from 'firebase-admin'
+import * as firebase from "firebase-admin";
 
-const firestore = firebase.firestore()
+const firestore = firebase.firestore();
 
-export const groupCollection = firestore.collection("groups")
-const userCollection = firestore.collection("users")
+export const groupCollection = firestore.collection("groups");
+const userCollection = firestore.collection("users");
 
-export const eventsCollection = (groupId: string) => groupCollection.doc(groupId).collection("events")
-export const userDoc = (userId: string) => userCollection.doc(userId)
+export const eventsCollection = (groupId: string) =>
+    groupCollection.doc(groupId).collection("events");
+export const userDoc = (userId: string) => userCollection.doc(userId);

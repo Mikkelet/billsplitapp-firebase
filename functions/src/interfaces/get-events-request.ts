@@ -1,3 +1,3 @@
 export default interface GetEventsRequest {
-    groupId: string
+    groupId: string;
 }

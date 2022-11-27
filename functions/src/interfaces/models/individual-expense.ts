@@ -1,4 +1,4 @@
-export default interface IndividualExpense{
+export default interface IndividualExpense {
     person: string;
     expense: number;
     isParticipant: boolean;
