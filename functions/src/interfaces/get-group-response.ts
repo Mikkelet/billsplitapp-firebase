@@ -1,9 +1,9 @@
-import { Event } from "./models/events";
-import Group from "./models/group";
+import { EventDTO } from "./dto/event-dto";
+import { GroupDTO } from "./dto/group-dto";
 import Person from "./models/person";
 
 export default interface GetGroupResponse {
-    group: Group;
+    group: GroupDTO;
     people: Person[]
-    events: Event[]
+    events: EventDTO[]
 }

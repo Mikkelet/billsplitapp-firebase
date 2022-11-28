@@ -2,9 +2,11 @@ import { Request, Response } from "firebase-functions";
 import { eventsCollection, groupCollection, userDoc } from "../collections";
 import GetGroupRequest from "../interfaces/get-group-request";
 import GetGroupResponse from "../interfaces/get-group-response";
+import { EventDTO, getEventDTO } from "../interfaces/dto/event-dto";
 import { Event, ExpenseEvent } from "../interfaces/models/events";
-import Group from "../interfaces/models/group";
+import { Group, GroupDTO } from "../interfaces/models/group";
 import Person from "../interfaces/models/person";
+import { findPerson } from "../utils";
 
 export const getGroupImpl = async (req: Request, res: Response) => {
     const body = req.body as GetGroupRequest;
@@ -15,10 +17,21 @@ export const getGroupImpl = async (req: Request, res: Response) => {
         const group = await getGroup(groupId)
         const people = await getPeople(group.people)
         const events = await getEvents(groupId)
-        const response: GetGroupResponse = {
-            group: group,
+
+        // convert to DTOs
+        const groupDto: GroupDTO = {
+            id: group.id,
+            name: group.name,
             people: people,
-            events: events,
+            timeStamp: group.timeStamp,
+            createdBy: findPerson(people, group.createdBy),
+        };
+        const eventDtos: EventDTO[] = events
+            .map((event) => getEventDTO(event, people));
+        const response: GetGroupResponse = {
+            group: groupDto,
+            people: people,
+            events: eventDtos,
         }
         res.status(200).send(response);
     } catch (e) {
@@ -36,8 +49,8 @@ async function getGroup(groupId: string): Promise<Group> {
     try {
         const query = await groupCollection.doc(groupId).get()
         const groupData = query.data() as Group
-        groupData.id = query.id
-        return groupData
+        groupData.id = query.id;
+        return groupData;
     } catch (e) {
         console.error(e);
         throw e;
