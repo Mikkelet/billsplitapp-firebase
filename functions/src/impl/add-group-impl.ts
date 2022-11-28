@@ -4,6 +4,7 @@ import AddGroupRequest from "../interfaces/add-group-request";
 
 export const addGroupImpl = async (req: Request, res: Response) => {
     const body = req.body as AddGroupRequest;
+    console.log(body);
     const group = body.group;
     const uid = group.createdBy;
     const groupName = group.name;
@@ -17,6 +18,7 @@ export const addGroupImpl = async (req: Request, res: Response) => {
         await groupCollection.add(group);
         res.status(200).send();
     } catch (e) {
+        console.error(e);
         res.send(500).send(e);
     }
 }

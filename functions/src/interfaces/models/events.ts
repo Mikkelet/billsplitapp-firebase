@@ -1,6 +1,8 @@
 import IndividualExpense from "./individual-expense";
 
-export interface Expense {
+export type Event = ExpenseChangeEvent | PaymentEvent | ExpenseEvent
+
+export interface ExpenseEvent {
     eventType: "expense";
     id: string;
     createdBy: string;
@@ -11,7 +13,7 @@ export interface Expense {
     timeStamp: number;
 }
 
-export interface Payment {
+export interface PaymentEvent {
     eventType: "payment";
     createdBy: string;
     paidTo: string;
@@ -19,10 +21,10 @@ export interface Payment {
     timeStamp: number;
 }
 
-export interface ExpenseChange {
+export interface ExpenseChangeEvent {
     eventType: "change";
     createdBy: string;
-    groupExpenseOriginal: Expense;
-    groupExpenseEdited: Expense;
+    groupExpenseOriginal: ExpenseEvent;
+    groupExpenseEdited: ExpenseEvent;
     timeStamp: number;
 }
