@@ -1,5 +1,5 @@
-import { ExpenseEvent, ExpenseChangeEvent, PaymentEvent } from "./models/events";
+import { Event } from "./models/events";
 
 export default interface GetEventsResponse {
-    events: Array<ExpenseEvent | PaymentEvent | ExpenseChangeEvent>;
+    events: Event[];
 }
