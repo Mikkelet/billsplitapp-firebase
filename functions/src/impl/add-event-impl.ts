@@ -7,7 +7,7 @@ import { convertDTOtoEvent } from "../interfaces/models/events";
 export const addEventImpl = async (req: Request, res: Response) => {
     const body = req.body as AddEvent;
     const groupId = body.groupId
-    console.log("received",body);
+    console.log("received", body);
     const eventDTO: EventDTO = body.event;
     const event = convertDTOtoEvent(eventDTO);
 

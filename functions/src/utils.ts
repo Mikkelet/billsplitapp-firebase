@@ -1,3 +1,4 @@
+import { userDoc } from "./collections";
 import Person from "./interfaces/models/person";
 
 /**
@@ -17,4 +18,24 @@ export function findPerson(people: Person[], uid: string): Person {
         };
     }
     return find;
+}
+
+/**
+ * Get people from list uids to user objects
+ * @param {string[]} uids of people uids
+ * @return {Promise<Person[]>} list of people objects
+ */
+export async function getPeople(uids: string[]): Promise<Person[]> {
+    const users: Person[] = [];
+    for await (const uid of uids) {
+        try {
+            const doc = await userDoc(uid).get();
+            const data = doc.data() as Person;
+            users.push(data);
+        } catch (e) {
+            console.error(e);
+            throw e;
+        }
+    }
+    return users;
 }

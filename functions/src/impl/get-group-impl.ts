@@ -1,12 +1,12 @@
 import { Request, Response } from "firebase-functions";
-import { eventsCollection, groupCollection, userDoc } from "../collections";
+import { eventsCollection, groupCollection } from "../collections";
 import GetGroupRequest from "../interfaces/get-group-request";
 import GetGroupResponse from "../interfaces/get-group-response";
 import { EventDTO, convertEventToDTO } from "../interfaces/dto/event-dto";
 import { Event } from "../interfaces/models/events";
 import { Group } from "../interfaces/models/group";
 import Person from "../interfaces/models/person";
-import { findPerson } from "../utils";
+import { findPerson, getPeople } from "../utils";
 import { GroupDTO } from "../interfaces/dto/group-dto";
 
 export const getGroupImpl = async (req: Request, res: Response) => {
@@ -61,24 +61,4 @@ async function getEvents(
         console.error(e);
         throw e;
     }
-}
-
-/**
- * Get people related to group
- * @param {string[]} uids of people uids
- * @return {Promise<Person[]>} list of people objects
- */
-async function getPeople(uids: string[]): Promise<Person[]> {
-    const users: Person[] = [];
-    for await (const uid of uids) {
-        try {
-            const doc = await userDoc(uid).get();
-            const data = doc.data() as Person;
-            users.push(data);
-        } catch (e) {
-            console.error(e);
-            throw e;
-        }
-    }
-    return users;
 }

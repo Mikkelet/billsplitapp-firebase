@@ -15,7 +15,9 @@ export const addGroupImpl = async (req: Request, res: Response) => {
 
     try {
         for await (const person of groupDTO.people) {
-            person.id = userCollection.doc().id;
+            if (person.id === "") {
+                person.id = userCollection.doc().id;
+            }
             await userCollection.doc(person.id).set(person);
         }
         groupDTO.id = groupCollection.doc().id;
