@@ -5,8 +5,8 @@ import { IndividualExpense } from "./individual-expense";
 export type Event = ExpenseChangeEvent | PaymentEvent | ExpenseEvent
 
 export interface ExpenseEvent {
-    eventType: "expense";
     id: string;
+    type: "expense";
     createdBy: string;
     description: string;
     payee: string;
@@ -16,7 +16,8 @@ export interface ExpenseEvent {
 }
 
 export interface PaymentEvent {
-    eventType: "payment";
+    id: string,
+    type: "payment";
     createdBy: string;
     paidTo: string;
     amount: number;
@@ -24,7 +25,8 @@ export interface PaymentEvent {
 }
 
 export interface ExpenseChangeEvent {
-    eventType: "change";
+    id: string,
+    type: "change";
     createdBy: string;
     groupExpenseOriginal: ExpenseEvent;
     groupExpenseEdited: ExpenseEvent;
@@ -36,10 +38,10 @@ export interface ExpenseChangeEvent {
  * @param {EventDTO} event event to be converted
  * @return {Event} event
  */
-export function getEventFromDTO(event: EventDTO): Event {
-    if (event.eventType === "expense") {
+export function convertDTOtoEvent(event: EventDTO): Event {
+    if (event.type === "expense") {
         return {
-            eventType: event.eventType,
+            type: event.type,
             id: event.id,
             createdBy: event.createdBy.id,
             description: event.description,
@@ -50,22 +52,22 @@ export function getEventFromDTO(event: EventDTO): Event {
                 getListOfIndividualExpenses(event.individualExpenses),
         } as ExpenseEvent
     }
-    if (event.eventType === "payment") {
+    if (event.type === "payment") {
         return {
-            eventType: event.eventType,
+            type: event.type,
             paidTo: event.paidTo.id,
             timeStamp: event.timeStamp,
             createdBy: event.createdBy.id,
             amount: event.amount,
         } as PaymentEvent
     }
-    if (event.eventType === "change") {
+    if (event.type === "change") {
         return {
-            eventType: event.eventType,
+            type: event.type,
             createdBy: event.createdBy.id,
             timeStamp: event.timeStamp,
             groupExpenseOriginal: {
-                eventType: event.groupExpenseOriginal.eventType,
+                type: event.groupExpenseOriginal.type,
                 id: event.groupExpenseOriginal.id,
                 createdBy: event.groupExpenseOriginal.createdBy.id,
                 description: event.groupExpenseOriginal.description,
@@ -76,7 +78,7 @@ export function getEventFromDTO(event: EventDTO): Event {
                     event.groupExpenseOriginal.individualExpenses),
             } as ExpenseEvent,
             groupExpenseEdited: {
-                eventType: event.groupExpenseEdited.eventType,
+                type: event.groupExpenseEdited.type,
                 id: event.groupExpenseEdited.id,
                 createdBy: event.groupExpenseEdited.createdBy.id,
                 description: event.groupExpenseEdited.description,

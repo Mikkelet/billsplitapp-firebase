@@ -1,5 +1,5 @@
-import { Event } from "./models/events";
+import { EventDTO } from "./dto/event-dto";
 
 export default interface GetEventsResponse {
-    events: Event[];
+    events: EventDTO[];
 }

@@ -1,3 +1,4 @@
+import { findPerson } from "../../utils";
 import { Group } from "../models/group";
 import Person from "../models/person";
 
@@ -12,14 +13,15 @@ export interface GroupDTO {
 /**
  * Convert data from database to data readable by frontend
  * @param {GroupDTO} group Group to convert
- * @return {Group} return converted group
+ * @param {Person[]} people people who are part of the group
+ * @return {GroupDTO} return converted group
  */
-export function getGroupDTO(group: GroupDTO): Group {
+export function convertGroupToDTO(group: Group, people: Person[]): GroupDTO {
     return {
         id: group.id,
         name: group.name,
         timeStamp: group.timeStamp,
-        createdBy: group.createdBy.id,
-        people: group.people.map((p) => p.id),
+        createdBy: findPerson(people, group.createdBy),
+        people: people,
     }
 }

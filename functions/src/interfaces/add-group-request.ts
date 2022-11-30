@@ -1,5 +1,5 @@
-import { Group } from "./models/group";
+import { GroupDTO } from "./dto/group-dto";
 
 export default interface AddGroupRequest {
-    group: Group;
+    group: GroupDTO;
 }

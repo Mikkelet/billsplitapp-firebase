@@ -2,11 +2,12 @@ import { Request, Response } from "firebase-functions";
 import { eventsCollection, groupCollection, userDoc } from "../collections";
 import GetGroupRequest from "../interfaces/get-group-request";
 import GetGroupResponse from "../interfaces/get-group-response";
-import { EventDTO, getEventDTO } from "../interfaces/dto/event-dto";
-import { Event, ExpenseEvent } from "../interfaces/models/events";
-import { Group, GroupDTO } from "../interfaces/models/group";
+import { EventDTO, convertEventToDTO } from "../interfaces/dto/event-dto";
+import { Event } from "../interfaces/models/events";
+import { Group } from "../interfaces/models/group";
 import Person from "../interfaces/models/person";
 import { findPerson } from "../utils";
+import { GroupDTO } from "../interfaces/dto/group-dto";
 
 export const getGroupImpl = async (req: Request, res: Response) => {
     const body = req.body as GetGroupRequest;
@@ -14,24 +15,21 @@ export const getGroupImpl = async (req: Request, res: Response) => {
     console.log(body);
 
     try {
-        const group = await getGroup(groupId)
-        const people = await getPeople(group.people)
-        const events = await getEvents(groupId)
-
-        // convert to DTOs
+        const queryDoc = await groupCollection.doc(groupId).get()
+        const groupData = queryDoc.data() as Group
+        const people = await getPeople(groupData.people)
+        const events = await getEvents(groupId, people)
         const groupDto: GroupDTO = {
-            id: group.id,
-            name: group.name,
+            id: queryDoc.id,
+            name: groupData.name,
             people: people,
-            timeStamp: group.timeStamp,
-            createdBy: findPerson(people, group.createdBy),
+            timeStamp: groupData.timeStamp,
+            createdBy: findPerson(people, groupData.createdBy),
         };
-        const eventDtos: EventDTO[] = events
-            .map((event) => getEventDTO(event, people));
+
         const response: GetGroupResponse = {
             group: groupDto,
-            people: people,
-            events: eventDtos,
+            events: events,
         }
         res.status(200).send(response);
     } catch (e) {
@@ -41,38 +39,24 @@ export const getGroupImpl = async (req: Request, res: Response) => {
 }
 
 /**
- * Request and returns a group, throws error if unsuccesful
- * @param {string} groupId of group
- * @return {Promise<Group>} Group object
- */
-async function getGroup(groupId: string): Promise<Group> {
-    try {
-        const query = await groupCollection.doc(groupId).get()
-        const groupData = query.data() as Group
-        groupData.id = query.id;
-        return groupData;
-    } catch (e) {
-        console.error(e);
-        throw e;
-    }
-}
-
-/**
  * Get events related to group
  * @param {string} groupId id of events
+ * @param {Person[]} people in group
  * @return {Promise<Event[]>} events related to the group
  */
-async function getEvents(groupId: string): Promise<Event[]> {
+async function getEvents(
+    groupId: string,
+    people: Person[]
+): Promise<EventDTO[]> {
     try {
         const query = await eventsCollection(groupId).get()
         const eventData = query.docs.map((doc) => {
             const event = doc.data() as Event;
-            if (event.eventType === "expense") {
-                (event as ExpenseEvent).id = doc.id;
-            }
-            return event;
+            const eventDTO = convertEventToDTO(event, people)
+            eventDTO.id = doc.id;
+            return eventDTO;
         })
-        return eventData
+        return eventData;
     } catch (e) {
         console.error(e);
         throw e;
@@ -85,24 +69,8 @@ async function getEvents(groupId: string): Promise<Event[]> {
  * @return {Promise<Person[]>} list of people objects
  */
 async function getPeople(uids: string[]): Promise<Person[]> {
-    return [
-        {
-            id: "person_0",
-            name: "mikkek",
-            pfpUrl: "",
-        }, {
-            id: "person_1",
-            name: "Tobis",
-            pfpUrl: "",
-        }, {
-            id: "person_2",
-            name: "Rsuma",
-            pfpUrl: "",
-        },
-    ]
-    const users: Person[] = []
-
-    uids.forEach(async (uid) => {
+    const users: Person[] = [];
+    for await (const uid of uids) {
         try {
             const doc = await userDoc(uid).get();
             const data = doc.data() as Person;
@@ -111,6 +79,6 @@ async function getPeople(uids: string[]): Promise<Person[]> {
             console.error(e);
             throw e;
         }
-    })
+    }
     return users;
 }

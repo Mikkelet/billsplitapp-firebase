@@ -8,9 +8,9 @@ import {
 import {
     getIndividualExpenseDTO,
     getListOfIndividualExpenseDTO,
-    IndividualExpenseDTO,
 } from "../models/individual-expense";
 import Person from "../models/person";
+import { IndividualExpenseDTO } from "./individual-expense-dto";
 
 export type EventDTO =
     ExpenseChangeEventDTO
@@ -18,7 +18,7 @@ export type EventDTO =
     | ExpenseEventDTO;
 
 export interface ExpenseEventDTO {
-    eventType: "expense";
+    type: "expense";
     id: string;
     createdBy: Person;
     description: string;
@@ -29,7 +29,8 @@ export interface ExpenseEventDTO {
 }
 
 export interface PaymentEventDTO {
-    eventType: "payment";
+    id: string,
+    type: "payment";
     createdBy: Person;
     paidTo: Person;
     amount: number;
@@ -37,7 +38,8 @@ export interface PaymentEventDTO {
 }
 
 export interface ExpenseChangeEventDTO {
-    eventType: "change";
+    id: string
+    type: "change";
     createdBy: Person;
     groupExpenseOriginal: ExpenseEventDTO;
     groupExpenseEdited: ExpenseEventDTO;
@@ -50,11 +52,11 @@ export interface ExpenseChangeEventDTO {
  * @param {Person[]} people people in group
  * @return {EventDTO} EventDTO
  */
-export function getEventDTO(event: Event, people: Person[]): EventDTO {
-    if (event.eventType === "expense") {
+export function convertEventToDTO(event: Event, people: Person[]): EventDTO {
+    if (event.type === "expense") {
         const expense = event as ExpenseEvent
         return {
-            eventType: expense.eventType,
+            type: expense.type,
             id: expense.id,
             createdBy: findPerson(people, expense.createdBy),
             description: expense.description,
@@ -65,14 +67,14 @@ export function getEventDTO(event: Event, people: Person[]): EventDTO {
             timeStamp: expense.timeStamp,
         } as ExpenseEventDTO
     }
-    if (event.eventType === "change") {
+    if (event.type === "change") {
         const change = event as ExpenseChangeEvent
         return {
-            eventType: change.eventType,
+            type: change.type,
             createdBy: findPerson(people, event.createdBy),
             timeStamp: change.timeStamp,
             groupExpenseEdited: {
-                eventType: change.groupExpenseEdited.eventType,
+                type: change.groupExpenseEdited.type,
                 id: change.groupExpenseEdited.id,
                 createdBy:
                     findPerson(people, change.groupExpenseEdited.createdBy),
@@ -84,7 +86,7 @@ export function getEventDTO(event: Event, people: Person[]): EventDTO {
                 timeStamp: change.groupExpenseEdited.timeStamp,
             } as ExpenseEventDTO,
             groupExpenseOriginal: {
-                eventType: change.groupExpenseOriginal.eventType,
+                type: change.groupExpenseOriginal.type,
                 id: change.groupExpenseOriginal.id,
                 createdBy:
                     findPerson(people, change.groupExpenseOriginal.createdBy),
@@ -97,10 +99,10 @@ export function getEventDTO(event: Event, people: Person[]): EventDTO {
             } as ExpenseEventDTO,
         } as ExpenseChangeEventDTO
     }
-    if (event.eventType === "payment") {
+    if (event.type === "payment") {
         const payment = event as PaymentEvent
         return {
-            eventType: payment.eventType,
+            type: payment.type,
             createdBy: findPerson(people, payment.createdBy),
             amount: payment.amount,
             paidTo: findPerson(people, payment.paidTo),
