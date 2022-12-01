@@ -31,5 +31,9 @@ module.exports = {
         "semi": 0,
         "indent": ["error", 4],
         "eol-last": 0,
+        "max-len": ["error", {
+            "comments": 150,
+            "code": 100,
+        }],
     },
 };
