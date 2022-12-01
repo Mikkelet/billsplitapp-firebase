@@ -9,15 +9,19 @@ import Person from "./interfaces/models/person";
  * @return {Person} person is either found and return or not-found-placeholder
  */
 export function findPerson(people: Person[], uid: string): Person {
-    const find = people.find((p) => p.id === uid);
-    if (!find) {
+    try {
+        const find = people.find((p) => p.id === uid);
+        if (!find) {
+            throw Error("user not found");
+        }
+        return find;
+    } catch (e) {
         return {
             id: uid,
             name: "unknown user",
             pfpUrl: "",
         };
     }
-    return find;
 }
 
 /**

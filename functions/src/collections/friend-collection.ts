@@ -37,3 +37,17 @@ export async function updateFriendStatus(docId: string, status: FriendStatus): P
         status: status,
     })
 }
+
+/**
+ * Queries a list of friends for user
+ * @param {string} uid id of user
+ * @return {Friend[]} list of friends for user
+ */
+export async function getFriends(uid: string): Promise<Friend[]> {
+    const response = await friendsCollection.where("users", "array-contains", uid).get()
+    if (response.empty) {
+        return [];
+    } else {
+        return response.docs.map((doc) => doc.data() as Friend);
+    }
+}
