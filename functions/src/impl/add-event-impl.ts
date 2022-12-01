@@ -1,11 +1,11 @@
 import { Request, Response } from "firebase-functions";
 import { eventsCollection } from "../collections";
-import AddEvent from "../interfaces/add-event-request";
+import AddEventRequest from "../interfaces/add-event";
 import { EventDTO } from "../interfaces/dto/event-dto";
 import { convertDTOtoEvent } from "../interfaces/models/events";
 
 export const addEventImpl = async (req: Request, res: Response) => {
-    const body = req.body as AddEvent;
+    const body = req.body as AddEventRequest;
     const groupId = body.groupId
     console.log("received", body);
     const eventDTO: EventDTO = body.event;

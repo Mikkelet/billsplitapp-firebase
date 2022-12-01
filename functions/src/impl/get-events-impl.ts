@@ -1,6 +1,6 @@
 import { Request, Response } from "firebase-functions";
 import { eventsCollection } from "../collections";
-import GetEventsRequest from "../interfaces/get-events-request";
+import { GetEventsRequest } from "../interfaces/get-events";
 
 export const getEventsImpl = async (req: Request, res: Response) => {
     const body = req.body as GetEventsRequest;

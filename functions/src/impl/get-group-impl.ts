@@ -1,13 +1,12 @@
 import { Request, Response } from "firebase-functions";
 import { eventsCollection, groupCollection } from "../collections";
-import GetGroupRequest from "../interfaces/get-group-request";
-import GetGroupResponse from "../interfaces/get-group-response";
 import { EventDTO, convertEventToDTO } from "../interfaces/dto/event-dto";
 import { Event } from "../interfaces/models/events";
 import { Group } from "../interfaces/models/group";
 import Person from "../interfaces/models/person";
 import { findPerson, getPeople } from "../utils";
 import { GroupDTO } from "../interfaces/dto/group-dto";
+import { GetGroupRequest, GetGroupResponse } from "../interfaces/get-group";
 
 export const getGroupImpl = async (req: Request, res: Response) => {
     const body = req.body as GetGroupRequest;

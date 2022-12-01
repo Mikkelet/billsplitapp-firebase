@@ -1,6 +1,6 @@
 import { EventDTO } from "./dto/event-dto";
 
-export default interface AddEvent {
+export default interface AddEventRequest {
     groupId: string;
     event: EventDTO;
 }

@@ -3,8 +3,7 @@ import { groupCollection } from "../collections";
 import { Group } from "../interfaces/models/group";
 import { findPerson, getPeople } from "../utils";
 import { GroupDTO } from "../interfaces/dto/group-dto";
-import GetGroupsRequest from "../interfaces/get-groups-request";
-import GetGroupsResponse from "../interfaces/get-groups-response";
+import { GetGroupsRequest, GetGroupsResponse } from "../interfaces/get-groups";
 
 export const getGroupsImpl = async (req: Request, res: Response) => {
     const body = req.body as GetGroupsRequest;
