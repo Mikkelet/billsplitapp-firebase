@@ -11,7 +11,11 @@ export const addFriendImpl = async (req: Request, res: Response) => {
     const sentTo = body.sentTo;
 
     try {
-        const friend = await getFriendship(createdBy, sentTo)
+        const user1 = createdBy > sentTo ? createdBy : sentTo;
+        const user2 = createdBy > sentTo ? sentTo : createdBy;
+        if (user1 === user2) throw Error("could not normalize users");
+
+        const friend = await getFriendship(user1, user2)
         if (friend === null) {
             // friend pair didn't exist, so we sent a friend requst
             const friendRequest: Friend = {
@@ -19,7 +23,7 @@ export const addFriendImpl = async (req: Request, res: Response) => {
                 timeStamp: timeStamp,
                 createdBy: createdBy,
                 status: "requestSent",
-                users: [createdBy, sentTo],
+                users: [user1, user2],
             };
             await addFriend(friendRequest)
             const response: AddFriendResponse = {

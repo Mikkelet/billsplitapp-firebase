@@ -21,7 +21,7 @@ export async function addFriend(friend: Friend): Promise<void> {
  */
 export async function getFriendship(user1: string, user2: string): Promise<Friend | null> {
     const response = await friendsCollection
-        .where("users", "array-contains-any", [user1, user2])
+        .where("users", "==", [user1, user2])
         .get()
     if (response.empty) return null;
     else return response.docs.map((doc) => doc.data() as Friend)[0];
