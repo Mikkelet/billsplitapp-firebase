@@ -4,7 +4,7 @@ export interface AddFriendRequest {
     createdBy: string;
     sentTo: string;
     timeStamp: number;
-}   
+}
 
 export interface AddFriendResponse {
     type: FriendStatus;

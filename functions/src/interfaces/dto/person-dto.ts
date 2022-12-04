@@ -1,6 +1,5 @@
-export default interface Person {
+export default interface PersonDTO {
     id: string;
     name: string;
     pfpUrl: string;
-    email: string;
 }
