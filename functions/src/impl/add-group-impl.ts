@@ -1,5 +1,6 @@
 import { Request, Response } from "firebase-functions";
-import { groupCollection, userCollection } from "../collections";
+import { groupCollection } from "../collections/group-collection";
+import { userCollection } from "../collections/user-collection";
 import AddGroupRequest from "../interfaces/add-group";
 import { convertDTOtoGroup } from "../interfaces/models/group";
 
@@ -26,6 +27,6 @@ export const addGroupImpl = async (req: Request, res: Response) => {
         res.status(200).send(groupDTO);
     } catch (e) {
         console.error(e);
-        res.send(500).send(e);
+        res.status(500).send(e);
     }
 }

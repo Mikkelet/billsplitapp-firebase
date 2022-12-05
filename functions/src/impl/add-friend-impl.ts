@@ -1,5 +1,6 @@
 import { Request, Response } from "firebase-functions";
 import { addFriend, getFriendship, updateFriendStatus } from "../collections/friend-collection";
+import { getUserByEmail } from "../collections/user-collection";
 import { AddFriendRequest, AddFriendResponse } from "../interfaces/add-friend";
 import { Friend } from "../interfaces/models/friend";
 
@@ -8,9 +9,13 @@ export const addFriendImpl = async (req: Request, res: Response) => {
     console.log(body);
     const createdBy = body.createdBy;
     const timeStamp = body.timeStamp;
-    const sentTo = body.sentTo;
+    const email = body.email;
 
     try {
+        const user = await getUserByEmail(email);
+        if (user === null) throw Error("User does not exist");
+        const sentTo = user.id;
+
         const user1 = createdBy > sentTo ? createdBy : sentTo;
         const user2 = createdBy > sentTo ? sentTo : createdBy;
         if (user1 === user2) throw Error("could not normalize users");

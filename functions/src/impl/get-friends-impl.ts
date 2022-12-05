@@ -19,7 +19,6 @@ export const getFriendshipsImpl = async (req: Request, res: Response) => {
             const uids = friends
                 .flatMap((friend) => friend.users)
                 .filter((userId) => userId !== requestUid)
-            console.log(uids);
             const people = await getPeople(uids);
             const dtos: FriendDTO[] = friends.map((friendship) => {
                 const friendId = friendship.users.find((uid) => uid !== requestUid) || ""

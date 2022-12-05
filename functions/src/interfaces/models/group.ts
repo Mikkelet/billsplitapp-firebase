@@ -1,5 +1,6 @@
 import { findPerson } from "../../utils";
 import { GroupDTO } from "../dto/group-dto";
+import { convertDTOToPerson } from "./person";
 
 export interface Group {
     id: string;
@@ -15,11 +16,13 @@ export interface Group {
  * @return {GroupDTO} return converted group
  */
 export function convertDTOtoGroup(groupDTO: GroupDTO): Group {
+    const people = groupDTO.people.map((pDTO) => convertDTOToPerson(pDTO));
+    const createdBy = convertDTOToPerson(groupDTO.createdBy)
     return {
         id: groupDTO.id,
         name: groupDTO.name,
         timeStamp: groupDTO.timeStamp,
-        createdBy: findPerson(groupDTO.people, groupDTO.createdBy.id).id,
+        createdBy: findPerson(people, createdBy.id).id,
         people: groupDTO.people.map((p) => p.id),
     }
 }

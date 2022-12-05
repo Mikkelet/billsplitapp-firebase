@@ -1,4 +1,5 @@
-import { userDoc } from "./collections";
+import { userDoc } from "./collections/user-collection";
+import { PersonDTO } from "./interfaces/dto/person-dto";
 import Person from "./interfaces/models/person";
 
 /**
@@ -8,7 +9,7 @@ import Person from "./interfaces/models/person";
  * @param {string} uid uid for the person to find
  * @return {Person} person is either found and return or not-found-placeholder
  */
-export function findPerson(people: Person[], uid: string): Person {
+export function findPerson(people: Person[], uid: string): PersonDTO {
     try {
         const find = people.find((p) => p.id === uid);
         if (!find) {

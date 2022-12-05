@@ -1,5 +1,5 @@
 import { Request, Response } from "firebase-functions";
-import { eventsCollection } from "../collections";
+import { eventsCollection } from "../collections/events-collection";
 import { GetEventsRequest } from "../interfaces/get-events";
 
 export const getEventsImpl = async (req: Request, res: Response) => {
@@ -13,6 +13,6 @@ export const getEventsImpl = async (req: Request, res: Response) => {
         res.status(200).send(docData);
     } catch (e) {
         console.error(e);
-        res.send(500).send(e);
+        res.status(500).send(e);
     }
 }

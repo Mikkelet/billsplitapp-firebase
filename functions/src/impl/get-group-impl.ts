@@ -1,12 +1,10 @@
 import { Request, Response } from "firebase-functions";
-import { eventsCollection, groupCollection } from "../collections";
-import { EventDTO, convertEventToDTO } from "../interfaces/dto/event-dto";
-import { Event } from "../interfaces/models/events";
 import { Group } from "../interfaces/models/group";
-import Person from "../interfaces/models/person";
 import { findPerson, getPeople } from "../utils";
 import { GroupDTO } from "../interfaces/dto/group-dto";
 import { GetGroupRequest, GetGroupResponse } from "../interfaces/get-group";
+import { groupCollection } from "../collections/group-collection";
+import { getEvents } from "../collections/events-collection";
 
 export const getGroupImpl = async (req: Request, res: Response) => {
     const body = req.body as GetGroupRequest;
@@ -34,30 +32,5 @@ export const getGroupImpl = async (req: Request, res: Response) => {
     } catch (e) {
         console.error(e);
         res.send(500).send(e);
-    }
-}
-
-/**
- * Get events related to group
- * @param {string} groupId id of events
- * @param {Person[]} people in group
- * @return {Promise<Event[]>} events related to the group
- */
-async function getEvents(
-    groupId: string,
-    people: Person[]
-): Promise<EventDTO[]> {
-    try {
-        const query = await eventsCollection(groupId).get()
-        const eventData = query.docs.map((doc) => {
-            const event = doc.data() as Event;
-            const eventDTO = convertEventToDTO(event, people)
-            eventDTO.id = doc.id;
-            return eventDTO;
-        })
-        return eventData;
-    } catch (e) {
-        console.error(e);
-        throw e;
     }
 }

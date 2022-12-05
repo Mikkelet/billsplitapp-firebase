@@ -1,8 +1,8 @@
 import { IndividualExpense } from "../models/individual-expense";
-import Person from "../models/person";
+import { PersonDTO } from "./person-dto";
 
 export interface IndividualExpenseDTO {
-    person: Person;
+    person: PersonDTO;
     expense: number;
     isParticipant: boolean;
 }
