@@ -1,4 +1,4 @@
-import { Event } from "../interfaces/models/events";
+import { Event, ExpenseEvent } from "../interfaces/models/events";
 import { groupCollection } from "./group-collection";
 
 const eventsCollection = (groupId: string) =>
@@ -19,6 +19,15 @@ export async function getEvents(groupId: string): Promise<Event[]> {
         console.error(e);
         throw e;
     }
+}
+
+/**
+ * Update an expense with new values
+ * @param {string} groupId group of event
+ * @param {ExpenseEvent} expenseEvent expense to be updated
+ */
+export async function updateExpense(groupId: string, expenseEvent: ExpenseEvent) {
+    return eventsCollection(groupId).doc(expenseEvent.id).set(expenseEvent);
 }
 
 /**

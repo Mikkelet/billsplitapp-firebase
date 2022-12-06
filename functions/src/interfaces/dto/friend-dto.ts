@@ -25,7 +25,7 @@ export interface FriendDTO {
 export function convertFriendToDTO(
     userId: string,
     friend: Friend,
-    people: PersonWithId[]
+    people: PersonWithId[],
 ): FriendDTO {
     const friendId = friend.users.filter((id) => id !== userId)[0]
     return {
@@ -34,7 +34,7 @@ export function convertFriendToDTO(
         friend: findPerson(people, friendId),
         timeStamp: friend.timeStamp,
         status: {
-            type: friend.status
+            type: friend.status,
         },
     } as FriendDTO
 }

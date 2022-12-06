@@ -61,12 +61,10 @@ export const addFriendImpl = async (req: Request, res: Response) => {
                 }
             } else {
                 // finally, assume you're already friends
-                response = {
-                    status: { type: "requestAccepted" }
-                }
+                response = { status: { type: "requestAccepted" } }
             }
         }
-        
+
         console.log("response", response);
         res.status(200).send(response)
     } catch (e) {

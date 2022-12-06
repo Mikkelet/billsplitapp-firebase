@@ -73,6 +73,7 @@ export function convertEventToDTO(event: Event, people: PersonWithId[]): EventDT
     if (event.type === "change") {
         const change = event as ExpenseChangeEvent
         return {
+            id: change.id,
             type: change.type,
             createdBy: findPerson(people, event.createdBy),
             timeStamp: change.timeStamp,

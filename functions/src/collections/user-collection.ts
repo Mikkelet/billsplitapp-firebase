@@ -7,8 +7,8 @@ const userCollection = firestore.collection("users");
 
 /**
  * Add person
- * @param person person to add
- * @return person, with new id if new user
+ * @param {PersonWithId} person person to add
+ * @return {Promise<PersonWithId>} person, with new id if new user
  */
 export async function addPerson(person: PersonWithId): Promise<PersonWithId> {
     if (person.id === "") {
