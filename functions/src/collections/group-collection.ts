@@ -21,7 +21,7 @@ export async function addGroup(group: Group): Promise<Group> {
  * @return {Group} DTO to return
  */
 export async function getGroupById(groupId: string): Promise<Group> {
-    const query = await firestore.doc(groupId).get();
+    const query = await groupCollection.doc(groupId).get();
     const group: Group = query.data() as Group;
     return group;
 }

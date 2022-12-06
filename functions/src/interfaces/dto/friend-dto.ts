@@ -27,10 +27,10 @@ export function convertFriendToDTO(
     friend: Friend,
     people: PersonWithId[]
 ): FriendDTO {
-    const friendId = friend.users.filter((id) => id === userId)[0]
+    const friendId = friend.users.filter((id) => id !== userId)[0]
     return {
         id: friend.id,
-        createdBy: friend.id,
+        createdBy: friend.createdBy,
         friend: findPerson(people, friendId),
         timeStamp: friend.timeStamp,
         status: {
