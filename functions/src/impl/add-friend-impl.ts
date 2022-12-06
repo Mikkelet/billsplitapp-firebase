@@ -20,10 +20,10 @@ export const addFriendImpl = async (req: Request, res: Response) => {
     try {
         let user: Person | null
         if (body.type === "email") {
-            const email = (request as AddFriendRequestEmail).email;
+            const email = (body as AddFriendRequestEmail).email;
             user = await getUserByEmail(email);
         } else {
-            const userId = (request as AddFriendRequestUserId).userId;
+            const userId = (body as AddFriendRequestUserId).userId;
             user = await getUserById(userId);
         }
         if (user === null) throw Error("User does not exist");
