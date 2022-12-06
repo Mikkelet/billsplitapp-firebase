@@ -11,15 +11,15 @@ import { Friend } from "../interfaces/models/friend";
 import { Person } from "../interfaces/models/person";
 
 export const addFriendImpl = async (req: Request, res: Response) => {
-    const request = req.body as AddFriendRequest;
-    console.log(request);
-    const createdBy = request.createdBy;
-    const timeStamp = request.timeStamp;
+    const body = req.body as AddFriendRequest;
+    console.log("request", body);
 
+    const createdBy = body.createdBy;
+    const timeStamp = body.timeStamp;
 
     try {
         let user: Person | null
-        if (request.type === "email") {
+        if (body.type === "email") {
             const email = (request as AddFriendRequestEmail).email;
             user = await getUserByEmail(email);
         } else {

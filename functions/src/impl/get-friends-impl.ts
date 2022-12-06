@@ -8,7 +8,7 @@ import { Person } from "../interfaces/models/person";
 export const getFriendsImpl = async (req: Request, res: Response) => {
     const body = req.body as GetFriendsRequest;
     const userId = body.uid as string;
-    console.log(body);
+    console.log("request", body);
 
     try {
         const response: GetFriendsResponse = {

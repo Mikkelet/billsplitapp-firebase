@@ -4,6 +4,7 @@ import { addPerson } from "../collections/user-collection";
 import { Person } from "../interfaces/models/person";
 
 export const onUserCreateImpl = async (userRecord: UserRecord, _: EventContext) => {
+    console.log("request", userRecord);
     const user: Person = {
         id: userRecord.uid,
         email: userRecord.email ?? "",

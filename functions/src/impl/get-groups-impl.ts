@@ -7,7 +7,7 @@ import { getPeople } from "../collections/user-collection";
 export const getGroupsImpl = async (req: Request, res: Response) => {
     const body = req.body as GetGroupsRequest;
     const uid = body.userId as string;
-    console.log(body);
+    console.log("request", body);
 
     try {
         const groups = await getGroupsByUser(uid);

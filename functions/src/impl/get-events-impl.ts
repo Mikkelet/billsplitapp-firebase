@@ -8,7 +8,8 @@ import { Event } from "../interfaces/models/events";
 
 export const getEventsImpl = async (req: Request, res: Response) => {
     const body = req.body as GetEventsRequest;
-    console.log(body);
+    console.log("request", body);
+
     const groupId = body.groupId;
 
     try {

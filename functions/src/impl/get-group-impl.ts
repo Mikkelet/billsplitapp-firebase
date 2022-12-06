@@ -12,7 +12,7 @@ import { Person } from "../interfaces/models/person";
 export const getGroupImpl = async (req: Request, res: Response) => {
     const body = req.body as GetGroupRequest;
     const groupId = body.groupId as string;
-    console.log(body);
+    console.log("request", body);
 
     try {
         const group: Group = await getGroupById(groupId);

@@ -6,7 +6,8 @@ import { convertDTOtoGroup } from "../interfaces/models/group";
 
 export const addGroupImpl = async (req: Request, res: Response) => {
     const body = req.body as AddGroupRequest;
-    console.log(body);
+    console.log("request", body);
+
     const groupDTO = body.group;
     const groupName = groupDTO.name;
     if (!groupName) res.status(400).send("missing groupName");
