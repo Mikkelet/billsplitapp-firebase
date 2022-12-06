@@ -6,8 +6,8 @@ import {
     PaymentEvent,
 } from "../models/events";
 import {
-    getIndividualExpenseDTO,
-    getListOfIndividualExpenseDTO,
+    convertIndividualExpenseToDTO,
+    convertIndividualExpensesToDTO,
 } from "../models/individual-expense";
 import { PersonWithId } from "../models/person";
 import { IndividualExpenseDTO } from "./individual-expense-dto";
@@ -63,7 +63,7 @@ export function convertEventToDTO(event: Event, people: PersonWithId[]): EventDT
             description: expense.description,
             payee: findPerson(people, expense.payee),
             individualExpenses: expense.individualExpenses
-                .map((ie) => getIndividualExpenseDTO(ie, people)),
+                .map((ie) => convertIndividualExpenseToDTO(ie, people)),
             sharedExpense: expense.sharedExpense,
             timeStamp: expense.timeStamp,
         } as ExpenseEventDTO
@@ -80,7 +80,7 @@ export function convertEventToDTO(event: Event, people: PersonWithId[]): EventDT
                 createdBy:
                     findPerson(people, change.groupExpenseEdited.createdBy),
                 description: change.groupExpenseEdited.description,
-                individualExpenses: getListOfIndividualExpenseDTO(
+                individualExpenses: convertIndividualExpensesToDTO(
                     change.groupExpenseEdited.individualExpenses, people),
                 payee: findPerson(people, change.groupExpenseEdited.payee),
                 sharedExpense: change.groupExpenseEdited.sharedExpense,
@@ -92,7 +92,7 @@ export function convertEventToDTO(event: Event, people: PersonWithId[]): EventDT
                 createdBy:
                     findPerson(people, change.groupExpenseOriginal.createdBy),
                 description: change.groupExpenseOriginal.description,
-                individualExpenses: getListOfIndividualExpenseDTO(
+                individualExpenses: convertIndividualExpensesToDTO(
                     change.groupExpenseOriginal.individualExpenses, people),
                 payee: findPerson(people, change.groupExpenseOriginal.payee),
                 sharedExpense: change.groupExpenseOriginal.sharedExpense,

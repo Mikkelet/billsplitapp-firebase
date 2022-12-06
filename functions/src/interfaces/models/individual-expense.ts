@@ -14,7 +14,7 @@ export interface IndividualExpense {
  * @param {Person[]} people people that's part of the group
  * @return {IndividualExpenseDTO} individual expense dto
  */
-export function getIndividualExpenseDTO(
+export function convertIndividualExpenseToDTO(
     individualExpense: IndividualExpense,
     people: PersonWithId[]
 ): IndividualExpenseDTO {
@@ -31,9 +31,9 @@ export function getIndividualExpenseDTO(
  * @param {Person[]} people people in group
  * @return {IndividualExpenseDTO[]} list of converted expenses
  */
-export function getListOfIndividualExpenseDTO(
+export function convertIndividualExpensesToDTO(
     individualExpenses: IndividualExpense[],
     people: PersonWithId[]
 ): IndividualExpenseDTO[] {
-    return individualExpenses.map((ie) => getIndividualExpenseDTO(ie, people))
+    return individualExpenses.map((ie) => convertIndividualExpenseToDTO(ie, people))
 }
