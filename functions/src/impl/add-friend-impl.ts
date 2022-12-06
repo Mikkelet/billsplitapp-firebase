@@ -1,18 +1,31 @@
 import { Request, Response } from "firebase-functions";
 import { addFriend, getFriendship, updateFriendStatus } from "../collections/friend-collection";
-import { getUserByEmail } from "../collections/user-collection";
-import { AddFriendRequest, AddFriendResponse } from "../interfaces/add-friend";
+import { getUserByEmail, getUserById } from "../collections/user-collection";
+import {
+    AddFriendRequest,
+    AddFriendRequestEmail,
+    AddFriendRequestUserId,
+    AddFriendResponse,
+} from "../interfaces/add-friend";
 import { Friend } from "../interfaces/models/friend";
+import { Person } from "../interfaces/models/person";
 
 export const addFriendImpl = async (req: Request, res: Response) => {
-    const body = req.body as AddFriendRequest;
-    console.log(body);
-    const createdBy = body.createdBy;
-    const timeStamp = body.timeStamp;
-    const email = body.email;
+    const request = req.body as AddFriendRequest;
+    console.log(request);
+    const createdBy = request.createdBy;
+    const timeStamp = request.timeStamp;
+
 
     try {
-        const user = await getUserByEmail(email);
+        let user: Person | null
+        if (request.type === "email") {
+            const email = (request as AddFriendRequestEmail).email;
+            user = await getUserByEmail(email);
+        } else {
+            const userId = (request as AddFriendRequestUserId).userId;
+            user = await getUserById(userId);
+        }
         if (user === null) throw Error("User does not exist");
         const sentTo = user.id;
 
@@ -21,6 +34,8 @@ export const addFriendImpl = async (req: Request, res: Response) => {
         if (user1 === user2) throw Error("could not normalize users");
 
         const friend = await getFriendship(user1, user2)
+
+        let response: AddFriendResponse
         if (friend === null) {
             // friend pair didn't exist, so we sent a friend requst
             const friendRequest: Friend = {
@@ -31,10 +46,7 @@ export const addFriendImpl = async (req: Request, res: Response) => {
                 users: [user1, user2],
             };
             await addFriend(friendRequest)
-            const response: AddFriendResponse = {
-                type: "requestSent",
-            }
-            res.status(200).send(response);
+            response = { type: "requestSent" }
         } else {
             // if exist, check status of friendRequest
             if (friend.status === "requestSent") {
@@ -42,25 +54,18 @@ export const addFriendImpl = async (req: Request, res: Response) => {
                 if (friend.createdBy !== createdBy) {
                     // if you are not request sender, assume you accepted the request. You are now friends!
                     await updateFriendStatus(friend.id, "requestAccepted");
-                    const response: AddFriendResponse = {
-                        type: "requestAccepted",
-                    };
-                    res.status(200).send(response)
+                    response = { type: "requestAccepted" };
                 } else {
                     // if you are the request sender, tell the user that their request is not accepted yet
-                    const response: AddFriendResponse = {
-                        type: "alreadyRequested",
-                    }
-                    res.status(200).send(response)
+                    response = { type: "alreadyRequested" }
                 }
             } else {
                 // finally, assume you're already friends
-                const response: AddFriendResponse = {
-                    type: "requestAccepted",
-                }
-                res.status(200).send(response)
+                response = { type: "requestAccepted" }
             }
         }
+        console.log("response", response);
+        res.status(200).send(response)
     } catch (e) {
         console.error(e);
         res.status(500).send(e);

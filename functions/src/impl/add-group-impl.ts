@@ -1,7 +1,7 @@
 import { Request, Response } from "firebase-functions";
-import { groupCollection } from "../collections/group-collection";
+import { addGroup } from "../collections/group-collection";
 import { userCollection } from "../collections/user-collection";
-import AddGroupRequest from "../interfaces/add-group";
+import { AddGroupRequest, AddGroupResponse } from "../interfaces/add-group";
 import { convertDTOtoGroup } from "../interfaces/models/group";
 
 export const addGroupImpl = async (req: Request, res: Response) => {
@@ -21,10 +21,13 @@ export const addGroupImpl = async (req: Request, res: Response) => {
             }
             await userCollection.doc(person.id).set(person);
         }
-        groupDTO.id = groupCollection.doc().id;
-        const groupData = convertDTOtoGroup(groupDTO);
-        await groupCollection.doc(groupData.id).set(groupData);
-        res.status(200).send(groupDTO);
+
+        const group = await addGroup(convertDTOtoGroup(groupDTO));
+        groupDTO.id = group.id;
+
+        const response: AddGroupResponse = { group: groupDTO };
+        console.log("response", response);
+        res.status(200).send(response);
     } catch (e) {
         console.error(e);
         res.status(500).send(e);

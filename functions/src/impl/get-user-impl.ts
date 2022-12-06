@@ -1,38 +1,41 @@
 import { Request, Response } from "firebase-functions";
 import { getFriends } from "../collections/friend-collection";
-import { getGroupDTOsByUser } from "../collections/group-collection";
-import { findPerson, userDoc } from "../collections/user-collection";
-import Person from "../interfaces/models/person";
-import { getPeople } from "../utils";
+import { getGroupsByUser } from "../collections/group-collection";
+import { getExistingUserById, getPeople } from "../collections/user-collection";
+import { convertFriendToDTO } from "../interfaces/dto/friend-dto";
+import { convertGroupToDTO, GroupDTO } from "../interfaces/dto/group-dto";
+import { Friend } from "../interfaces/models/friend";
+import { Group } from "../interfaces/models/group";
+import { Person } from "../interfaces/models/person";
 
 
-export const getGroupsImpl = async (req: Request, res: Response) => {
+export const getUserProfile = async (req: Request, res: Response) => {
     const body = req.body;
     const userId = body.userId;
+    console.log("request", body);
 
     try {
-        const userResponse = await userDoc(userId).get();
-        const user = userResponse.data() as Person;
-        const groupDTOs = await getGroupDTOsByUser(user.id);
-        const friends = await getFriends(user.id);
-        const friendIds = friends.flatMap((friend) => friend.users).filter((id) => id !== userId)
-        const distinctUids: string[] = [...new Set(friendIds)];
-        const people = await getPeople(distinctUids);
+        const user: Person = await getExistingUserById(userId);
+        const groups: Group[] = await getGroupsByUser(user.id);
+        const groupPeopleIds = groups.flatMap((group) => group.people);
+        const groupPeople = await getPeople(groupPeopleIds);
+        const friends: Friend[] = await getFriends(user.id);
+        const friendIds: string[] =
+            friends.flatMap((friend) => friend.users).filter((id) => id !== userId)
+        const friendsPeople: Person[] = await getPeople(friendIds);
+
         // Convert to DTOs
-        const friendDTOs = friends.map((friend) => {
-            const friendId = friend.users.filter((id) => id !== userId)[0];
-            const friendPerson = findPerson(people, friendId)
-            return {
-                person: friendPerson,
-                type: "alreadyRequested",
-            }
-        })
+        const dtos = friends.map((friend) =>
+            convertFriendToDTO(userId, friend, friendsPeople))
+        const groupDTOs: GroupDTO[] =
+            groups.map((group) => convertGroupToDTO(group, groupPeople))
+
         const response = {
             user: user,
-            friends: friendDTOs,
+            friends: dtos,
             groups: groupDTOs,
         }
-
+        console.log("response", response);
         res.status(200).send(response);
     } catch (e) {
         console.error(e);

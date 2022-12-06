@@ -1,5 +1,9 @@
 import { GroupDTO } from "./dto/group-dto";
 
-export default interface AddGroupRequest {
+export interface AddGroupRequest {
+    group: GroupDTO;
+}
+
+export interface AddGroupResponse {
     group: GroupDTO;
 }

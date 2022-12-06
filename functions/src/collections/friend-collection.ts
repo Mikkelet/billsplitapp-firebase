@@ -8,9 +8,10 @@ const friendsCollection = firestore.collection("friends");
  * Add friend to the friends collection
  * @param {Friend} friend friend to be added
  */
-export async function addFriend(friend: Friend): Promise<void> {
+export async function addFriend(friend: Friend): Promise<Friend> {
     friend.id = friendsCollection.doc().id
     await friendsCollection.doc(friend.id).set(friend);
+    return friend;
 }
 
 /**
@@ -33,7 +34,7 @@ export async function getFriendship(user1: string, user2: string): Promise<Frien
  * @param {FriendStatus} status to be updated
  */
 export async function updateFriendStatus(docId: string, status: FriendStatus): Promise<void> {
-    await friendsCollection.doc(docId).update({
+    friendsCollection.doc(docId).update({
         status: status,
     })
 }

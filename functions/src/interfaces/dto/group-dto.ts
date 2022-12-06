@@ -1,6 +1,6 @@
-import { findPerson } from "../../utils";
+import { findPerson } from "../../collections/user-collection";
 import { Group } from "../models/group";
-import Person from "../models/person";
+import { PersonWithId } from "../models/person";
 import { PersonDTO } from "./person-dto";
 
 export interface GroupDTO {
@@ -17,7 +17,7 @@ export interface GroupDTO {
  * @param {PersonDTO[]} people people who are part of the group
  * @return {GroupDTO} return converted group
  */
-export function convertGroupToDTO(group: Group, people: Person[]): GroupDTO {
+export function convertGroupToDTO(group: Group, people: PersonWithId[]): GroupDTO {
     return {
         id: group.id,
         name: group.name,

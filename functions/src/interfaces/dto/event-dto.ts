@@ -1,4 +1,4 @@
-import { findPerson } from "../../utils";
+import { findPerson } from "../../collections/user-collection";
 import {
     Event,
     ExpenseChangeEvent,
@@ -9,8 +9,9 @@ import {
     getIndividualExpenseDTO,
     getListOfIndividualExpenseDTO,
 } from "../models/individual-expense";
-import Person from "../models/person";
+import { PersonWithId } from "../models/person";
 import { IndividualExpenseDTO } from "./individual-expense-dto";
+import { PersonDTO } from "./person-dto";
 
 export type EventDTO =
     ExpenseChangeEventDTO
@@ -20,9 +21,9 @@ export type EventDTO =
 export interface ExpenseEventDTO {
     type: "expense";
     id: string;
-    createdBy: Person;
+    createdBy: PersonDTO;
     description: string;
-    payee: Person;
+    payee: PersonDTO;
     sharedExpense: number;
     individualExpenses: IndividualExpenseDTO[];
     timeStamp: number;
@@ -31,8 +32,8 @@ export interface ExpenseEventDTO {
 export interface PaymentEventDTO {
     id: string,
     type: "payment";
-    createdBy: Person;
-    paidTo: Person;
+    createdBy: PersonDTO;
+    paidTo: PersonDTO;
     amount: number;
     timeStamp: number;
 }
@@ -40,7 +41,7 @@ export interface PaymentEventDTO {
 export interface ExpenseChangeEventDTO {
     id: string
     type: "change";
-    createdBy: Person;
+    createdBy: PersonDTO;
     groupExpenseOriginal: ExpenseEventDTO;
     groupExpenseEdited: ExpenseEventDTO;
     timeStamp: number;
@@ -52,7 +53,7 @@ export interface ExpenseChangeEventDTO {
  * @param {Person[]} people people in group
  * @return {EventDTO} EventDTO
  */
-export function convertEventToDTO(event: Event, people: Person[]): EventDTO {
+export function convertEventToDTO(event: Event, people: PersonWithId[]): EventDTO {
     if (event.type === "expense") {
         const expense = event as ExpenseEvent
         return {

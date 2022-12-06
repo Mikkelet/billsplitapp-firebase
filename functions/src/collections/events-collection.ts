@@ -1,6 +1,4 @@
-import { convertEventToDTO, EventDTO } from "../interfaces/dto/event-dto";
 import { Event } from "../interfaces/models/events";
-import Person from "../interfaces/models/person";
 import { groupCollection } from "./group-collection";
 
 export const eventsCollection = (groupId: string) =>
@@ -12,21 +10,26 @@ export const eventsCollection = (groupId: string) =>
  * @param {Person[]} people in group
  * @return {Promise<Event[]>} events related to the group
  */
-export async function getEvents(
-    groupId: string,
-    people: Person[]
-): Promise<EventDTO[]> {
+export async function getEvents(groupId: string): Promise<Event[]> {
     try {
         const query = await eventsCollection(groupId).get()
-        const eventData = query.docs.map((doc) => {
-            const event = doc.data() as Event;
-            const eventDTO = convertEventToDTO(event, people)
-            eventDTO.id = doc.id;
-            return eventDTO;
-        })
-        return eventData;
+        const events: Event[] = query.docs.map((doc) => doc.data() as Event)
+        return events;
     } catch (e) {
         console.error(e);
         throw e;
     }
+}
+
+/**
+ * Add a new event
+ * @param {string} groupId id of group to add event to
+ * @param {Event} event event to add
+ * @return {Event} event with new ID
+ */
+export async function addEvent(groupId: string, event: Event): Promise<Event> {
+    const eventId = eventsCollection(groupId).doc().id
+    event.id = eventId;
+    await eventsCollection(groupId).doc(eventId).set(event);
+    return event;
 }

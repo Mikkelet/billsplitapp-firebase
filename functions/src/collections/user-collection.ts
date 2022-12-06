@@ -1,11 +1,42 @@
 import * as firebase from "firebase-admin";
-import { PersonDTO } from "../interfaces/dto/person-dto";
-import Person from "../interfaces/models/person";
+import { Person, PersonWithId } from "../interfaces/models/person";
 
 const firestore = firebase.firestore();
 
 export const userCollection = firestore.collection("users");
 export const userDoc = (userId: string) => userCollection.doc(userId);
+
+/**
+ * Retrieves user for given id, return null if not found
+ * @param {string} userId id of user
+ * @return {Person | null} Person if exist, else null
+ */
+export async function getUserById(userId: string): Promise<Person | null> {
+    try {
+        const response = await userCollection.doc(userId).get()
+        const person = response.data() as Person;
+        return person;
+    } catch (e) {
+        console.error(e);
+        return null;
+    }
+}
+
+/**
+ * Retrieves existing user for given id, throws error if not found
+ * @param {string} userId id of user
+ * @return {Person} Person if exist, else null
+ */
+export async function getExistingUserById(userId: string): Promise<Person> {
+    try {
+        const response = await userCollection.doc(userId).get()
+        const person = response.data() as Person;
+        return person;
+    } catch (e) {
+        console.error(e);
+        throw e;
+    }
+}
 
 /**
  * Retrieves user for given email
@@ -16,9 +47,9 @@ export async function getUserByEmail(email: string): Promise<Person | null> {
     try {
         const response = await userCollection.where("email", "==", email).get()
         if (response.empty) return null;
-        if (response.size > 1) console.log("Multiple users with email: ", email);
-        const firstDoc = response.docs[0].data() as Person;
-        return firstDoc;
+        if (response.size > 1) console.error("Multiple users with email: ", email);
+        const person = response.docs[0].data() as Person;
+        return person;
     } catch (e) {
         console.error(e);
         return null;
@@ -31,8 +62,9 @@ export async function getUserByEmail(email: string): Promise<Person | null> {
  * @return {Promise<Person[]>} list of people objects
  */
 export async function getPeople(uids: string[]): Promise<Person[]> {
+    const distinctUids: string[] = [...new Set(uids)];
     const users: Person[] = [];
-    for await (const uid of uids) {
+    for await (const uid of distinctUids) {
         try {
             const doc = await userDoc(uid).get();
             const data = doc.data() as Person;
@@ -48,22 +80,24 @@ export async function getPeople(uids: string[]): Promise<Person[]> {
 /**
  * Search a list of people to find person with uid.
  * Else return placeholder person.
- * @param {Person[]} people list of people to search
+ * @param {T[]} people list of people to search
  * @param {string} uid uid for the person to find
- * @return {Person} person is either found and return or not-found-placeholder
+ * @return {T} person is either found and return or not-found-placeholder
  */
-export function findPerson(people: Person[], uid: string): PersonDTO {
+export function findPerson<T extends PersonWithId>(people: T[], uid: string): T {
     try {
-        const find = people.find((p) => p.id === uid);
-        if (!find) {
+        const person: T | undefined = people.find((p) => p.id === uid);
+
+        if (!person) {
             throw Error("user not found");
         }
-        return find;
+
+        return person;
     } catch (e) {
         return {
             id: uid,
             name: "unknown user",
             pfpUrl: "",
-        };
+        } as T;
     }
 }

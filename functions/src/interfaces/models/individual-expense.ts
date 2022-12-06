@@ -1,6 +1,6 @@
-import { findPerson } from "../../utils";
+import { findPerson } from "../../collections/user-collection";
 import { IndividualExpenseDTO } from "../dto/individual-expense-dto";
-import Person from "./person";
+import { PersonWithId } from "./person";
 
 export interface IndividualExpense {
     person: string;
@@ -16,7 +16,7 @@ export interface IndividualExpense {
  */
 export function getIndividualExpenseDTO(
     individualExpense: IndividualExpense,
-    people: Person[]
+    people: PersonWithId[]
 ): IndividualExpenseDTO {
     return {
         expense: individualExpense.expense,
@@ -33,7 +33,7 @@ export function getIndividualExpenseDTO(
  */
 export function getListOfIndividualExpenseDTO(
     individualExpenses: IndividualExpense[],
-    people: Person[]
+    people: PersonWithId[]
 ): IndividualExpenseDTO[] {
     return individualExpenses.map((ie) => getIndividualExpenseDTO(ie, people))
 }

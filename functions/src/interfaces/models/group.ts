@@ -1,4 +1,4 @@
-import { findPerson } from "../../utils";
+import { findPerson } from "../../collections/user-collection";
 import { GroupDTO } from "../dto/group-dto";
 import { convertDTOToPerson } from "./person";
 
