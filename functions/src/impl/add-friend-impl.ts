@@ -32,7 +32,7 @@ export const addFriendImpl = async (req: Request, res: Response) => {
 
         const user1 = createdBy > sentTo ? createdBy : sentTo;
         const user2 = createdBy > sentTo ? sentTo : createdBy;
-        if (user1 === user2) throw Error("could not normalize users");
+        if (user1 === user2) throw Error("Could not normalize users");
 
         const friend = await getFriendship(user1, user2)
 
@@ -42,11 +42,11 @@ export const addFriendImpl = async (req: Request, res: Response) => {
                 id: "",
                 timeStamp: timeStamp,
                 createdBy: createdBy,
-                status: "requestSent",
+                status: "pending",
                 users: [user1, user2],
             };
             await addFriend(friendRequest)
-            response = { status: { type: "requestSent" } }
+            response = { status: { type: "pending" } }
         } else {
             const status = await handleExistingFriendRequest(createdBy, friend)
             response = {
@@ -72,16 +72,19 @@ async function handleExistingFriendRequest(
     createdBy: string,
     friend: Friend
 ): Promise<FriendStatusDTO> {
-    // if status isn't pending a response, assume you're already friends
-    if (friend.status !== "requestSent") {
-        return { type: "requestAccepted" }
-    }
-    // if you are the request sender, tell the user that their request is not accepted yet
-    if (createdBy === friend.createdBy) {
-        return { type: "alreadyRequested" }
+
+    // if status is accepted, do nothing
+    if (friend.status === "accepted") {
+        return { type: "accepted" }
     }
 
-    // if you are not request sender, assume you accepted the request. You are now friends!
-    await updateFriendStatus(friend.id, "requestAccepted");
-    return { type: "requestAccepted" }
+    // if you are the request sender, tell the user that the request is not accepted yet
+    if (createdBy === friend.createdBy) {
+        return { type: "pending" }
+    }
+
+    // if status is pending and you are not request sender,
+    // assume you accepted the request. You are now friends!
+    await updateFriendStatus(friend.id, "accepted");
+    return { type: "accepted" }
 }

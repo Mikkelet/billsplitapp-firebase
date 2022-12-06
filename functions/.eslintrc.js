@@ -35,5 +35,6 @@ module.exports = {
             "comments": 150,
             "code": 100,
         }],
+        "padded-blocks": 0,
     },
 };

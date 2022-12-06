@@ -1,6 +1,6 @@
 import { FriendDTO } from "../dto/friend-dto";
 
-export type FriendStatus = "requestSent" | "requestAccepted" | "alreadyRequested"
+export type FriendStatus = "pending" | "accepted"
 
 export interface Friend {
     id: string,
