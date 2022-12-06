@@ -46,7 +46,7 @@ export const addFriendImpl = async (req: Request, res: Response) => {
                 users: [user1, user2],
             };
             await addFriend(friendRequest)
-            response = { type: "requestSent" }
+            response = { status: { type: "requestSent" } }
         } else {
             // if exist, check status of friendRequest
             if (friend.status === "requestSent") {
@@ -54,16 +54,19 @@ export const addFriendImpl = async (req: Request, res: Response) => {
                 if (friend.createdBy !== createdBy) {
                     // if you are not request sender, assume you accepted the request. You are now friends!
                     await updateFriendStatus(friend.id, "requestAccepted");
-                    response = { type: "requestAccepted" };
+                    response = { status: { type: "requestAccepted" } };
                 } else {
                     // if you are the request sender, tell the user that their request is not accepted yet
-                    response = { type: "alreadyRequested" }
+                    response = { status: { type: "alreadyRequested" } }
                 }
             } else {
                 // finally, assume you're already friends
-                response = { type: "requestAccepted" }
+                response = {
+                    status: { type: "requestAccepted" }
+                }
             }
         }
+        
         console.log("response", response);
         res.status(200).send(response)
     } catch (e) {

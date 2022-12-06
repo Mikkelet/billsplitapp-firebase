@@ -31,7 +31,7 @@ export function convertIndividualExpenseToDTO(
  * @param {Person[]} people people in group
  * @return {IndividualExpenseDTO[]} list of converted expenses
  */
-export function convertIndividualExpensesToDTO(
+export function convertIndividualExpensesToDTOs(
     individualExpenses: IndividualExpense[],
     people: PersonWithId[]
 ): IndividualExpenseDTO[] {

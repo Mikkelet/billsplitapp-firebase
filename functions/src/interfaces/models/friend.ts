@@ -23,7 +23,7 @@ export function convertDTOtoFriend(friendDTO: FriendDTO): Friend {
     return {
         id: friendDTO.id,
         createdBy: friendDTO.createdBy,
-        status: friendDTO.status,
+        status: friendDTO.status.type,
         timeStamp: friendDTO.timeStamp,
         users: [user1, user2],
     } as Friend

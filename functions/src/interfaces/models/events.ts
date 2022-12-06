@@ -1,5 +1,5 @@
 import { EventDTO } from "../dto/event-dto";
-import { getListOfIndividualExpenses } from "../dto/individual-expense-dto";
+import { convertDTOsToIndividualExpenses } from "../dto/individual-expense-dto";
 import { IndividualExpense } from "./individual-expense";
 
 export type Event = ExpenseChangeEvent | PaymentEvent | ExpenseEvent
@@ -49,7 +49,7 @@ export function convertDTOtoEvent(event: EventDTO): Event {
             timeStamp: event.timeStamp,
             sharedExpense: event.sharedExpense,
             individualExpenses:
-                getListOfIndividualExpenses(event.individualExpenses),
+                convertDTOsToIndividualExpenses(event.individualExpenses),
         } as ExpenseEvent
     }
     if (event.type === "payment") {
@@ -74,7 +74,7 @@ export function convertDTOtoEvent(event: EventDTO): Event {
                 payee: event.groupExpenseOriginal.payee.id,
                 timeStamp: event.groupExpenseOriginal.timeStamp,
                 sharedExpense: event.groupExpenseOriginal.sharedExpense,
-                individualExpenses: getListOfIndividualExpenses(
+                individualExpenses: convertDTOsToIndividualExpenses(
                     event.groupExpenseOriginal.individualExpenses),
             } as ExpenseEvent,
             groupExpenseEdited: {
@@ -85,7 +85,7 @@ export function convertDTOtoEvent(event: EventDTO): Event {
                 payee: event.groupExpenseEdited.payee.id,
                 timeStamp: event.groupExpenseEdited.timeStamp,
                 sharedExpense: event.groupExpenseEdited.sharedExpense,
-                individualExpenses: getListOfIndividualExpenses(
+                individualExpenses: convertDTOsToIndividualExpenses(
                     event.groupExpenseEdited.individualExpenses),
             } as ExpenseEvent,
         } as ExpenseChangeEvent

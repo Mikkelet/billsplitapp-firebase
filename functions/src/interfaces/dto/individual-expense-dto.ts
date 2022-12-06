@@ -12,7 +12,7 @@ export interface IndividualExpenseDTO {
  * @param {IndividualExpenseDTO} IndividualExpenseDTO database json to convert
  * @return {IndividualExpense} individual expense dto
  */
-export function getIndExpenseFromIndExpenseDTO(
+export function convertDTOtoIndividualExpense(
     IndividualExpenseDTO: IndividualExpenseDTO
 ): IndividualExpense {
     return {
@@ -27,8 +27,8 @@ export function getIndExpenseFromIndExpenseDTO(
  * @param {IndividualExpenseDTO[]} individualExpenses list to convert
  * @return {IndividualExpense[]} converted list
  */
-export function getListOfIndividualExpenses(
+export function convertDTOsToIndividualExpenses(
     individualExpenses: IndividualExpenseDTO[]
 ): IndividualExpense[] {
-    return individualExpenses.map((ie) => getIndExpenseFromIndExpenseDTO(ie))
+    return individualExpenses.map((ie) => convertDTOtoIndividualExpense(ie))
 }

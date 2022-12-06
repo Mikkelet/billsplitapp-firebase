@@ -1,4 +1,4 @@
-import { FriendStatus } from "./models/friend";
+import { FriendStatusDTO } from "./dto/friend-dto";
 
 export type AddFriendType = "email" | "userId"
 
@@ -23,5 +23,5 @@ export interface AddFriendRequestUserId {
 }
 
 export interface AddFriendResponse {
-    type: FriendStatus;
+    status: FriendStatusDTO;
 }

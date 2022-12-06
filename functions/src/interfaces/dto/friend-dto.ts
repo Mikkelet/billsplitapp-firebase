@@ -3,11 +3,15 @@ import { Friend, FriendStatus } from "../models/friend";
 import { PersonWithId } from "../models/person";
 import { PersonDTO } from "./person-dto";
 
+export interface FriendStatusDTO {
+    type: FriendStatus
+}
+
 export interface FriendDTO {
     id: string,
     timeStamp: number,
     createdBy: string,
-    status: FriendStatus,
+    status: FriendStatusDTO,
     friend: PersonDTO,
 }
 
@@ -29,6 +33,8 @@ export function convertFriendToDTO(
         createdBy: friend.id,
         friend: findPerson(people, friendId),
         timeStamp: friend.timeStamp,
-        status: friend.status,
+        status: {
+            type: friend.status
+        },
     } as FriendDTO
 }
