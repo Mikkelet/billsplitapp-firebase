@@ -3,8 +3,20 @@ import { Person, PersonWithId } from "../interfaces/models/person";
 
 const firestore = firebase.firestore();
 
-export const userCollection = firestore.collection("users");
-export const userDoc = (userId: string) => userCollection.doc(userId);
+const userCollection = firestore.collection("users");
+
+/**
+ * Add person
+ * @param person person to add
+ * @return person, with new id if new user
+ */
+export async function addPerson(person: PersonWithId): Promise<PersonWithId> {
+    if (person.id === "") {
+        person.id = userCollection.doc().id;
+    }
+    await userCollection.doc(person.id).set(person);
+    return person;
+}
 
 /**
  * Retrieves user for given id, return null if not found
@@ -66,7 +78,7 @@ export async function getPeople(uids: string[]): Promise<Person[]> {
     const users: Person[] = [];
     for await (const uid of distinctUids) {
         try {
-            const doc = await userDoc(uid).get();
+            const doc = await userCollection.doc(uid).get();
             const data = doc.data() as Person;
             users.push(data);
         } catch (e) {

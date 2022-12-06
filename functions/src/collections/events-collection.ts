@@ -1,7 +1,7 @@
 import { Event } from "../interfaces/models/events";
 import { groupCollection } from "./group-collection";
 
-export const eventsCollection = (groupId: string) =>
+const eventsCollection = (groupId: string) =>
     groupCollection.doc(groupId).collection("events");
 
 /**

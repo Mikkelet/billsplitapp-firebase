@@ -1,5 +1,5 @@
 import { Request, Response } from "firebase-functions";
-import { eventsCollection } from "../collections/events-collection";
+import { getEvents } from "../collections/events-collection";
 import { getGroupById } from "../collections/group-collection";
 import { getPeople } from "../collections/user-collection";
 import { convertEventToDTO, EventDTO } from "../interfaces/dto/event-dto";
@@ -14,9 +14,7 @@ export const getEventsImpl = async (req: Request, res: Response) => {
     try {
         const group = await getGroupById(groupId);
         const people = await getPeople(group.people);
-
-        const eventsQuery = await eventsCollection(groupId).get();
-        const events: Event[] = eventsQuery.docs.map((doc) => doc.data() as Event);
+        const events: Event[] = await getEvents(groupId)
 
         const dtos: EventDTO[] = events.map((event) => {
             return convertEventToDTO(event, people)
@@ -25,7 +23,6 @@ export const getEventsImpl = async (req: Request, res: Response) => {
         const response: GetEventsResponse = {
             events: dtos,
         }
-
         console.log("response", response);
         res.status(200).send(response);
     } catch (e) {

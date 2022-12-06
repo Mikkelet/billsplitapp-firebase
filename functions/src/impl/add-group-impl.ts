@@ -1,6 +1,6 @@
 import { Request, Response } from "firebase-functions";
 import { addGroup } from "../collections/group-collection";
-import { userCollection } from "../collections/user-collection";
+import { addPerson } from "../collections/user-collection";
 import { AddGroupRequest, AddGroupResponse } from "../interfaces/add-group";
 import { convertDTOtoGroup } from "../interfaces/models/group";
 
@@ -16,10 +16,7 @@ export const addGroupImpl = async (req: Request, res: Response) => {
 
     try {
         for await (const person of groupDTO.people) {
-            if (person.id === "") {
-                person.id = userCollection.doc().id;
-            }
-            await userCollection.doc(person.id).set(person);
+            await addPerson(person)
         }
 
         const group = await addGroup(convertDTOtoGroup(groupDTO));

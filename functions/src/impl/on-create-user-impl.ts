@@ -1,6 +1,6 @@
 import { EventContext } from "firebase-functions/v1";
 import { UserRecord } from "firebase-functions/v1/auth";
-import { userCollection } from "../collections/user-collection";
+import { addPerson } from "../collections/user-collection";
 import { Person } from "../interfaces/models/person";
 
 export const onUserCreateImpl = async (userRecord: UserRecord, _: EventContext) => {
@@ -10,5 +10,5 @@ export const onUserCreateImpl = async (userRecord: UserRecord, _: EventContext) 
         pfpUrl: "",
         name: "",
     }
-    return await userCollection.doc(user.id).set(user).catch(console.log);
+    return await addPerson(user).catch(console.log);
 }
