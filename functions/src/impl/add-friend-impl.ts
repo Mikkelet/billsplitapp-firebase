@@ -7,6 +7,7 @@ import {
     AddFriendRequestUserId,
     AddFriendResponse,
 } from "../interfaces/add-friend";
+import { FriendStatusDTO } from "../interfaces/dto/friend-dto";
 import { Friend } from "../interfaces/models/friend";
 import { Person } from "../interfaces/models/person";
 
@@ -37,7 +38,6 @@ export const addFriendImpl = async (req: Request, res: Response) => {
 
         let response: AddFriendResponse
         if (friend === null) {
-            // friend pair didn't exist, so we sent a friend requst
             const friendRequest: Friend = {
                 id: "",
                 timeStamp: timeStamp,
@@ -48,20 +48,9 @@ export const addFriendImpl = async (req: Request, res: Response) => {
             await addFriend(friendRequest)
             response = { status: { type: "requestSent" } }
         } else {
-            // if exist, check status of friendRequest
-            if (friend.status === "requestSent") {
-                // if alreadyRequested, check who sent it
-                if (friend.createdBy !== createdBy) {
-                    // if you are not request sender, assume you accepted the request. You are now friends!
-                    await updateFriendStatus(friend.id, "requestAccepted");
-                    response = { status: { type: "requestAccepted" } };
-                } else {
-                    // if you are the request sender, tell the user that their request is not accepted yet
-                    response = { status: { type: "alreadyRequested" } }
-                }
-            } else {
-                // finally, assume you're already friends
-                response = { status: { type: "requestAccepted" } }
+            const status = await handleExistingFriendRequest(createdBy, friend)
+            response = {
+                status: status,
             }
         }
 
@@ -71,4 +60,28 @@ export const addFriendImpl = async (req: Request, res: Response) => {
         console.error(e);
         res.status(500).send(e);
     }
+}
+
+/**
+ * handle existing friendship status
+ * @param {string} createdBy userId of request sender
+ * @param {Friend} friend friend request is sent to
+ * @return {Promise<FriendStatus>} status of friendship
+ */
+async function handleExistingFriendRequest(
+    createdBy: string,
+    friend: Friend
+): Promise<FriendStatusDTO> {
+    // if status isn't pending a response, assume you're already friends
+    if (friend.status !== "requestSent") {
+        return { type: "requestAccepted" }
+    }
+    // if you are the request sender, tell the user that their request is not accepted yet
+    if (createdBy === friend.createdBy) {
+        return { type: "alreadyRequested" }
+    }
+
+    // if you are not request sender, assume you accepted the request. You are now friends!
+    await updateFriendStatus(friend.id, "requestAccepted");
+    return { type: "requestAccepted" }
 }
