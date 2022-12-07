@@ -32,8 +32,8 @@ export interface ExpenseEventDTO {
 }
 
 export interface PaymentEventDTO {
-    id: string,
     type: "payment";
+    id: string,
     createdBy: PersonDTO;
     paidTo: PersonDTO;
     amount: number;
@@ -41,8 +41,8 @@ export interface PaymentEventDTO {
 }
 
 export interface ExpenseChangeEventDTO {
-    id: string
     type: "change";
+    id: string
     createdBy: PersonDTO;
     groupExpenseOriginal: ExpenseEventDTO;
     groupExpenseEdited: ExpenseEventDTO;
@@ -106,6 +106,7 @@ export function convertEventToDTO(event: Event, people: PersonWithId[]): EventDT
     if (event.type === "payment") {
         const payment = event as PaymentEvent
         return {
+            id: payment.id,
             type: payment.type,
             createdBy: findPerson(people, payment.createdBy),
             amount: payment.amount,
