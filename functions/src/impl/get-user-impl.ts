@@ -1,8 +1,8 @@
 import { Request, Response } from "firebase-functions";
 import { getFriends } from "../collections/friend-collection";
 import { getGroupsByUser } from "../collections/group-collection";
-import { getExistingUserById, getPeople } from "../collections/user-collection";
-import { convertFriendToDTO } from "../interfaces/dto/friend-dto";
+import { findPerson, getExistingUserById, getPeople } from "../collections/user-collection";
+import { convertFriendToDTO, FriendDTO } from "../interfaces/dto/friend-dto";
 import { convertGroupToDTO, GroupDTO } from "../interfaces/dto/group-dto";
 import { Friend } from "../interfaces/models/friend";
 import { Group } from "../interfaces/models/group";
@@ -25,8 +25,10 @@ export const getUserProfile = async (req: Request, res: Response) => {
         const friendsPeople: Person[] = await getPeople(friendIds);
 
         // Convert to DTOs
-        const dtos = friends.map((friend) =>
-            convertFriendToDTO(userId, friend, friendsPeople))
+        const dtos: FriendDTO[] = friends.map((friend) => {
+            const friendUserId = friend.users.filter((user) => user !== userId)[0]
+            return convertFriendToDTO(friend, findPerson(friendsPeople, friendUserId))
+        });
         const groupDTOs: GroupDTO[] =
             groups.map((group) => convertGroupToDTO(group, groupPeople))
 

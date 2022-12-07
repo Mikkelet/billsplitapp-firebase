@@ -1,15 +1,15 @@
 import { Request, Response } from "firebase-functions";
 import { addFriend, getFriendship, updateFriendStatus } from "../collections/friend-collection";
-import { getUserByEmail, getUserById } from "../collections/user-collection";
+import { getUserByEmail } from "../collections/user-collection";
 import {
     AddFriendRequest,
     AddFriendRequestEmail,
     AddFriendRequestUserId,
     AddFriendResponse,
 } from "../interfaces/add-friend";
-import { FriendStatusDTO } from "../interfaces/dto/friend-dto";
-import { Friend } from "../interfaces/models/friend";
-import { Person } from "../interfaces/models/person";
+import { convertFriendToDTO } from "../interfaces/dto/friend-dto";
+import { Friend, FriendStatus } from "../interfaces/models/friend";
+import { convertDTOToPerson, Person } from "../interfaces/models/person";
 
 export const addFriendImpl = async (req: Request, res: Response) => {
     const body = req.body as AddFriendRequest;
@@ -19,16 +19,16 @@ export const addFriendImpl = async (req: Request, res: Response) => {
     const timeStamp = body.timeStamp;
 
     try {
-        let user: Person | null
+        let friendUser: Person | null
         if (body.type === "email") {
             const email = (body as AddFriendRequestEmail).email;
-            user = await getUserByEmail(email);
+            friendUser = await getUserByEmail(email);
         } else {
-            const userId = (body as AddFriendRequestUserId).userId;
-            user = await getUserById(userId);
+            const dto = (body as AddFriendRequestUserId).user;
+            friendUser = convertDTOToPerson(dto);
         }
-        if (user === null) throw Error("User does not exist");
-        const sentTo = user.id;
+        if (friendUser === null) throw Error("User does not exist");
+        const sentTo = friendUser.id;
 
         const user1 = createdBy > sentTo ? createdBy : sentTo;
         const user2 = createdBy > sentTo ? sentTo : createdBy;
@@ -36,22 +36,22 @@ export const addFriendImpl = async (req: Request, res: Response) => {
 
         const friend = await getFriendship(user1, user2)
 
-        let response: AddFriendResponse
+        let response: AddFriendResponse;
         if (friend === null) {
+            const users = [user1, user2]
             const friendRequest: Friend = {
                 id: "",
                 timeStamp: timeStamp,
                 createdBy: createdBy,
                 status: "pending",
-                users: [user1, user2],
+                users: users,
             };
-            await addFriend(friendRequest)
-            response = { status: { type: "pending" } }
+            const addedFriend = await addFriend(friendRequest)
+            response = { friend: convertFriendToDTO(addedFriend, friendUser) }
         } else {
             const status = await handleExistingFriendRequest(createdBy, friend)
-            response = {
-                status: status,
-            }
+            friend.status = status
+            response = { friend: convertFriendToDTO(friend, friendUser) }
         }
 
         console.log("response", response);
@@ -71,20 +71,20 @@ export const addFriendImpl = async (req: Request, res: Response) => {
 async function handleExistingFriendRequest(
     createdBy: string,
     friend: Friend
-): Promise<FriendStatusDTO> {
+): Promise<FriendStatus> {
 
     // if status is accepted, do nothing
     if (friend.status === "accepted") {
-        return { type: "accepted" }
+        return "accepted"
     }
 
     // if you are the request sender, tell the user that the request is not accepted yet
     if (createdBy === friend.createdBy) {
-        return { type: "pending" }
+        return "pending"
     }
 
     // if status is pending and you are not request sender,
     // assume you accepted the request. You are now friends!
     await updateFriendStatus(friend.id, "accepted");
-    return { type: "accepted" }
+    return "accepted"
 }
