@@ -74,18 +74,27 @@ export async function getUserByEmail(email: string): Promise<Person | null> {
  * @return {Promise<Person[]>} list of people objects
  */
 export async function getPeople(uids: string[]): Promise<Person[]> {
+    const queryStart = Date.now()
     const distinctUids: string[] = [...new Set(uids)];
     const users: Person[] = [];
-    for await (const uid of distinctUids) {
-        try {
-            const doc = await userCollection.doc(uid).get();
-            const data = doc.data() as Person;
-            users.push(data);
-        } catch (e) {
-            console.error(e);
-            throw e;
-        }
+
+    try {
+        const promiseUids = distinctUids.map((uid) => userCollection.doc(uid))
+        const response: FirebaseFirestore.DocumentSnapshot<FirebaseFirestore.DocumentData>[] =
+            await firestore.getAll(...promiseUids);
+
+        const data = response.map((doc) => doc.data() as Person)
+        users.push(...data);
+    } catch (e) {
+        console.error(e);
+        throw e;
     }
+    const queryEnd = Date.now()
+    console.log("getPeople query", {
+        people: uids.length,
+        time: queryEnd - queryStart,
+        timePerId: (queryEnd - queryStart) / uids.length,
+    });
     return users;
 }
 
