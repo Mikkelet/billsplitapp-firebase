@@ -27,7 +27,10 @@ export const addFriendImpl = async (req: Request, res: Response) => {
             const dto = (body as AddFriendRequestUserId).user;
             friendUser = convertDTOToPerson(dto);
         }
-        if (friendUser === null) throw Error("User does not exist");
+        if (friendUser === null) {
+            res.status(404).send("Could not find user");
+            return;
+        }
         const sentTo = friendUser.id;
 
         const user1 = createdBy > sentTo ? createdBy : sentTo;
