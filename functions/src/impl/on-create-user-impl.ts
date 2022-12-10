@@ -7,9 +7,9 @@ export const onUserCreateImpl = async (userRecord: UserRecord, _: EventContext) 
     console.log("request", userRecord);
     const user: Person = {
         id: userRecord.uid,
-        email: userRecord.email ?? "",
+        email: userRecord.email?.toLowerCase() ?? "",
         pfpUrl: "",
-        name: "",
+        name: "New user",
     }
     return await addPerson(user).catch(console.log);
 }
