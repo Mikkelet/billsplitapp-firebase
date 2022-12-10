@@ -1,13 +1,11 @@
 import { Request, Response } from "firebase-functions";
 import { addGroup } from "../collections/group-collection";
-import { addPerson } from "../collections/user-collection";
 import { AddGroupRequest, AddGroupResponse } from "../interfaces/add-group";
 import { convertDTOtoGroup } from "../interfaces/models/group";
 
 export const addGroupImpl = async (req: Request, res: Response) => {
     const body = req.body as AddGroupRequest;
     console.log("request", body);
-
     const groupDTO = body.group;
     const groupName = groupDTO.name;
     if (!groupName) res.status(400).send("missing groupName");
@@ -16,10 +14,6 @@ export const addGroupImpl = async (req: Request, res: Response) => {
     }
 
     try {
-        for await (const person of groupDTO.people) {
-            await addPerson(person)
-        }
-
         const group = await addGroup(convertDTOtoGroup(groupDTO));
         groupDTO.id = group.id;
 
