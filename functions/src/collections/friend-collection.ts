@@ -9,7 +9,7 @@ const friendsCollection = firestore.collection("friends");
  * @param {Friend} friend friend to be added
  */
 export async function addFriend(friend: Friend): Promise<Friend> {
-    friend.id = friendsCollection.doc().id
+    friend.id = `${friend.users[0]}-${friend.users[1]}`;
     await friendsCollection.doc(friend.id).set(friend);
     return friend;
 }
