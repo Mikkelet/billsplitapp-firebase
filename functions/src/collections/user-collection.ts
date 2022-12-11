@@ -1,4 +1,5 @@
 import * as firebase from "firebase-admin";
+import { UpdateRequest } from "firebase-admin/lib/auth/auth-config";
 import { Person, PersonWithId } from "../interfaces/models/person";
 
 const firestore = firebase.firestore();
@@ -121,4 +122,20 @@ export function findPerson<T extends PersonWithId>(people: T[], uid: string): T 
             pfpUrl: "",
         } as T;
     }
+}
+
+/**
+ * Update user
+ * @param {Person} user user to update
+ */
+export async function updateUser(user: Person) {
+    const updateData = {
+        name: user.name,
+        pfpUrl: user.pfpUrl,
+    } as Person
+    const updateProperties: UpdateRequest = {
+        displayName: user.name,
+    }
+    await firebase.auth().updateUser(user.id, updateProperties);
+    await userCollection.doc(user.id).update(updateData)
 }

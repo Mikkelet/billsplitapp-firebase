@@ -22,7 +22,7 @@ export async function addGroup(group: Group): Promise<Group> {
  */
 export async function getGroupById(groupId: string): Promise<Group> {
     const query = await groupCollection.doc(groupId).get();
-    if(!query.exists) throw Error("Group does not exist")
+    if (!query.exists) throw Error("Group does not exist")
     const group: Group = query.data() as Group;
     return group;
 }
