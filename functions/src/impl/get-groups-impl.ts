@@ -16,6 +16,7 @@ export const getGroupsImpl = async (req: Request, res: Response) => {
                 groups: [],
             }
             res.status(200).send(emptyResponse);
+            return
         }
         const uids: string[] = groups.flatMap((group) => group.people);
         const distinctUids: string[] = [...new Set(uids)];
