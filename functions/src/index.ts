@@ -10,6 +10,7 @@ import { getFriendsImpl } from "./impl/get-friends-impl";
 import { getGroupImpl } from "./impl/get-group-impl";
 import { getGroupsImpl } from "./impl/get-groups-impl";
 import { onUserCreateImpl } from "./impl/on-create-user-impl";
+import { updateUserImpl } from "./impl/update-user-impl";
 
 export const addGroup = functions.https.onRequest(addGroupImpl);
 export const addEvent = functions.https.onRequest(addEventImpl);
@@ -21,3 +22,4 @@ export const addFriend = functions.https.onRequest(addFriendImpl);
 export const getFriends = functions.https.onRequest(getFriendsImpl);
 
 export const onUserCreated = functions.auth.user().onCreate(onUserCreateImpl)
+export const updateUser = functions.https.onRequest(updateUserImpl);

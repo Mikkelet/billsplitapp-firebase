@@ -133,9 +133,5 @@ export async function updateUser(user: Person) {
         name: user.name,
         pfpUrl: user.pfpUrl,
     } as Person
-    const updateProperties: UpdateRequest = {
-        displayName: user.name,
-    }
-    await firebase.auth().updateUser(user.id, updateProperties);
     await userCollection.doc(user.id).update(updateData)
 }
