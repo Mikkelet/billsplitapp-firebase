@@ -11,6 +11,12 @@ export const getGroupsImpl = async (req: Request, res: Response) => {
 
     try {
         const groups = await getGroupsByUser(uid);
+        if (groups.length === 0) {
+            const emptyResponse: GetGroupsResponse = {
+                groups: [],
+            }
+            res.status(200).send(emptyResponse);
+        }
         const uids: string[] = groups.flatMap((group) => group.people);
         const distinctUids: string[] = [...new Set(uids)];
         const people = await getPeople(distinctUids);
