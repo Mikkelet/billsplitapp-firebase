@@ -1,5 +1,4 @@
 import * as firebase from "firebase-admin";
-import { UpdateRequest } from "firebase-admin/lib/auth/auth-config";
 import { Person, PersonWithId } from "../interfaces/models/person";
 
 const firestore = firebase.firestore();
@@ -77,26 +76,34 @@ export async function getUserByEmail(email: string): Promise<Person | null> {
 export async function getPeople(uids: string[]): Promise<Person[]> {
     const queryStart = Date.now()
     const distinctUids: string[] = [...new Set(uids)];
-    const users: Person[] = [];
 
     try {
-        const promiseUids = distinctUids.map((uid) => userCollection.doc(uid))
-        const response: FirebaseFirestore.DocumentSnapshot<FirebaseFirestore.DocumentData>[] =
-            await firestore.getAll(...promiseUids);
+        const userIdentifiers = distinctUids.map((id) => {
+            return { uid: id }
+        })
+        const response = await firebase.auth().getUsers(userIdentifiers);
+        const users = response.users;
+        const people: Person[] = users.map((user) => {
+            return {
+                id: user.uid ?? "",
+                name: user.displayName ?? "",
+                pfpUrl: user.photoURL ?? "",
+                email: user.email ?? "",
+            }
+        })
 
-        const data = response.map((doc) => doc.data() as Person)
-        users.push(...data);
+        const queryEnd = Date.now()
+        console.log("getPeople query", {
+            people: uids.length,
+            time: queryEnd - queryStart,
+            timePerId: (queryEnd - queryStart) / uids.length,
+        });
+
+        return people;
     } catch (e) {
         console.error(e);
         throw e;
     }
-    const queryEnd = Date.now()
-    console.log("getPeople query", {
-        people: uids.length,
-        time: queryEnd - queryStart,
-        timePerId: (queryEnd - queryStart) / uids.length,
-    });
-    return users;
 }
 
 /**
