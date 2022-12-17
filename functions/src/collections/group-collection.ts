@@ -1,4 +1,5 @@
 import * as firebase from "firebase-admin";
+import { Debt } from "../interfaces/models/debt";
 import { Group } from "../interfaces/models/group";
 
 const firestore = firebase.firestore();
@@ -42,4 +43,16 @@ export async function getGroupsByUser(userId: string): Promise<Group[]> {
         console.error(e);
         throw e;
     }
+}
+
+/**
+ * Update debt of group
+ * @param {string} groupId group id of debt
+ * @param {Debt[]} debts debt to udpdate
+ */
+export async function updateGroupDebt(groupId: string, debts: Debt[]) {
+    const updateData = {
+        debts: debts,
+    } as Group
+    await groupCollection.doc(groupId).update(updateData)
 }

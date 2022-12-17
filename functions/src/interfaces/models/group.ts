@@ -1,5 +1,7 @@
 import { findPerson } from "../../collections/user-collection";
+import { convertDebtToDTO } from "../dto/debt-dto";
 import { GroupDTO } from "../dto/group-dto";
+import { Debt } from "./debt";
 import { convertDTOToPerson } from "./person";
 
 export interface Group {
@@ -8,6 +10,7 @@ export interface Group {
     people: string[];
     createdBy: string;
     timeStamp: string;
+    debts: Debt[];
 }
 
 /**
@@ -24,5 +27,6 @@ export function convertDTOtoGroup(groupDTO: GroupDTO): Group {
         timeStamp: groupDTO.timeStamp,
         createdBy: findPerson(people, createdBy.id).id,
         people: groupDTO.people.map((p) => p.id),
+        debts: groupDTO.debts.map((dto) => convertDebtToDTO(dto)),
     }
 }
