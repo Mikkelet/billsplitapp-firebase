@@ -10,7 +10,7 @@ export interface Group {
     people: string[];
     createdBy: string;
     timeStamp: string;
-    debts: Debt[];
+    debts: Debt[] | undefined;
 }
 
 /**

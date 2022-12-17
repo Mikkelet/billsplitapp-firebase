@@ -20,12 +20,14 @@ export interface GroupDTO {
  * @return {GroupDTO} return converted group
  */
 export function convertGroupToDTO(group: Group, people: PersonWithId[]): GroupDTO {
+    const debts: DebtDTO[] = group.debts === undefined ? [] : group.debts
+        .map((debt) => convertDebtToDTO(debt));
     return {
         id: group.id,
         name: group.name,
         timeStamp: group.timeStamp,
         createdBy: findPerson(people, group.createdBy),
         people: people,
-        debts: group.debts.map((debt) => convertDebtToDTO(debt)),
+        debts: debts,
     }
 }
