@@ -1,4 +1,5 @@
 import { Request, Response } from "firebase-functions";
+import { verifyUser } from "../auth";
 import { addEvent, updateExpense } from "../collections/events-collection";
 import { updateGroupDebt } from "../collections/group-collection";
 import { AddEventRequest, AddEventResponse } from "../interfaces/add-event";
@@ -14,11 +15,16 @@ export const addEventImpl = async (req: Request, res: Response) => {
     const eventDTO: EventDTO = body.event;
     const debtDtos = body.debts;
 
+    const uid = await verifyUser(req.headers.authorization)
+    if (uid === null) {
+        res.status(403).send("Unauthorized")
+        return
+    }
+
     const event: Event = convertDTOtoEvent(eventDTO);
     const debts: Debt[] = debtDtos.map((dto) => convertDTOtoDebt(dto));
 
     try {
-
         if (eventDTO.type === "change") {
             const updatedExpenseDTO = (eventDTO as ExpenseChangeEventDTO).groupExpenseEdited;
             const updatedExpense: ExpenseEvent =

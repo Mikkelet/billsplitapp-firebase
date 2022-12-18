@@ -1,28 +1,32 @@
 import { Request, Response } from "firebase-functions";
-import { GetFriendsRequest, GetFriendsResponse } from "../interfaces/get-friends";
+import { GetFriendsResponse } from "../interfaces/get-friends";
 import { getFriends } from "../collections/friend-collection";
 import { convertFriendToDTO } from "../interfaces/dto/friend-dto";
 import { findPerson, getPeople } from "../collections/user-collection";
 import { Person } from "../interfaces/models/person";
+import { verifyUser } from "../auth";
 
 export const getFriendsImpl = async (req: Request, res: Response) => {
-    const body = req.body as GetFriendsRequest;
-    const userId = body.uid as string;
-    console.log("request", body);
+
+    const uid = await verifyUser(req.headers.authorization)
+    if (uid === null) {
+        res.status(403).send("Unauthorized")
+        return
+    }
 
     try {
         const response: GetFriendsResponse = {
             friends: [],
         }
-        const friends = await getFriends(userId);
+        const friends = await getFriends(uid);
 
         if (friends.length > 0) {
             const uids: string[] = friends
                 .flatMap((friend) => friend.users)
-                .filter((friendId) => friendId !== userId)
+                .filter((friendId) => friendId !== uid)
             const people: Person[] = await getPeople(uids);
             const dtos = friends.map((friend) => {
-                const friendUserId = friend.users.filter((user) => user !== userId)[0]
+                const friendUserId = friend.users.filter((user) => user !== uid)[0]
                 return convertFriendToDTO(friend, findPerson(people, friendUserId))
             });
             response.friends = dtos;

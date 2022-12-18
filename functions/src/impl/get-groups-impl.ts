@@ -1,16 +1,21 @@
 import { Request, Response } from "firebase-functions";
 import { convertGroupToDTO, GroupDTO } from "../interfaces/dto/group-dto";
-import { GetGroupsRequest, GetGroupsResponse } from "../interfaces/get-groups";
+import { GetGroupsResponse } from "../interfaces/get-groups";
 import { getGroupsByUser } from "../collections/group-collection";
 import { getPeople } from "../collections/user-collection";
+import { verifyUser } from "../auth";
 
 export const getGroupsImpl = async (req: Request, res: Response) => {
-    const body = req.body as GetGroupsRequest;
-    const uid = body.userId as string;
-    console.log("request", body);
+
+    const verifyResult = await verifyUser(req.headers.authorization)
+    if (verifyResult === null) {
+        res.status(403).send("Unauthorized")
+        return
+    }
+    const userId = verifyResult
 
     try {
-        const groups = await getGroupsByUser(uid);
+        const groups = await getGroupsByUser(userId);
         if (groups.length === 0) {
             const emptyResponse: GetGroupsResponse = {
                 groups: [],

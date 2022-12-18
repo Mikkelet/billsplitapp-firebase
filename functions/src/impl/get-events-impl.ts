@@ -1,4 +1,5 @@
 import { Request, Response } from "firebase-functions";
+import { verifyUser } from "../auth";
 import { getEvents } from "../collections/events-collection";
 import { getGroupById } from "../collections/group-collection";
 import { getPeople } from "../collections/user-collection";
@@ -9,8 +10,13 @@ import { Event } from "../interfaces/models/events";
 export const getEventsImpl = async (req: Request, res: Response) => {
     const body = req.body as GetEventsRequest;
     console.log("request", body);
-
     const groupId = body.groupId;
+
+    const uid = await verifyUser(req.headers.authorization)
+    if (uid === null) {
+        res.status(403).send("Unauthorized")
+        return
+    }
 
     try {
         const group = await getGroupById(groupId);

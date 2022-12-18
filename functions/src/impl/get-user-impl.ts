@@ -1,4 +1,5 @@
 import { Request, Response } from "firebase-functions";
+import { verifyUser } from "../auth";
 import { getFriends } from "../collections/friend-collection";
 import { getGroupsByUser } from "../collections/group-collection";
 import { findPerson, getExistingUserById, getPeople } from "../collections/user-collection";
@@ -10,23 +11,26 @@ import { Person } from "../interfaces/models/person";
 
 
 export const getUserProfile = async (req: Request, res: Response) => {
-    const body = req.body;
-    const userId = body.userId;
-    console.log("request", body);
+
+    const uid = await verifyUser(req.headers.authorization)
+    if (uid === null) {
+        res.status(403).send("Unauthorized")
+        return
+    }
 
     try {
-        const user: Person = await getExistingUserById(userId);
+        const user: Person = await getExistingUserById(uid);
         const groups: Group[] = await getGroupsByUser(user.id);
         const groupPeopleIds = groups.flatMap((group) => group.people);
         const groupPeople = await getPeople(groupPeopleIds);
         const friends: Friend[] = await getFriends(user.id);
         const friendIds: string[] =
-            friends.flatMap((friend) => friend.users).filter((id) => id !== userId)
+            friends.flatMap((friend) => friend.users).filter((id) => id !== uid)
         const friendsPeople: Person[] = await getPeople(friendIds);
 
         // Convert to DTOs
         const dtos: FriendDTO[] = friends.map((friend) => {
-            const friendUserId = friend.users.filter((user) => user !== userId)[0]
+            const friendUserId = friend.users.filter((user) => user !== uid)[0]
             return convertFriendToDTO(friend, findPerson(friendsPeople, friendUserId))
         });
         const groupDTOs: GroupDTO[] =

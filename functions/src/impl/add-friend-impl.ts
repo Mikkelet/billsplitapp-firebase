@@ -1,4 +1,5 @@
 import { Request, Response } from "firebase-functions";
+import { verifyUser } from "../auth";
 import { addFriend, getFriendship, updateFriendStatus } from "../collections/friend-collection";
 import { getUserByEmail } from "../collections/user-collection";
 import {
@@ -17,6 +18,12 @@ export const addFriendImpl = async (req: Request, res: Response) => {
 
     const createdBy = body.createdBy;
     const timeStamp = body.timeStamp;
+
+    const uid = await verifyUser(req.headers.authorization)
+    if (uid === null) {
+        res.status(403).send("Unauthorized");
+        return
+    }
 
     try {
         let friendUser: Person | null

@@ -7,7 +7,6 @@ const eventsCollection = (groupId: string) =>
 /**
  * Get events related to group
  * @param {string} groupId id of events
- * @param {Person[]} people in group
  * @return {Promise<Event[]>} events related to the group
  */
 export async function getEvents(groupId: string): Promise<Event[]> {
