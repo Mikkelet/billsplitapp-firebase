@@ -1,5 +1,4 @@
 import { Request, Response } from "firebase-functions";
-import { verifyUser } from "../auth";
 import { getEvents } from "../collections/events-collection";
 import { getGroupById } from "../collections/group-collection";
 import { getPeople } from "../collections/user-collection";
@@ -7,16 +6,10 @@ import { convertEventToDTO, EventDTO } from "../interfaces/dto/event-dto";
 import { GetEventsRequest, GetEventsResponse } from "../interfaces/get-events";
 import { Event } from "../interfaces/models/events";
 
-export const getEventsImpl = async (req: Request, res: Response) => {
+export const getEventsImpl = async (req: Request, res: Response, uid: string) => {
     const body = req.body as GetEventsRequest;
     console.log("request", body);
     const groupId = body.groupId;
-
-    const uid = await verifyUser(req.headers.authorization)
-    if (uid === null) {
-        res.status(403).send("Unauthorized")
-        return
-    }
 
     try {
         const group = await getGroupById(groupId);
@@ -26,6 +19,13 @@ export const getEventsImpl = async (req: Request, res: Response) => {
         const dtos: EventDTO[] = events.map((event) => {
             return convertEventToDTO(event, people)
         })
+
+        const findUid: string | undefined = group.people.find((id) => id === uid)
+        if (findUid === undefined) {
+            console.error("User trying to access forbiddin group", { uid: uid, group: group });
+            res.status(400).send("You are not part of this group")
+            return
+        }
 
         const response: GetEventsResponse = {
             events: dtos,

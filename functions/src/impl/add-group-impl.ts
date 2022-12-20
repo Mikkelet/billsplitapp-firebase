@@ -1,23 +1,37 @@
 import { Request, Response } from "firebase-functions";
-import { verifyUser } from "../auth";
 import { addGroup } from "../collections/group-collection";
 import { AddGroupRequest, AddGroupResponse } from "../interfaces/add-group";
+import { GroupDTO } from "../interfaces/dto/group-dto";
 import { convertDTOtoGroup } from "../interfaces/models/group";
 
-export const addGroupImpl = async (req: Request, res: Response) => {
+export const addGroupImpl = async (req: Request, res: Response, uid: string) => {
     const body = req.body as AddGroupRequest;
     console.log("request", body);
-    const groupDTO = body.group;
-    const groupName = groupDTO.name;
-    if (!groupName) res.status(400).send("missing groupName");
+
+    const groupDTO: GroupDTO = body.group;
+
+    if (!groupDTO.name) {
+        res.status(400).send("missing groupName");
+        return
+    }
+
     if (!groupDTO.people || groupDTO.people.length === 0) {
         res.status(400).send("No people included");
         return
     }
 
-    const uid = await verifyUser(req.headers.authorization)
-    if (uid === null) {
-        res.status(403).send("Unauthorized")
+    const groupPeopleIds: string[] = groupDTO.people.map((dto) => dto.id)
+    const findUid: string | undefined = groupPeopleIds.find((id) => id === uid)
+    if (findUid === undefined) {
+        res.status(400).send("You are not part of the group you're creating");
+        return
+    }
+
+    if (groupDTO.createdBy.id !== uid) {
+        console.error(
+            "User trying to create a group on behalf of another user",
+            { uid: uid, createdBy: groupDTO.createdBy })
+        res.status(400).send("Group was not created")
         return
     }
 

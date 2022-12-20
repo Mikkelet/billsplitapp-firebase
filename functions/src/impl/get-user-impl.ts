@@ -1,5 +1,4 @@
 import { Request, Response } from "firebase-functions";
-import { verifyUser } from "../auth";
 import { getFriends } from "../collections/friend-collection";
 import { getGroupsByUser } from "../collections/group-collection";
 import { findPerson, getExistingUserById, getPeople } from "../collections/user-collection";
@@ -10,13 +9,7 @@ import { Group } from "../interfaces/models/group";
 import { Person } from "../interfaces/models/person";
 
 
-export const getUserProfile = async (req: Request, res: Response) => {
-
-    const uid = await verifyUser(req.headers.authorization)
-    if (uid === null) {
-        res.status(403).send("Unauthorized")
-        return
-    }
+export const getUserProfile = async (_: Request, res: Response, uid: string) => {
 
     try {
         const user: Person = await getExistingUserById(uid);

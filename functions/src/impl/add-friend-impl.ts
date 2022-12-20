@@ -1,5 +1,4 @@
 import { Request, Response } from "firebase-functions";
-import { verifyUser } from "../auth";
 import { addFriend, getFriendship, updateFriendStatus } from "../collections/friend-collection";
 import { getUserByEmail } from "../collections/user-collection";
 import {
@@ -12,16 +11,18 @@ import { convertFriendToDTO } from "../interfaces/dto/friend-dto";
 import { Friend, FriendStatus } from "../interfaces/models/friend";
 import { convertDTOToPerson, Person } from "../interfaces/models/person";
 
-export const addFriendImpl = async (req: Request, res: Response) => {
+export const addFriendImpl = async (req: Request, res: Response, uid: string) => {
     const body = req.body as AddFriendRequest;
     console.log("request", body);
 
     const createdBy = body.createdBy;
     const timeStamp = body.timeStamp;
 
-    const uid = await verifyUser(req.headers.authorization)
-    if (uid === null) {
-        res.status(403).send("Unauthorized");
+    if (createdBy !== uid) {
+        console.error(
+            "User trying to add a friend on behalf of another user",
+            { uid: uid, createdBy: createdBy })
+        res.status(400).send("Friend was not added")
         return
     }
 
@@ -34,10 +35,12 @@ export const addFriendImpl = async (req: Request, res: Response) => {
             const dto = (body as AddFriendRequestUserId).user;
             friendUser = convertDTOToPerson(dto);
         }
+
         if (friendUser === null) {
             res.status(404).send("Could not find user");
             return;
         }
+
         const sentTo = friendUser.id;
 
         const user1 = createdBy > sentTo ? createdBy : sentTo;

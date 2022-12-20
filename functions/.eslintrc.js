@@ -29,7 +29,7 @@ module.exports = {
         "import/no-unresolved": 0,
         "object-curly-spacing": ["error", "always"],
         "semi": 0,
-        "indent": ["error", 4],
+        "indent": ["error", 4, { "SwitchCase": 1 }],
         "eol-last": 0,
         "max-len": ["error", {
             "comments": 150,

@@ -1,5 +1,4 @@
 import { Request, Response } from "firebase-functions";
-import { verifyUser } from "../auth";
 import { addEvent, updateExpense } from "../collections/events-collection";
 import { updateGroupDebt } from "../collections/group-collection";
 import { AddEventRequest, AddEventResponse } from "../interfaces/add-event";
@@ -7,22 +6,30 @@ import { EventDTO, ExpenseChangeEventDTO } from "../interfaces/dto/event-dto";
 import { convertDTOtoDebt, Debt } from "../interfaces/models/debt";
 import { convertDTOtoEvent, Event, ExpenseEvent } from "../interfaces/models/events";
 
-export const addEventImpl = async (req: Request, res: Response) => {
+export const addEventImpl = async (req: Request, res: Response, uid: string) => {
     const body = req.body as AddEventRequest;
     console.log("request", body);
 
     const groupId = body.groupId
     const eventDTO: EventDTO = body.event;
     const debtDtos = body.debts;
+    const event: Event = convertDTOtoEvent(eventDTO);
+    const debts: Debt[] = debtDtos.map((dto) => convertDTOtoDebt(dto));
 
-    const uid = await verifyUser(req.headers.authorization)
-    if (uid === null) {
-        res.status(403).send("Unauthorized")
+    if (event.createdBy !== uid) {
+        console.error(
+            "User trying to create an event on behalf of another user",
+            { uid: uid, createdBy: event.createdBy },
+        )
+        res.status(400).send("Event was not created")
         return
     }
 
-    const event: Event = convertDTOtoEvent(eventDTO);
-    const debts: Debt[] = debtDtos.map((dto) => convertDTOtoDebt(dto));
+    if (debts.length === 0) {
+        console.error("Event.debts was empty", { uid: uid, body: body })
+        res.status(400).send("An unexptected error occurred. Please contact the developer!")
+        return
+    }
 
     try {
         if (eventDTO.type === "change") {

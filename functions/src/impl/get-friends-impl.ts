@@ -4,15 +4,9 @@ import { getFriends } from "../collections/friend-collection";
 import { convertFriendToDTO } from "../interfaces/dto/friend-dto";
 import { findPerson, getPeople } from "../collections/user-collection";
 import { Person } from "../interfaces/models/person";
-import { verifyUser } from "../auth";
 
-export const getFriendsImpl = async (req: Request, res: Response) => {
+export const getFriendsImpl = async (_: Request, res: Response, uid: string) => {
 
-    const uid = await verifyUser(req.headers.authorization)
-    if (uid === null) {
-        res.status(403).send("Unauthorized")
-        return
-    }
 
     try {
         const response: GetFriendsResponse = {

@@ -3,19 +3,11 @@ import { convertGroupToDTO, GroupDTO } from "../interfaces/dto/group-dto";
 import { GetGroupsResponse } from "../interfaces/get-groups";
 import { getGroupsByUser } from "../collections/group-collection";
 import { getPeople } from "../collections/user-collection";
-import { verifyUser } from "../auth";
 
-export const getGroupsImpl = async (req: Request, res: Response) => {
-
-    const verifyResult = await verifyUser(req.headers.authorization)
-    if (verifyResult === null) {
-        res.status(403).send("Unauthorized")
-        return
-    }
-    const userId = verifyResult
+export const getGroupsImpl = async (_: Request, res: Response, uid: string) => {
 
     try {
-        const groups = await getGroupsByUser(userId);
+        const groups = await getGroupsByUser(uid);
         if (groups.length === 0) {
             const emptyResponse: GetGroupsResponse = {
                 groups: [],
