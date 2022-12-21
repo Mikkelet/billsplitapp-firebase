@@ -28,7 +28,6 @@ export function convertFriendToDTO(
         id: friend.id,
         createdBy: friend.createdBy,
         friend: convertPersonToDTO(person),
-        timeStamp: friend.timeStamp,
         status: {
             type: friend.status,
         },

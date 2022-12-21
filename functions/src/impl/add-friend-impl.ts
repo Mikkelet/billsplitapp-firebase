@@ -1,6 +1,6 @@
 import { Request, Response } from "firebase-functions";
 import { addFriend, getFriendship, updateFriendStatus } from "../collections/friend-collection";
-import { getUserByEmail } from "../collections/user-collection";
+import { getUserByEmail, getUserById } from "../collections/user-collection";
 import {
     AddFriendRequest,
     AddFriendRequestEmail,
@@ -9,22 +9,13 @@ import {
 } from "../interfaces/add-friend";
 import { convertFriendToDTO } from "../interfaces/dto/friend-dto";
 import { Friend, FriendStatus } from "../interfaces/models/friend";
-import { convertDTOToPerson, Person } from "../interfaces/models/person";
+import { Person } from "../interfaces/models/person";
 
 export const addFriendImpl = async (req: Request, res: Response, uid: string) => {
     const body = req.body as AddFriendRequest;
     console.log("request", body);
 
-    const createdBy = body.createdBy;
-    const timeStamp = body.timeStamp;
-
-    if (createdBy !== uid) {
-        console.error(
-            "User trying to add a friend on behalf of another user",
-            { uid: uid, createdBy: createdBy })
-        res.status(400).send("Friend was not added")
-        return
-    }
+    const createdBy = uid;
 
     try {
         let friendUser: Person | null
@@ -32,8 +23,8 @@ export const addFriendImpl = async (req: Request, res: Response, uid: string) =>
             const email = (body as AddFriendRequestEmail).email;
             friendUser = await getUserByEmail(email);
         } else {
-            const dto = (body as AddFriendRequestUserId).user;
-            friendUser = convertDTOToPerson(dto);
+            const friendId = (body as AddFriendRequestUserId).friendId
+            friendUser = await getUserById(friendId)
         }
 
         if (friendUser === null) {
@@ -54,7 +45,6 @@ export const addFriendImpl = async (req: Request, res: Response, uid: string) =>
             const users = [user1, user2]
             const friendRequest: Friend = {
                 id: "",
-                timeStamp: timeStamp,
                 createdBy: createdBy,
                 status: "pending",
                 users: users,
