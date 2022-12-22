@@ -15,16 +15,17 @@ export const addFriendImpl = async (req: Request, res: Response, uid: string) =>
     const body = req.body as AddFriendRequest;
     console.log("request", body);
 
-    const createdBy = uid;
-
     try {
-        let friendUser: Person | null
+        let friendUser: Person | null = null
         if (body.type === "email") {
             const email = (body as AddFriendRequestEmail).email;
             friendUser = await getUserByEmail(email);
-        } else {
+        } else if (body.type === "userId") {
             const friendId = (body as AddFriendRequestUserId).friendId
             friendUser = await getUserById(friendId)
+        } else {
+            res.status(400).send("Missing id type");
+            return;
         }
 
         if (friendUser === null) {
@@ -34,8 +35,8 @@ export const addFriendImpl = async (req: Request, res: Response, uid: string) =>
 
         const sentTo = friendUser.id;
 
-        const user1 = createdBy > sentTo ? createdBy : sentTo;
-        const user2 = createdBy > sentTo ? sentTo : createdBy;
+        const user1 = uid > sentTo ? uid : sentTo;
+        const user2 = uid > sentTo ? sentTo : uid;
         if (user1 === user2) throw Error("Could not normalize users");
 
         const friend = await getFriendship(user1, user2)
@@ -45,14 +46,14 @@ export const addFriendImpl = async (req: Request, res: Response, uid: string) =>
             const users = [user1, user2]
             const friendRequest: Friend = {
                 id: "",
-                createdBy: createdBy,
+                createdBy: uid,
                 status: "pending",
                 users: users,
             };
             const addedFriend = await addFriend(friendRequest)
             response = { friend: convertFriendToDTO(addedFriend, friendUser) }
         } else {
-            const status = await handleExistingFriendRequest(createdBy, friend)
+            const status = await handleExistingFriendRequest(uid, friend)
             friend.status = status
             response = { friend: convertFriendToDTO(friend, friendUser) }
         }

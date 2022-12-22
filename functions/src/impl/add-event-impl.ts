@@ -13,17 +13,8 @@ export const addEventImpl = async (req: Request, res: Response, uid: string) => 
     const groupId = body.groupId
     const eventDTO: EventDTO = body.event;
     const debtDtos = body.debts;
-    const event: Event = convertDTOtoEvent(eventDTO);
+    const event: Event = convertDTOtoEvent(uid, eventDTO);
     const debts: Debt[] = debtDtos.map((dto) => convertDTOtoDebt(dto));
-
-    if (event.createdBy !== uid) {
-        console.error(
-            "User trying to create an event on behalf of another user",
-            { uid: uid, createdBy: event.createdBy },
-        )
-        res.status(400).send("Event was not created")
-        return
-    }
 
     if (debts.length === 0) {
         console.error("Event.debts was empty", { uid: uid, body: body })
@@ -35,7 +26,7 @@ export const addEventImpl = async (req: Request, res: Response, uid: string) => 
         if (eventDTO.type === "change") {
             const updatedExpenseDTO = (eventDTO as ExpenseChangeEventDTO).groupExpenseEdited;
             const updatedExpense: ExpenseEvent =
-                convertDTOtoEvent(updatedExpenseDTO) as ExpenseEvent;
+                convertDTOtoEvent(uid, updatedExpenseDTO) as ExpenseEvent;
             await updateExpense(groupId, updatedExpense);
         }
         const dbEvent = await addEvent(groupId, event)

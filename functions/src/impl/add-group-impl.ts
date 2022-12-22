@@ -4,7 +4,7 @@ import { AddGroupRequest, AddGroupResponse } from "../interfaces/add-group";
 import { GroupDTO } from "../interfaces/dto/group-dto";
 import { convertDTOtoGroup } from "../interfaces/models/group";
 
-export const addGroupImpl = async (req: Request, res: Response, uid: string) => {
+export const addGroupImpl = async (req: Request, res: Response, createdBy: string) => {
     const body = req.body as AddGroupRequest;
     console.log("request", body);
 
@@ -21,22 +21,22 @@ export const addGroupImpl = async (req: Request, res: Response, uid: string) => 
     }
 
     const groupPeopleIds: string[] = groupDTO.people.map((dto) => dto.id)
-    const findUid: string | undefined = groupPeopleIds.find((id) => id === uid)
+    const findUid: string | undefined = groupPeopleIds.find((id) => id === createdBy)
     if (findUid === undefined) {
         res.status(400).send("You are not part of the group you're creating");
         return
     }
 
-    if (groupDTO.createdBy.id !== uid) {
+    if (groupDTO.createdBy.id !== createdBy) {
         console.error(
             "User trying to create a group on behalf of another user",
-            { uid: uid, createdBy: groupDTO.createdBy })
+            { uid: createdBy, createdBy: groupDTO.createdBy })
         res.status(400).send("Group was not created")
         return
     }
 
     try {
-        const group = await addGroup(convertDTOtoGroup(groupDTO));
+        const group = await addGroup(convertDTOtoGroup(createdBy, groupDTO));
         groupDTO.id = group.id;
 
         const response: AddGroupResponse = { group: groupDTO };

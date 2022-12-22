@@ -38,12 +38,12 @@ export interface ExpenseChangeEvent {
  * @param {EventDTO} event event to be converted
  * @return {Event} event
  */
-export function convertDTOtoEvent(event: EventDTO): Event {
+export function convertDTOtoEvent(createdByUid: string, event: EventDTO): Event {
     if (event.type === "expense") {
         return {
             type: event.type,
             id: event.id,
-            createdBy: event.createdBy.id,
+            createdBy: createdByUid,
             description: event.description,
             payee: event.payee.id,
             timeStamp: event.timeStamp,
@@ -57,14 +57,14 @@ export function convertDTOtoEvent(event: EventDTO): Event {
             type: event.type,
             paidTo: event.paidTo.id,
             timeStamp: event.timeStamp,
-            createdBy: event.createdBy.id,
+            createdBy: createdByUid,
             amount: event.amount,
         } as PaymentEvent
     }
     if (event.type === "change") {
         return {
             type: event.type,
-            createdBy: event.createdBy.id,
+            createdBy: createdByUid,
             timeStamp: event.timeStamp,
             groupExpenseOriginal: {
                 type: event.groupExpenseOriginal.type,

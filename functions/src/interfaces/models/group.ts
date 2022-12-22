@@ -18,14 +18,12 @@ export interface Group {
  * @param {Group} groupDTO Group to convert
  * @return {GroupDTO} return converted group
  */
-export function convertDTOtoGroup(groupDTO: GroupDTO): Group {
-    const people = groupDTO.people.map((pDTO) => convertDTOToPerson(pDTO));
-    const createdBy = convertDTOToPerson(groupDTO.createdBy)
+export function convertDTOtoGroup(createdByUid: string, groupDTO: GroupDTO): Group {
     return {
         id: groupDTO.id,
         name: groupDTO.name,
         timeStamp: groupDTO.timeStamp,
-        createdBy: findPerson(people, createdBy.id).id,
+        createdBy: createdByUid,
         people: groupDTO.people.map((p) => p.id),
         debts: groupDTO.debts.map((dto) => convertDebtToDTO(dto)),
     }
