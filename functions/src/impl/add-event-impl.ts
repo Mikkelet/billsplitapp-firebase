@@ -1,10 +1,11 @@
 import { Request, Response } from "firebase-functions";
 import { addEvent, updateExpense } from "../collections/events-collection";
-import { updateGroupDebt } from "../collections/group-collection";
+import { getGroupById, updateGroupDebt } from "../collections/group-collection";
 import { AddEventRequest, AddEventResponse } from "../interfaces/add-event";
 import { EventDTO, ExpenseChangeEventDTO } from "../interfaces/dto/event-dto";
 import { convertDTOtoDebt, Debt } from "../interfaces/models/debt";
 import { convertDTOtoEvent, Event, ExpenseEvent } from "../interfaces/models/events";
+import { Group } from "../interfaces/models/group";
 
 export const addEventImpl = async (req: Request, res: Response, uid: string) => {
     const body = req.body as AddEventRequest;
@@ -22,7 +23,16 @@ export const addEventImpl = async (req: Request, res: Response, uid: string) => 
         return
     }
 
+
     try {
+        const group: Group = await getGroupById(groupId);
+        const findUid: string | undefined = group.people.find((id) => id === uid)
+        if (findUid === undefined) {
+            console.log("Token userid not found in group", { groupId: groupId, uid: uid });
+            res.status(404).send("Could not find group")
+            return
+        }
+
         if (eventDTO.type === "change") {
             const updatedExpenseDTO = (eventDTO as ExpenseChangeEventDTO).groupExpenseEdited;
             const updatedExpense: ExpenseEvent =

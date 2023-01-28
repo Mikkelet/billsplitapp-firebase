@@ -1,8 +1,6 @@
-import { findPerson } from "../../collections/user-collection";
 import { convertDebtToDTO } from "../dto/debt-dto";
 import { GroupDTO } from "../dto/group-dto";
 import { Debt } from "./debt";
-import { convertDTOToPerson } from "./person";
 
 export interface Group {
     id: string;
