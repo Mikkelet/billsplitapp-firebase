@@ -23,6 +23,14 @@ export const addEventImpl = async (req: Request, res: Response, uid: string) => 
         return
     }
 
+    if (event.createdBy !== uid) {
+        console.error(
+            "User trying to create an event on behalf of another user",
+            { uid: uid, createdBy: event.createdBy },
+        )
+        res.status(400).send("Event was not created")
+        return
+    }
 
     try {
         const group: Group = await getGroupById(groupId);
