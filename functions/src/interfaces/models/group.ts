@@ -13,6 +13,7 @@ export interface Group {
 
 /**
  * Convert data from database to data readable by frontend
+ * @param {string} createdByUid userId for createdBy
  * @param {Group} groupDTO Group to convert
  * @return {GroupDTO} return converted group
  */

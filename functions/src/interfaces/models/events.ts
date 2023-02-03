@@ -35,6 +35,7 @@ export interface ExpenseChangeEvent {
 
 /**
  * Convert eventDTO to event
+ * @param {string} createdByUid userId for createdBy
  * @param {EventDTO} event event to be converted
  * @return {Event} event
  */

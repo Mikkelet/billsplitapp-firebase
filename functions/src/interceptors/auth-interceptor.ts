@@ -26,7 +26,7 @@ const checkAuth = async (req: Request, res: Response,
         const uid = verificationResult.uid
         callback(req, res, uid)
     } catch (e) {
-        console.error("auth error",e);
+        console.error("auth error", e);
         const err = e as AuthError
         switch (err.errorInfo.code) {
             case "auth/id-token-expired":
