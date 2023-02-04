@@ -8,6 +8,9 @@ import { getPeople } from "../collections/user-collection";
 import { Event } from "../interfaces/models/events";
 import { Group } from "../interfaces/models/group";
 import { Person } from "../interfaces/models/person";
+import { ServiceDTO } from "../interfaces/dto/service-dto";
+import { convertServiceToDTO, Service } from "../interfaces/models/service";
+import { getServices } from "../collections/services-collection";
 
 export const getGroupImpl = async (req: Request, res: Response, uid: string) => {
     const body = req.body as GetGroupRequest;
@@ -26,13 +29,18 @@ export const getGroupImpl = async (req: Request, res: Response, uid: string) => 
 
         const people: Person[] = await getPeople(group.people);
         const events: Event[] = await getEvents(groupId);
+        const services: Service[] = await getServices(groupId);
 
         const groupDto = convertGroupToDTO(group, people);
-        const eventDTOs: EventDTO[] = events.map((event) => convertEventToDTO(event, people))
+        const eventDTOs: EventDTO[] = events.map((event) =>
+            convertEventToDTO(event, people))
+        const serviceDTOs: ServiceDTO[] = services.map((service) =>
+            convertServiceToDTO(service, people))
 
         const response: GetGroupResponse = {
             group: groupDto,
             events: eventDTOs,
+            services: serviceDTOs,
         }
         console.log("response", response);
         res.status(200).send(response);
