@@ -6,7 +6,7 @@ import { ServiceDTO } from "../interfaces/dto/service-dto";
 import { Group } from "../interfaces/models/group";
 import { convertDTOtoService, Service } from "../interfaces/models/service";
 
-export const addGroupImpl = async (req: Request, res: Response, uid: string) => {
+export const addServiceImpl = async (req: Request, res: Response, uid: string) => {
     const body = req.body as AddServiceRequest
     const groupId = body.groupId
     const serviceDto: ServiceDTO = body.service

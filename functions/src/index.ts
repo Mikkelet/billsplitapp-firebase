@@ -11,6 +11,7 @@ import { getFriendsImpl } from "./impl/get-friends-impl";
 import { getGroupImpl } from "./impl/get-group-impl";
 import { getGroupsImpl } from "./impl/get-groups-impl";
 import { onUserCreateImpl } from "./impl/on-create-user-impl";
+import { addServiceImpl } from "./impl/add-service-impl";
 
 export const addGroup = authInterceptor(addGroupImpl);
 export const addEvent = authInterceptor(addEventImpl);
@@ -19,5 +20,6 @@ export const getGroup = authInterceptor(getGroupImpl);
 export const getGroups = authInterceptor(getGroupsImpl);
 export const addFriend = authInterceptor(addFriendImpl);
 export const getFriends = authInterceptor(getFriendsImpl);
+export const addService = authInterceptor(addServiceImpl);
 
 export const onUserCreated = functions.auth.user().onCreate(onUserCreateImpl);
