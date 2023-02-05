@@ -1,6 +1,6 @@
 import { Request, Response } from "firebase-functions";
 import { convertGroupToDTO } from "../interfaces/dto/group-dto";
-import { GetGroupRequest, GetGroupResponse } from "../interfaces/get-group";
+import { GetGroupResponse } from "../interfaces/get-group";
 import { getGroupById } from "../collections/group-collection";
 import { getEvents } from "../collections/events-collection";
 import { convertEventToDTO, EventDTO } from "../interfaces/dto/event-dto";
@@ -13,8 +13,8 @@ import { convertServiceToDTO, Service } from "../interfaces/models/service";
 import { getServices } from "../collections/services-collection";
 
 export const getGroupImpl = async (req: Request, res: Response, uid: string) => {
-    const body = req.body as GetGroupRequest;
-    const groupId = body.groupId as string;
+    const body = req.params.id
+    const groupId = body
     console.log("request", body);
 
     try {
