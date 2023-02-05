@@ -8,22 +8,21 @@ export const scheduledServicesImpl = async (_: functions.EventContext) => {
     const services = await getAllServices()
     try {
         for await (const service of services) {
-            const expenseDiv: number = service.monthlyExpense / service.participants.length
             const individualExpenses: IndividualExpense[] = service.participants.map((uid) => {
                 return {
-                    expense: expenseDiv,
+                    expense: 0,
                     isParticipant: true,
                     person: uid,
                 }
             })
             const expense: ExpenseEvent = {
                 createdBy: service.createdBy,
-                description: "",
+                description: service.name,
                 id: "",
                 payee: service.payer,
                 sharedExpense: service.monthlyExpense,
                 individualExpenses: individualExpenses,
-                timeStamp: 0,
+                timeStamp: Date.now(),
                 type: "expense",
             }
 
