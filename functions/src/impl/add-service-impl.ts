@@ -10,7 +10,7 @@ export const addServiceImpl = async (req: Request, res: Response, uid: string) =
     const body = req.body as AddServiceRequest
     const groupId = body.groupId
     const serviceDto: ServiceDTO = body.service
-    const service: Service = convertDTOtoService(serviceDto)
+    const service: Service = convertDTOtoService(groupId, serviceDto)
 
     if (!service.name) {
         res.status(400).send("missing name");

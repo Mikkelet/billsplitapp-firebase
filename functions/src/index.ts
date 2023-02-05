@@ -12,6 +12,7 @@ import { getFriendsImpl } from "./impl/get-friends-impl";
 import { getGroupImpl } from "./impl/get-group-impl";
 import { getGroupsImpl } from "./impl/get-groups-impl";
 import { addServiceImpl } from "./impl/add-service-impl";
+import { scheduledServicesImpl } from "./cron/services-cron-impl";
 
 const app = express()
 app.use(cors({ origin: true }))
@@ -34,3 +35,7 @@ app.get("/friends", (req, res) => authInterceptor(getFriendsImpl)(req, res))
 app.post("/service", (req, res) => authInterceptor(addServiceImpl)(req, res))
 
 export const v1 = functions.https.onRequest(app)
+
+export const scheduledServices = functions.pubsub
+    .schedule("At 00:00 on day-of-month 1.")
+    .onRun(scheduledServicesImpl)
