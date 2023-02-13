@@ -13,7 +13,7 @@ export const updateServiceImpl = async (req: Request, res: Response, uid: string
     const serviceDto: ServiceDTO = body.service
     const service: Service = convertDTOtoService(groupId, serviceDto)
 
-    if(!validateUpdateService(res, uid, service)){
+    if (!validateUpdateService(res, uid, service)) {
         return
     }
 

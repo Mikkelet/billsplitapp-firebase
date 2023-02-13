@@ -13,7 +13,7 @@ import { getGroupImpl } from "./impl/get-group-impl";
 import { getGroupsImpl } from "./impl/get-groups-impl";
 import { addServiceImpl } from "./impl/add-service-impl";
 import { scheduledServicesImpl } from "./cron/services-cron-impl";
-import { updateServiceImpl } from "./impl/update-serivice-impl";
+import { updateServiceImpl } from "./impl/update-service-impl";
 
 const app = express()
 app.use(cors({ origin: true }))
