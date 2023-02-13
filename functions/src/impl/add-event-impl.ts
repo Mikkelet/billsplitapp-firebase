@@ -1,5 +1,5 @@
 import { Request, Response } from "firebase-functions";
-import { addEvent, updateExpense } from "../collections/events-collection";
+import { insertEvent, updateExpense } from "../collections/events-collection";
 import { getGroupById, updateGroupDebt } from "../collections/group-collection";
 import { AddEventRequest, AddEventResponse } from "../interfaces/add-event";
 import { EventDTO, ExpenseChangeEventDTO } from "../interfaces/dto/event-dto";
@@ -47,7 +47,7 @@ export const addEventImpl = async (req: Request, res: Response, uid: string) => 
                 convertDTOtoEvent(uid, updatedExpenseDTO) as ExpenseEvent;
             await updateExpense(groupId, updatedExpense);
         }
-        const dbEvent = await addEvent(groupId, event)
+        const dbEvent = await insertEvent(groupId, event)
         eventDTO.id = dbEvent.id
 
         await updateGroupDebt(groupId, debts);

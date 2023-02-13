@@ -1,7 +1,21 @@
 import { Service } from "../interfaces/models/service";
 import { groupCollection } from "./group-collection";
+import * as firebase from "firebase-admin";
+
 
 const serviceCollection = (groupId: string) => groupCollection.doc(groupId).collection("services")
+const servicesCollectionGroup = firebase.firestore().collectionGroup("services")
+
+/**
+ * Returns all services for all groups
+ * @return {Promise<Service[]>}
+ */
+export async function getAllServices(): Promise<Service[]> {
+    const query = await servicesCollectionGroup.get()
+    if (query.empty) return []
+    return query.docs.map((doc) => doc.data() as Service)
+
+}
 
 /**
  * Adds a new service to the collection of group
@@ -20,7 +34,7 @@ export async function addService(groupId: string, service: Service): Promise<Ser
  * @param {string} groupId group id of services
  * @return {Promise<Service[]>} services of group
  */
-export async function getServices(groupId: string): Promise<Service[]> {
+export async function getServicesForGrouo(groupId: string): Promise<Service[]> {
     const query = await serviceCollection(groupId).get()
     const services: Service[] = query.docs.map((doc) => doc.data() as Service)
     return services

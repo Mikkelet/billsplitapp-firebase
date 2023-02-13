@@ -10,7 +10,7 @@ import { Group } from "../interfaces/models/group";
 import { Person } from "../interfaces/models/person";
 import { ServiceDTO } from "../interfaces/dto/service-dto";
 import { convertServiceToDTO, Service } from "../interfaces/models/service";
-import { getServices } from "../collections/services-collection";
+import { getServicesForGrouo } from "../collections/services-collection";
 
 export const getGroupImpl = async (req: Request, res: Response, uid: string) => {
     const body = req.params.id
@@ -29,7 +29,7 @@ export const getGroupImpl = async (req: Request, res: Response, uid: string) => 
 
         const people: Person[] = await getPeople(group.people);
         const events: Event[] = await getEvents(groupId);
-        const services: Service[] = await getServices(groupId);
+        const services: Service[] = await getServicesForGrouo(groupId);
 
         const groupDto = convertGroupToDTO(group, people);
         const eventDTOs: EventDTO[] = events.map((event) =>

@@ -30,14 +30,16 @@ export async function updateExpense(groupId: string, expenseEvent: ExpenseEvent)
 }
 
 /**
- * Add a new event
+ * Add or update a new event
  * @param {string} groupId id of group to add event to
  * @param {Event} event event to add
  * @return {Event} event with new ID
  */
-export async function addEvent(groupId: string, event: Event): Promise<Event> {
-    const eventId = eventsCollection(groupId).doc().id
-    event.id = eventId;
-    await eventsCollection(groupId).doc(eventId).set(event);
+export async function insertEvent(groupId: string, event: Event): Promise<Event> {
+    if (event.id === undefined || event.id === "") {
+        const eventId = eventsCollection(groupId).doc().id
+        event.id = eventId;
+    }
+    await eventsCollection(groupId).doc(event.id).set(event);
     return event;
 }
