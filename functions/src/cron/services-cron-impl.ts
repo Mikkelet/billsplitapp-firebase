@@ -1,5 +1,5 @@
 import * as functions from "firebase-functions";
-import { addEvent } from "../collections/events-collection";
+import { insertEvent } from "../collections/events-collection";
 import { getAllServices } from "../collections/services-collection";
 import { ExpenseEvent } from "../interfaces/models/events";
 import { IndividualExpense } from "../interfaces/models/individual-expense";
@@ -26,7 +26,7 @@ export const scheduledServicesImpl = async (_: functions.EventContext) => {
                 type: "expense",
             }
 
-            await addEvent(service.groupId, expense)
+            await insertEvent(service.groupId, expense)
         }
     } catch (e) {
         console.error("Failed to run cron job", e)
