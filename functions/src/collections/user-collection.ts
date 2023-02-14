@@ -1,4 +1,5 @@
 import * as firebase from "firebase-admin";
+import { UserRecord } from "firebase-functions/v1/auth";
 import { Person, PersonWithId } from "../interfaces/models/person";
 
 const firestore = firebase.firestore();
@@ -25,8 +26,13 @@ export async function addPerson(person: PersonWithId): Promise<PersonWithId> {
  */
 export async function getUserById(userId: string): Promise<Person | null> {
     try {
-        const response = await userCollection.doc(userId).get()
-        const person = response.data() as Person;
+        const userRecord: UserRecord = await firebase.auth().getUser(userId)
+        const person: Person = {
+            id: userRecord.uid,
+            name: userRecord.displayName ?? "",
+            email: userRecord.email ?? "",
+            pfpUrl: userRecord.photoURL ?? "",
+        };
         return person;
     } catch (e) {
         console.error(e);
@@ -41,8 +47,13 @@ export async function getUserById(userId: string): Promise<Person | null> {
  */
 export async function getExistingUserById(userId: string): Promise<Person> {
     try {
-        const response = await userCollection.doc(userId).get()
-        const person = response.data() as Person;
+        const userRecord: UserRecord = await firebase.auth().getUser(userId)
+        const person: Person = {
+            id: userRecord.uid,
+            name: userRecord.displayName ?? "",
+            email: userRecord.email ?? "",
+            pfpUrl: userRecord.photoURL ?? "",
+        };
         return person;
     } catch (e) {
         console.error(e);
@@ -57,10 +68,13 @@ export async function getExistingUserById(userId: string): Promise<Person> {
  */
 export async function getUserByEmail(email: string): Promise<Person | null> {
     try {
-        const response = await userCollection.where("email", "==", email).get()
-        if (response.empty) return null;
-        if (response.size > 1) console.error("Multiple users with email: ", email);
-        const person = response.docs[0].data() as Person;
+        const userRecord: UserRecord = await firebase.auth().getUserByEmail(email)
+        const person: Person = {
+            id: userRecord.uid,
+            name: userRecord.displayName ?? "",
+            email: userRecord.email ?? "",
+            pfpUrl: userRecord.photoURL ?? "",
+        };
         return person;
     } catch (e) {
         console.error(e);
