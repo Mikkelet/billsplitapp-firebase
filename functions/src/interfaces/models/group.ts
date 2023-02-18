@@ -21,7 +21,7 @@ export interface Group {
  */
 export function convertDTOtoGroup(createdByUid: string, groupDTO: GroupDTO): Group {
     let latestEvent: Event | null = null
-    if (groupDTO.latestEvent !== null) {
+    if (groupDTO.latestEvent !== null && groupDTO.latestEvent !== undefined) {
         latestEvent = convertDTOtoEvent(createdByUid, groupDTO.latestEvent)
     }
     return {
