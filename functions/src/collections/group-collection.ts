@@ -1,5 +1,6 @@
 import * as firebase from "firebase-admin";
 import { Debt } from "../interfaces/models/debt";
+import { Event } from "../interfaces/models/events";
 import { Group } from "../interfaces/models/group";
 
 const firestore = firebase.firestore();
@@ -49,10 +50,14 @@ export async function getGroupsByUser(userId: string): Promise<Group[]> {
  * Update debt of group
  * @param {string} groupId group id of debt
  * @param {Debt[]} debts debt to udpdate
+ * @param {Event} event latest event submitted
  */
-export async function updateGroupDebt(groupId: string, debts: Debt[]) {
+export async function updateGroupDebt(groupId: string, debts: Debt[], event: Event | null) {
     const updateData = {
         debts: debts,
     } as Group
+    if (event !== null) {
+        updateData.latestEvent = event
+    }
     await groupCollection.doc(groupId).update(updateData)
 }

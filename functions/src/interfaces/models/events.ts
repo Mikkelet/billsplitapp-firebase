@@ -40,6 +40,7 @@ export interface ExpenseChangeEvent {
  * @return {Event} event
  */
 export function convertDTOtoEvent(createdByUid: string, event: EventDTO): Event {
+
     if (event.type === "expense") {
         return {
             type: event.type,

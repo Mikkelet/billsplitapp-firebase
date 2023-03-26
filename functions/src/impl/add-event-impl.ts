@@ -50,7 +50,15 @@ export const addEventImpl = async (req: Request, res: Response, uid: string) => 
         const dbEvent = await insertEvent(groupId, event)
         eventDTO.id = dbEvent.id
 
-        await updateGroupDebt(groupId, debts);
+        let latestEvent: Event | null = null
+        if (group.latestEvent === undefined) {
+            latestEvent = event
+        } else if (group.latestEvent === null) {
+            latestEvent = event
+        } else if (event.timeStamp > group.latestEvent.timeStamp) {
+            latestEvent = event
+        }
+        await updateGroupDebt(groupId, debts, latestEvent);
 
         const response: AddEventResponse = { event: eventDTO }
         console.log("response", eventDTO);
