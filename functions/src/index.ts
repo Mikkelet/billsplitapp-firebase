@@ -14,6 +14,7 @@ import { getGroupsImpl } from "./impl/get-groups-impl";
 import { addServiceImpl } from "./impl/add-service-impl";
 import { scheduledServicesImpl } from "./cron/services-cron-impl";
 import { updateServiceImpl } from "./impl/update-service-impl";
+import { deleteEventImpl } from "./impl/delete-event-impl";
 
 const app = express()
 app.use(cors({ origin: true }))
@@ -27,6 +28,7 @@ app.get("/group/:id", (req, res) => authInterceptor(getGroupImpl)(req, res))
 
 // Events
 app.post("/event", (req, res) => authInterceptor(addEventImpl)(req, res))
+app.delete("/event", (req, res) => authInterceptor(deleteEventImpl)(req,res))
 
 // Friends
 app.post("/friends", (req, res) => authInterceptor(addFriendImpl)(req, res))
