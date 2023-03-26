@@ -1,6 +1,7 @@
 import { convertDebtToDTO } from "../dto/debt-dto";
 import { GroupDTO } from "../dto/group-dto";
 import { Debt } from "./debt";
+import { convertDTOtoEvent, Event } from "./events";
 
 export interface Group {
     id: string;
@@ -9,6 +10,7 @@ export interface Group {
     createdBy: string;
     timeStamp: string;
     debts: Debt[] | undefined;
+    latestEvent: Event | undefined | null;
 }
 
 /**
@@ -18,6 +20,10 @@ export interface Group {
  * @return {GroupDTO} return converted group
  */
 export function convertDTOtoGroup(createdByUid: string, groupDTO: GroupDTO): Group {
+    let latestEvent: Event | null = null
+    if (groupDTO.latestEvent !== null && groupDTO.latestEvent !== undefined) {
+        latestEvent = convertDTOtoEvent(createdByUid, groupDTO.latestEvent)
+    }
     return {
         id: groupDTO.id,
         name: groupDTO.name,
@@ -25,5 +31,6 @@ export function convertDTOtoGroup(createdByUid: string, groupDTO: GroupDTO): Gro
         createdBy: createdByUid,
         people: groupDTO.people.map((p) => p.id),
         debts: groupDTO.debts.map((dto) => convertDebtToDTO(dto)),
+        latestEvent: latestEvent,
     }
 }
