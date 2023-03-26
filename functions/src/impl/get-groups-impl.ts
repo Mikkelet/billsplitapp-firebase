@@ -2,7 +2,7 @@ import { Request, Response } from "firebase-functions";
 import { convertGroupToDTO, GroupDTO } from "../interfaces/dto/group-dto";
 import { GetGroupsResponse } from "../interfaces/get-groups";
 import { getGroupsByUser } from "../collections/group-collection";
-import { getPeople } from "../collections/user-collection";
+import { findPerson, getPeople } from "../collections/user-collection";
 
 export const getGroupsImpl = async (_: Request, res: Response, uid: string) => {
 
@@ -19,7 +19,10 @@ export const getGroupsImpl = async (_: Request, res: Response, uid: string) => {
         const distinctUids: string[] = [...new Set(uids)];
         const people = await getPeople(distinctUids);
 
-        const dtos: GroupDTO[] = groups.map((group) => convertGroupToDTO(group, people))
+        const dtos: GroupDTO[] = groups.map((group) => {
+            const peopleInGroup = group.people.map((uid) => findPerson(people, uid))
+            return convertGroupToDTO(group, peopleInGroup)
+        })
 
         const response: GetGroupsResponse = {
             groups: dtos,
