@@ -29,7 +29,7 @@ export function convertSharedExpenseToDTO(
  * convert list of shared expenses to DTOs
  * @param {SharedExpense[]} sharedExpenses
  * @param {PersonWithId[]} people people in the group
- * @returns {SharedExpenseDTO[]}
+ * @return {SharedExpenseDTO[]}
  */
 export function convertSharedExpensesToDTO(
     sharedExpenses: SharedExpense[], people: PersonWithId[]
