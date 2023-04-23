@@ -38,6 +38,6 @@ app.put("/service", (req, res) => authInterceptor(updateServiceImpl)(req, res))
 
 export const v2 = functions.https.onRequest(app)
 
-export const scheduledServices = functions.pubsub
+export const scheduledServicesV2 = functions.pubsub
     .schedule("0 0 1 * *")
     .onRun(scheduledServicesImpl)
