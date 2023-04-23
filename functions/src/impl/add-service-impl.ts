@@ -12,6 +12,7 @@ export const addServiceImpl = async (req: Request, res: Response, uid: string) =
     const groupId = body.groupId
     const serviceDto: ServiceDTO = body.service
     const service: Service = convertDTOtoService(groupId, serviceDto)
+    console.log("request", body)
 
     if (!validateAddService(res, uid, service)) {
         return
