@@ -2,7 +2,7 @@ import { Event, ExpenseEvent } from "../interfaces/models/events";
 import { groupCollection } from "./group-collection";
 
 const eventsCollection = (groupId: string) =>
-    groupCollection.doc(groupId).collection("events-v2");
+    groupCollection.doc(groupId).collection("events");
 
 /**
  * Get events related to group

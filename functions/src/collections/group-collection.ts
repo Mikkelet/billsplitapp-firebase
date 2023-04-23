@@ -4,7 +4,7 @@ import { Event } from "../interfaces/models/events";
 import { Group } from "../interfaces/models/group";
 
 const firestore = firebase.firestore();
-export const groupCollection = firestore.collection("groups");
+export const groupCollection = firestore.collection("groups-v2");
 
 /**
  * Add group

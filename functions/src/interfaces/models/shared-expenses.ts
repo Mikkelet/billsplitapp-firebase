@@ -15,7 +15,7 @@ export function convertDtoToSharedExpense(sharedExpense: SharedExpenseDTO): Shar
     return {
         description: sharedExpense.description,
         expense: sharedExpense.expense,
-        participants: sharedExpense.participants.map((p) => p.id)
+        participants: sharedExpense.participants.map((p) => p.id),
     } as SharedExpense;
 }
 

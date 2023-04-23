@@ -23,7 +23,7 @@ export const scheduledServicesImpl = async (_: functions.EventContext) => {
                 sharedExpenses: [{
                     description: service.name,
                     expense: service.monthlyExpense,
-                    participants: service.participants
+                    participants: service.participants,
                 }],
                 individualExpenses: individualExpenses,
                 timeStamp: Date.now(),

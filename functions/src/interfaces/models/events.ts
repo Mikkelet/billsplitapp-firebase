@@ -50,7 +50,8 @@ export function convertDTOtoEvent(createdByUid: string, event: EventDTO): Event 
             description: event.description,
             payee: event.payee.id,
             timeStamp: event.timeStamp,
-            sharedExpenses: !event.sharedExpenses ? [] : convertDTOtoSharedExpenses(event.sharedExpenses),
+            sharedExpenses: !event.sharedExpenses ?
+                [] : convertDTOtoSharedExpenses(event.sharedExpenses),
             individualExpenses:
                 convertDTOsToIndividualExpenses(event.individualExpenses),
         } as ExpenseEvent
@@ -76,7 +77,8 @@ export function convertDTOtoEvent(createdByUid: string, event: EventDTO): Event 
                 description: event.groupExpenseOriginal.description,
                 payee: event.groupExpenseOriginal.payee.id,
                 timeStamp: event.groupExpenseOriginal.timeStamp,
-                sharedExpenses: !event.groupExpenseOriginal.sharedExpenses ? [] : convertDTOtoSharedExpenses(event.groupExpenseOriginal.sharedExpenses),
+                sharedExpenses: !event.groupExpenseOriginal.sharedExpenses ?
+                    [] : convertDTOtoSharedExpenses(event.groupExpenseOriginal.sharedExpenses),
                 individualExpenses: convertDTOsToIndividualExpenses(
                     event.groupExpenseOriginal.individualExpenses),
             } as ExpenseEvent,
@@ -87,7 +89,8 @@ export function convertDTOtoEvent(createdByUid: string, event: EventDTO): Event 
                 description: event.groupExpenseEdited.description,
                 payee: event.groupExpenseEdited.payee.id,
                 timeStamp: event.groupExpenseEdited.timeStamp,
-                sharedExpenses: !event.groupExpenseEdited.sharedExpenses ? [] : convertDTOtoSharedExpenses(event.groupExpenseEdited.sharedExpenses),
+                sharedExpenses: !event.groupExpenseEdited.sharedExpenses ?
+                    [] : convertDTOtoSharedExpenses(event.groupExpenseEdited.sharedExpenses),
                 individualExpenses: convertDTOsToIndividualExpenses(
                     event.groupExpenseEdited.individualExpenses),
             } as ExpenseEvent,

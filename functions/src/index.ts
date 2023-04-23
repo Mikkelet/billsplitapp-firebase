@@ -36,7 +36,7 @@ app.get("/friends", (req, res) => authInterceptor(getFriendsImpl)(req, res))
 app.post("/service", (req, res) => authInterceptor(addServiceImpl)(req, res))
 app.put("/service", (req, res) => authInterceptor(updateServiceImpl)(req, res))
 
-export const v1 = functions.https.onRequest(app)
+export const v2 = functions.https.onRequest(app)
 
 export const scheduledServices = functions.pubsub
     .schedule("0 0 1 * *")

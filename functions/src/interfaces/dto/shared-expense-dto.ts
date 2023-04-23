@@ -14,7 +14,9 @@ export interface SharedExpenseDTO {
  * @param {SharedExpense} sharedExpense shared expense to convert
  * @return {SharedExpenseDTO} return converted shared expense
  */
-export function convertSharedExpenseToDTO(sharedExpense: SharedExpense, people: PersonWithId[]): SharedExpenseDTO {
+export function convertSharedExpenseToDTO(
+    sharedExpense: SharedExpense, people: PersonWithId[]
+): SharedExpenseDTO {
     return {
         description: sharedExpense.description,
         expense: sharedExpense.expense,
@@ -27,6 +29,8 @@ export function convertSharedExpenseToDTO(sharedExpense: SharedExpense, people: 
  * @param {SharedExpense[]} sharedExpenses 
  * @returns {SharedExpenseDTO[]}
  */
-export function convertSharedExpensesToDTO(sharedExpenses: SharedExpense[], people: PersonWithId[]): SharedExpenseDTO[] {
+export function convertSharedExpensesToDTO(
+    sharedExpenses: SharedExpense[], people: PersonWithId[]
+): SharedExpenseDTO[] {
     return sharedExpenses.map((se) => convertSharedExpenseToDTO(se, people));
 }
