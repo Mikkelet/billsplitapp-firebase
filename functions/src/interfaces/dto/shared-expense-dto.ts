@@ -12,6 +12,7 @@ export interface SharedExpenseDTO {
 /**
  * Convert data from database to data readable by frontend
  * @param {SharedExpense} sharedExpense shared expense to convert
+ * @param {PersonWithId[]} people people in the group
  * @return {SharedExpenseDTO} return converted shared expense
  */
 export function convertSharedExpenseToDTO(
@@ -20,13 +21,14 @@ export function convertSharedExpenseToDTO(
     return {
         description: sharedExpense.description,
         expense: sharedExpense.expense,
-        participants: sharedExpense.participants.map((p) => findPerson(people, p))
+        participants: sharedExpense.participants.map((p) => findPerson(people, p)),
     } as SharedExpenseDTO;
 }
 
 /**
  * convert list of shared expenses to DTOs
- * @param {SharedExpense[]} sharedExpenses 
+ * @param {SharedExpense[]} sharedExpenses
+ * @param {PersonWithId[]} people people in the group
  * @returns {SharedExpenseDTO[]}
  */
 export function convertSharedExpensesToDTO(

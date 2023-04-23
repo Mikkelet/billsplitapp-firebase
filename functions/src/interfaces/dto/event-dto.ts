@@ -65,7 +65,8 @@ export function convertEventToDTO(event: Event, people: PersonWithId[]): EventDT
             createdBy: findPerson(people, expense.createdBy),
             description: expense.description,
             payee: findPerson(people, expense.payee),
-            sharedExpenses: !expense.sharedExpenses ? [] : convertSharedExpensesToDTO(expense.sharedExpenses, people),
+            sharedExpenses: !expense.sharedExpenses ?
+                [] : convertSharedExpensesToDTO(expense.sharedExpenses, people),
             individualExpenses:
                 convertIndividualExpensesToDTOs(expense.individualExpenses, people),
             sharedExpense: expense.sharedExpenses,
@@ -85,7 +86,8 @@ export function convertEventToDTO(event: Event, people: PersonWithId[]): EventDT
                 createdBy:
                     findPerson(people, change.groupExpenseEdited.createdBy),
                 description: change.groupExpenseEdited.description,
-                sharedExpenses: !change.groupExpenseEdited.sharedExpenses ? [] : convertSharedExpensesToDTO(change.groupExpenseEdited.sharedExpenses, people),
+                sharedExpenses: !change.groupExpenseEdited.sharedExpenses ?
+                    [] : convertSharedExpensesToDTO(change.groupExpenseEdited.sharedExpenses, people),
                 individualExpenses: convertIndividualExpensesToDTOs(
                     change.groupExpenseEdited.individualExpenses, people),
                 payee: findPerson(people, change.groupExpenseEdited.payee),
@@ -97,7 +99,8 @@ export function convertEventToDTO(event: Event, people: PersonWithId[]): EventDT
                 createdBy:
                     findPerson(people, change.groupExpenseOriginal.createdBy),
                 description: change.groupExpenseOriginal.description,
-                sharedExpenses: !change.groupExpenseOriginal.sharedExpenses ? [] : convertSharedExpensesToDTO(change.groupExpenseOriginal.sharedExpenses, people),
+                sharedExpenses: !change.groupExpenseOriginal.sharedExpenses ?
+                    [] : convertSharedExpensesToDTO(change.groupExpenseOriginal.sharedExpenses, people),
                 individualExpenses: convertIndividualExpensesToDTOs(
                     change.groupExpenseOriginal.individualExpenses, people),
                 payee: findPerson(people, change.groupExpenseOriginal.payee),

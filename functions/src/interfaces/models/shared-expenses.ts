@@ -21,8 +21,8 @@ export function convertDtoToSharedExpense(sharedExpense: SharedExpenseDTO): Shar
 
 /**
  * convert list of shared expenses to DTOs
- * @param {SharedExpense[]} sharedExpenses 
- * @returns {SharedExpenseDTO[]}
+ * @param {SharedExpense[]} sharedExpenses
+ * @return {SharedExpenseDTO[]}
  */
 export function convertDTOtoSharedExpenses(sharedExpenses: SharedExpenseDTO[]): SharedExpense[] {
     return sharedExpenses.map((se) => convertDtoToSharedExpense(se));
