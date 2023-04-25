@@ -8,10 +8,10 @@ import { UpdateServiceRequest } from "../interfaces/update-service";
 import { validateUpdateService } from "../middleware/service/update-service-validator";
 
 export const updateServiceImpl = async (req: Request, res: Response, uid: string) => {
+    const groupId = req.params.groupId;
     const body = req.body as UpdateServiceRequest
-    const groupId = body.groupId
     const serviceDto: ServiceDTO = body.service
-    const service: Service = convertDTOtoService(groupId, serviceDto)
+    const service: Service = convertDTOtoService(serviceDto)
 
     if (!validateUpdateService(res, uid, service)) {
         return

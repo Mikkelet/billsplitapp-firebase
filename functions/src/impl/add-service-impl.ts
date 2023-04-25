@@ -9,10 +9,10 @@ import { validateAddService } from "../middleware/service/add-service-validator"
 
 export const addServiceImpl = async (req: Request, res: Response, uid: string) => {
     const body = req.body as AddServiceRequest
-    const groupId = body.groupId
+    const groupId = req.params.groupId
     const serviceDto: ServiceDTO = body.service
-    const service: Service = convertDTOtoService(groupId, serviceDto)
-    console.log("request", body)
+    const service: Service = convertDTOtoService(serviceDto)
+    console.log("add service", { body: body }, { groupId: groupId })
 
     if (!validateAddService(res, uid, service)) {
         return

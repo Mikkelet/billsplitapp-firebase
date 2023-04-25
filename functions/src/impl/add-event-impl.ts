@@ -11,7 +11,7 @@ export const addEventImpl = async (req: Request, res: Response, uid: string) => 
     const body = req.body as AddEventRequest;
     console.log("request", body);
 
-    const groupId = body.groupId
+    const groupId = req.params.groupId
     const eventDTO: EventDTO = body.event;
     const debtDtos = body.debts;
     const event: Event = convertDTOtoEvent(uid, eventDTO);

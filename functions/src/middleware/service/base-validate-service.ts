@@ -11,10 +11,10 @@ import { Service } from "../../interfaces/models/service";
 export function validateService(res: Response, uid: string, service: Service): boolean {
 
     if (!service.name) {
-        res.status(400).send("missing name");
+        res.status(400).send("Missing name");
         return false
     } else if (!service.participants || service.participants.length === 0) {
-        res.status(400).send("missing participants");
+        res.status(400).send("Missing participants");
         return false
     } else if (service.monthlyExpense <= 0) {
         res.status(400).send("Monthly expense must be positive number");
@@ -25,9 +25,6 @@ export function validateService(res: Response, uid: string, service: Service): b
             { uid: uid, createdBy: service.createdBy },
         )
         res.status(400).send("Service was not created")
-        return false
-    } else if (!service.groupId) {
-        res.send(400).send("Missing group id")
         return false
     }
     return true

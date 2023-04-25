@@ -15,7 +15,7 @@ export const getGroupsImpl = async (_: Request, res: Response, uid: string) => {
             res.status(200).send(emptyResponse);
             return
         }
-        const uids: string[] = groups.flatMap((group) => group.people);
+        const uids: string[] = groups.flatMap((group) => [...group.people, ...group.pastMembers]);
         const distinctUids: string[] = [...new Set(uids)];
         const people = await getPeople(distinctUids);
 

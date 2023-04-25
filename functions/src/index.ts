@@ -14,6 +14,9 @@ import { getGroupsImpl } from "./impl/get-groups-impl";
 import { addServiceImpl } from "./impl/add-service-impl";
 import { scheduledServicesImpl } from "./cron/services-cron-impl";
 import { updateServiceImpl } from "./impl/update-service-impl";
+import { leaveGroupImpl } from "./impl/leave-group-impl";
+import { addToGroupImpl } from "./impl/add-user-to-group-impl";
+import { deleteServiceImpl } from "./impl/delete-service-impl";
 
 const app = express()
 app.use(cors({ origin: true }))
@@ -24,17 +27,22 @@ app.get("/groups", (req, res) => authInterceptor(getGroupsImpl)(req, res))
 // Group
 app.post("/group", (req, res) => authInterceptor(addGroupImpl)(req, res))
 app.get("/group/:id", (req, res) => authInterceptor(getGroupImpl)(req, res))
+app.post("/group/:groupId/user", (req, res) => authInterceptor(addToGroupImpl)(req, res))
+app.delete("/group/:groupId/user/:userId", (req, res) => authInterceptor(addToGroupImpl)(req, res))
+app.get("/leaveGroup/:groupId", (req, res) => authInterceptor(leaveGroupImpl)(req, res))
 
 // Events
-app.post("/event", (req, res) => authInterceptor(addEventImpl)(req, res))
+app.post("/group/:groupId/event", (req, res) => authInterceptor(addEventImpl)(req, res))
 
 // Friends
 app.post("/friends", (req, res) => authInterceptor(addFriendImpl)(req, res))
 app.get("/friends", (req, res) => authInterceptor(getFriendsImpl)(req, res))
 
 // Service
-app.post("/service", (req, res) => authInterceptor(addServiceImpl)(req, res))
-app.put("/service", (req, res) => authInterceptor(updateServiceImpl)(req, res))
+app.post("/group/:groupId/service", (req, res) => authInterceptor(addServiceImpl)(req, res))
+app.put("/group/:groupId/service", (req, res) => authInterceptor(updateServiceImpl)(req, res))
+app.delete("/group/:groupId/service/:serviceId", (req, res) =>
+    authInterceptor(deleteServiceImpl)(req, res))
 
 export const v2 = functions.https.onRequest(app)
 

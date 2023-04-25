@@ -10,7 +10,6 @@ export interface Service {
     imageUrl: string,
     monthlyExpense: number,
     payer: string,
-    groupId: string,
     participants: string[]
 }
 
@@ -36,11 +35,10 @@ export function convertServiceToDTO(service: Service, people: PersonWithId[]): S
 
 /**
  * Convert DTO to Service
- * @param {string} groupId groupId of service
  * @param {ServiceDTO} service Convert DTO to service
  * @return {Service} Converted ServiceDTO
  */
-export function convertDTOtoService(groupId: string, service: ServiceDTO): Service {
+export function convertDTOtoService(service: ServiceDTO): Service {
     const peopleIds = service.participants.map((dto) => dto.id)
     return {
         id: service.id,
@@ -50,6 +48,5 @@ export function convertDTOtoService(groupId: string, service: ServiceDTO): Servi
         name: service.name,
         participants: peopleIds,
         payer: service.payer.id,
-        groupId: groupId,
     }
 }

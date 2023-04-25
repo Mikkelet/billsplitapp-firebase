@@ -4,7 +4,7 @@ import { Event } from "../interfaces/models/events";
 import { Group } from "../interfaces/models/group";
 
 const firestore = firebase.firestore();
-export const groupCollection = firestore.collection("groups-v2");
+export const groupCollection = firestore.collection("groups-v3");
 
 /**
  * Add group
@@ -15,6 +15,16 @@ export async function addGroup(group: Group): Promise<Group> {
     group.id = groupCollection.doc().id;
     await groupCollection.doc(group.id).set(group);
     return group;
+}
+
+/**
+ * update group
+ * @param {Group} group group to update
+ * @return {Group} return updated group
+ */
+export async function updateGroup(group: Group): Promise<Group> {
+    await groupCollection.doc(group.id).update(group)
+    return group
 }
 
 /**

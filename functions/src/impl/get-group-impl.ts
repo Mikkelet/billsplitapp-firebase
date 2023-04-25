@@ -27,7 +27,8 @@ export const getGroupImpl = async (req: Request, res: Response, uid: string) => 
             return
         }
 
-        const people: Person[] = await getPeople(group.people);
+        const uids = [...group.pastMembers, ...group.people]
+        const people: Person[] = await getPeople(uids);
         const events: Event[] = await getEvents(groupId);
         const services: Service[] = await getServicesForGrouo(groupId);
 
