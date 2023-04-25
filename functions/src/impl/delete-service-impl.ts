@@ -4,8 +4,8 @@ import { deleteService } from "../collections/services-collection";
 import { Group } from "../interfaces/models/group";
 
 export const deleteServiceImpl = async (req: Request, res: Response, uid: string) => {
-    const groupId = req.params.groupId
-    const serviceId = req.params.serviceId
+    const groupId: string = req.params.groupId
+    const serviceId: string = req.params.serviceId
 
     try {
         const group: Group = await getGroupById(groupId);
