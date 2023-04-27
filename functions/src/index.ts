@@ -44,6 +44,11 @@ app.put("/group/:groupId/service", (req, res) => authInterceptor(updateServiceIm
 app.delete("/group/:groupId/service/:serviceId", (req, res) =>
     authInterceptor(deleteServiceImpl)(req, res))
 
+app.all("*", functions.https.onRequest(async (_, res) => {
+    res.status(404).send("Invalid request")
+}))
+
+
 export const v2 = functions.https.onRequest(app)
 
 export const scheduledServicesV2 = functions.pubsub

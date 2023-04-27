@@ -6,7 +6,6 @@ import { findPerson, getPeople } from "../collections/user-collection";
 import { handleError } from "../utils/error-utils";
 
 export const getGroupsImpl = async (_: Request, res: Response, uid: string) => {
-
     try {
         const groups = await getGroupsByUser(uid);
         if (groups.length === 0) {
