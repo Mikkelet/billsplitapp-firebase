@@ -6,16 +6,28 @@ import * as firebase from "firebase-admin";
 const serviceCollection = (groupId: string) => groupCollection.doc(groupId).collection("services")
 const servicesCollectionGroup = firebase.firestore().collectionGroup("services")
 
+
+interface ServiceWithGroupId {
+    service: Service;
+    groupId: string;
+}
+
 /**
  * Returns all services for all groups
  * @return {Promise<Service[]>}
  */
-export async function getAllServices(): Promise<Service[]> {
+export async function getAllServices(): Promise<ServiceWithGroupId[]> {
     const query = await servicesCollectionGroup.get()
+    query.docs.map((doc) => doc.ref.parent.id)
     if (query.empty) return []
-    return query.docs.map((doc) => doc.data() as Service)
-
+    return query.docs.map((doc) => {
+        return {
+            service: doc.data(),
+            groupId: doc.ref.parent.id,
+        } as ServiceWithGroupId
+    })
 }
+
 
 /**
  * Adds a new service to the collection of group
@@ -52,8 +64,8 @@ export async function updateService(groupId: string, service: Service) {
 /**
  * Delete service
  * @param {string} groupId group id of service to delete
- * @param {Service} service service to delete
+ * @param {string} serviceId service to delete
  */
-export async function deleteService(groupId: string, service: Service) {
-    await serviceCollection(groupId).doc(service.id).delete()
+export async function deleteService(groupId: string, serviceId: string) {
+    await serviceCollection(groupId).doc(serviceId).delete()
 }

@@ -1,6 +1,7 @@
 import * as firebase from "firebase-admin";
 import { UserRecord } from "firebase-functions/v1/auth";
 import { Person, PersonWithId } from "../interfaces/models/person";
+import { billSplitError } from "../utils/error-utils";
 
 const firestore = firebase.firestore();
 
@@ -46,19 +47,14 @@ export async function getUserById(userId: string): Promise<Person | null> {
  * @return {Person} Person if exist, else null
  */
 export async function getExistingUserById(userId: string): Promise<Person> {
-    try {
-        const userRecord: UserRecord = await firebase.auth().getUser(userId)
-        const person: Person = {
-            id: userRecord.uid,
-            name: userRecord.displayName ?? "",
-            email: userRecord.email ?? "",
-            pfpUrl: userRecord.photoURL ?? "",
-        };
-        return person;
-    } catch (e) {
-        console.error(e);
-        throw e;
-    }
+    const userRecord: UserRecord = await firebase.auth().getUser(userId)
+    const person: Person = {
+        id: userRecord.uid,
+        name: userRecord.displayName ?? "",
+        email: userRecord.email ?? "",
+        pfpUrl: userRecord.photoURL ?? "",
+    };
+    return person;
 }
 
 /**
@@ -90,34 +86,28 @@ export async function getUserByEmail(email: string): Promise<Person | null> {
 export async function getPeople(uids: string[]): Promise<Person[]> {
     const queryStart = Date.now()
     const distinctUids: string[] = [...new Set(uids)];
+    const userIdentifiers = distinctUids.map((id) => {
+        return { uid: id }
+    })
+    const response = await firebase.auth().getUsers(userIdentifiers);
+    const users = response.users;
+    const people: Person[] = users.map((user) => {
+        return {
+            id: user.uid ?? "",
+            name: user.displayName ?? "",
+            pfpUrl: user.photoURL ?? "",
+            email: user.email ?? "",
+        }
+    })
 
-    try {
-        const userIdentifiers = distinctUids.map((id) => {
-            return { uid: id }
-        })
-        const response = await firebase.auth().getUsers(userIdentifiers);
-        const users = response.users;
-        const people: Person[] = users.map((user) => {
-            return {
-                id: user.uid ?? "",
-                name: user.displayName ?? "",
-                pfpUrl: user.photoURL ?? "",
-                email: user.email ?? "",
-            }
-        })
+    const queryEnd = Date.now()
+    console.log("getPeople query", {
+        people: uids.length,
+        time: queryEnd - queryStart,
+        timePerId: (queryEnd - queryStart) / uids.length,
+    });
 
-        const queryEnd = Date.now()
-        console.log("getPeople query", {
-            people: uids.length,
-            time: queryEnd - queryStart,
-            timePerId: (queryEnd - queryStart) / uids.length,
-        });
-
-        return people;
-    } catch (e) {
-        console.error(e);
-        throw e;
-    }
+    return people;
 }
 
 /**
@@ -132,7 +122,7 @@ export function findPerson<T extends PersonWithId>(people: T[], uid: string): T 
         const person: T | undefined = people.find((p) => p.id === uid);
 
         if (!person) {
-            throw Error("user not found");
+            throw billSplitError(404, "user not found");
         }
 
         return person;

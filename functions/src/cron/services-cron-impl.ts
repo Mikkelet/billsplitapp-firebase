@@ -5,9 +5,11 @@ import { ExpenseEvent } from "../interfaces/models/events";
 import { IndividualExpense } from "../interfaces/models/individual-expense";
 
 export const scheduledServicesImpl = async (_: functions.EventContext) => {
-    const services = await getAllServices()
+    const servicesWithGroupId = await getAllServices()
     try {
-        for await (const service of services) {
+        for await (const serviceWithGroupId of servicesWithGroupId) {
+            const service = serviceWithGroupId.service
+            const groupId = serviceWithGroupId.groupId
             const individualExpenses: IndividualExpense[] = service.participants.map((uid) => {
                 return {
                     expense: 0,
@@ -20,13 +22,17 @@ export const scheduledServicesImpl = async (_: functions.EventContext) => {
                 description: service.name,
                 id: "",
                 payee: service.payer,
-                sharedExpense: service.monthlyExpense,
+                sharedExpenses: [{
+                    description: service.name,
+                    expense: service.monthlyExpense,
+                    participants: service.participants,
+                }],
                 individualExpenses: individualExpenses,
                 timeStamp: Date.now(),
                 type: "expense",
             }
 
-            await insertEvent(service.groupId, expense)
+            await insertEvent(groupId, expense)
         }
     } catch (e) {
         console.error("Failed to run cron job", e)

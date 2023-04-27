@@ -1,11 +1,15 @@
 import { Request, Response } from "firebase-functions";
 import { GetFriendsResponse } from "../interfaces/get-friends";
 import { getFriends } from "../collections/friend-collection";
-import { convertFriendToDTO } from "../interfaces/dto/friend-dto";
+import { convertFriendToDTO, FriendDTO } from "../interfaces/dto/friend-dto";
 import { findPerson, getPeople } from "../collections/user-collection";
 import { Person } from "../interfaces/models/person";
+import { handleError } from "../utils/error-utils";
 
 export const getFriendsImpl = async (_: Request, res: Response, uid: string) => {
+    console.log("get friends request", {
+        uid: uid,
+    });
 
     try {
         const response: GetFriendsResponse = {
@@ -18,7 +22,7 @@ export const getFriendsImpl = async (_: Request, res: Response, uid: string) => 
                 .flatMap((friend) => friend.users)
                 .filter((friendId) => friendId !== uid)
             const people: Person[] = await getPeople(uids);
-            const dtos = friends.map((friend) => {
+            const dtos: FriendDTO[] = friends.map((friend) => {
                 const friendUserId = friend.users.filter((user) => user !== uid)[0]
                 return convertFriendToDTO(friend, findPerson(people, friendUserId))
             });
@@ -27,7 +31,6 @@ export const getFriendsImpl = async (_: Request, res: Response, uid: string) => 
         console.log("response", response);
         res.status(200).send(response);
     } catch (e) {
-        console.error(e);
-        res.status(500).send(e);
+        handleError(e, res)
     }
 }

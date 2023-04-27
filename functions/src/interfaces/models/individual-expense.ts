@@ -5,7 +5,6 @@ import { PersonWithId } from "./person";
 export interface IndividualExpense {
     person: string;
     expense: number;
-    isParticipant: boolean;
 }
 
 /**
@@ -20,7 +19,6 @@ export function convertIndividualExpenseToDTO(
 ): IndividualExpenseDTO {
     return {
         expense: individualExpense.expense,
-        isParticipant: individualExpense.isParticipant,
         person: findPerson(people, individualExpense.person),
     }
 }
