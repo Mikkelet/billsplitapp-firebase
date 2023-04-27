@@ -6,6 +6,7 @@ import { convertGroupToDTO } from "../interfaces/dto/group-dto";
 import { Person } from "../interfaces/models/person";
 import { getPeople } from "../collections/user-collection";
 import { AddToGroupRequest } from "../interfaces/add-to-group";
+import { validateUserMembership } from "../middleware/validate-user-membership";
 
 export const addToGroupImpl = async (req: Request, res: Response, uid: string) => {
     const body = req.body as AddToGroupRequest;
@@ -14,12 +15,7 @@ export const addToGroupImpl = async (req: Request, res: Response, uid: string) =
 
     try {
         const group: Group = await getGroupById(groupId);
-        const findUid: string | undefined = group.people.find((id) => id === uid)
-        if (findUid === undefined) {
-            console.log("Token userid not found in group", { groupId: groupId, uid: uid });
-            res.status(404).send("Could not find group")
-            return
-        }
+        validateUserMembership(uid, group)
 
         // create new pastMembers list without uid
         const peopleWithUid: string[] = [...new Set([...group.pastMembers, uid])]

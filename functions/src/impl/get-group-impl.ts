@@ -11,21 +11,18 @@ import { Person } from "../interfaces/models/person";
 import { ServiceDTO } from "../interfaces/dto/service-dto";
 import { convertServiceToDTO, Service } from "../interfaces/models/service";
 import { getServicesForGrouo } from "../collections/services-collection";
+import { handleError } from "../utils/error-utils";
+import { validateUserMembership } from "../middleware/validate-user-membership";
 
 export const getGroupImpl = async (req: Request, res: Response, uid: string) => {
     const body = req.params.id
     const groupId = body
-    console.log("request", body);
+    console.log("get group request", { groupId: groupId });
 
     try {
         const group: Group = await getGroupById(groupId);
+        validateUserMembership(uid, group)
 
-        const findUid: string | undefined = group.people.find((id) => id === uid)
-        if (findUid === undefined) {
-            console.log("Token userid not found in group", { groupId: groupId, uid: uid });
-            res.status(404).send("Could not find group")
-            return
-        }
 
         const uids = [...group.pastMembers, ...group.people]
         const people: Person[] = await getPeople(uids);
@@ -46,7 +43,6 @@ export const getGroupImpl = async (req: Request, res: Response, uid: string) => 
         console.log("response", response);
         res.status(200).send(response);
     } catch (e) {
-        console.error(e);
-        res.status(500).send(e);
+        handleError(e, res)
     }
 }

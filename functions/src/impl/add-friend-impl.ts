@@ -10,10 +10,11 @@ import {
 import { convertFriendToDTO } from "../interfaces/dto/friend-dto";
 import { Friend, FriendStatus } from "../interfaces/models/friend";
 import { Person } from "../interfaces/models/person";
+import { billSplitError, handleError } from "../utils/error-utils";
 
 export const addFriendImpl = async (req: Request, res: Response, uid: string) => {
     const body = req.body as AddFriendRequest;
-    console.log("request", body);
+    console.log("addFriend request", body);
 
     try {
         let friendUser: Person | null = null
@@ -24,20 +25,20 @@ export const addFriendImpl = async (req: Request, res: Response, uid: string) =>
             const friendId = (body as AddFriendRequestUserId).friendId
             friendUser = await getUserById(friendId)
         } else {
-            res.status(400).send("Missing id type");
-            return;
+            throw billSplitError(400, "Missing id type")
         }
 
         if (friendUser === null) {
-            res.status(404).send("Could not find user");
-            return;
+            throw billSplitError(404, "User not found")
         }
 
         const sentTo = friendUser.id;
 
         const user1 = uid > sentTo ? uid : sentTo;
         const user2 = uid > sentTo ? sentTo : uid;
-        if (user1 === user2) throw Error("Could not normalize users");
+        if (user1 === user2) {
+            throw billSplitError(500, "Unexpected error; could not normalize userIds");
+        }
 
         const friend = await getFriendship(user1, user2)
 
@@ -62,7 +63,7 @@ export const addFriendImpl = async (req: Request, res: Response, uid: string) =>
         res.status(200).send(response)
     } catch (e) {
         console.error(e);
-        res.status(500).send(e);
+        handleError(e, res)
     }
 }
 

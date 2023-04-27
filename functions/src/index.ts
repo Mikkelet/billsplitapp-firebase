@@ -32,7 +32,7 @@ app.delete("/group/:groupId/user/:userId", (req, res) => authInterceptor(addToGr
 app.get("/leaveGroup/:groupId", (req, res) => authInterceptor(leaveGroupImpl)(req, res))
 
 // Events
-app.post("/group/:groupId/event", (req, res) => authInterceptor(addEventImpl)(req, res))
+app.post("/event", (req, res) => authInterceptor(addEventImpl)(req, res))
 
 // Friends
 app.post("/friends", (req, res) => authInterceptor(addFriendImpl)(req, res))

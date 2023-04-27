@@ -3,6 +3,7 @@ import { convertGroupToDTO, GroupDTO } from "../interfaces/dto/group-dto";
 import { GetGroupsResponse } from "../interfaces/get-groups";
 import { getGroupsByUser } from "../collections/group-collection";
 import { findPerson, getPeople } from "../collections/user-collection";
+import { handleError } from "../utils/error-utils";
 
 export const getGroupsImpl = async (_: Request, res: Response, uid: string) => {
 
@@ -31,6 +32,6 @@ export const getGroupsImpl = async (_: Request, res: Response, uid: string) => {
         res.status(200).send(response);
     } catch (e) {
         console.error(e);
-        res.status(500).send(e);
+        handleError(e, res)
     }
 }

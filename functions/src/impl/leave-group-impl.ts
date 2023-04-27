@@ -5,6 +5,7 @@ import { LeaveGroupResponse } from "../interfaces/leave-group";
 import { convertGroupToDTO } from "../interfaces/dto/group-dto";
 import { Person } from "../interfaces/models/person";
 import { getPeople } from "../collections/user-collection";
+import { handleError } from "../utils/error-utils";
 
 export const leaveGroupImpl = async (req: Request, res: Response, uid: string) => {
     const body = req.params.groupId
@@ -38,7 +39,6 @@ export const leaveGroupImpl = async (req: Request, res: Response, uid: string) =
         console.log("response", response);
         res.status(200).send(response);
     } catch (e) {
-        console.error(e);
-        res.status(500).send(e);
+        handleError(e, res)
     }
 }

@@ -1,38 +1,31 @@
-import { Response } from "firebase-functions";
 import { Service } from "../../interfaces/models/service";
 import { validateService } from "./base-validate-service";
+import { billSplitError } from "../../utils/error-utils";
 
 /**
  * Validate a service object before adding
- * @param {Response} res response object
  * @param {string} uid id of user making request
  * @param {Service} service Service to be validated
- * @return {boolean} returns true if valid
  */
-export function validateAddService(res: Response, uid: string, service: Service): boolean {
+export function validateAddService(uid: string, service: Service) {
     if (service.id) {
-        res.status(400).send("Service already has id")
-        return false
+        throw billSplitError(400, "Service already has id")
     }
     if (service.monthlyExpense === 0) {
-        res.status(400).send("Monthly expense cannot be 0")
-        return false
+        throw billSplitError(400, "Monthly expense cannot be 0")
     }
     if (service.participants.length === 0) {
-        res.status(400).send("Service must include participants")
-        return false
+        throw billSplitError(400, "Service must include participants")
     }
     if (service.name === "") {
-        res.status(400).send("Service must have a name")
-        return false
+        throw billSplitError(400, "Service must have a name")
     }
     if (service.createdBy !== uid) {
         console.log("Suspiscious add-service request", {
             service: service,
             requestUid: uid,
         });
-        res.status(400).send("Unknown error occurred")
-        return false
+        throw billSplitError(400, "Unknown error occurred")
     }
-    return validateService(res, uid, service)
+    validateService(uid, service)
 }

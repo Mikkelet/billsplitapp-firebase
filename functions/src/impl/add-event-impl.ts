@@ -6,40 +6,24 @@ import { EventDTO, ExpenseChangeEventDTO } from "../interfaces/dto/event-dto";
 import { convertDTOtoDebt, Debt } from "../interfaces/models/debt";
 import { convertDTOtoEvent, Event, ExpenseEvent } from "../interfaces/models/events";
 import { Group } from "../interfaces/models/group";
+import { handleError } from "../utils/error-utils";
+import { validateUserMembership } from "../middleware/validate-user-membership";
+import { validateAddEvent } from "../middleware/validate-add-event";
 
 export const addEventImpl = async (req: Request, res: Response, uid: string) => {
     const body = req.body as AddEventRequest;
     console.log("request", body);
 
-    const groupId = req.params.groupId
+    const groupId = body.groupId
     const eventDTO: EventDTO = body.event;
     const debtDtos = body.debts;
     const event: Event = convertDTOtoEvent(uid, eventDTO);
     const debts: Debt[] = debtDtos.map((dto) => convertDTOtoDebt(dto));
-
-    if (debts.length === 0) {
-        console.error("Event.debts was empty", { uid: uid, body: body })
-        res.status(400).send("An unexptected error occurred. Please contact the developer!")
-        return
-    }
-
-    if (event.createdBy !== uid) {
-        console.error(
-            "User trying to create an event on behalf of another user",
-            { uid: uid, createdBy: event.createdBy },
-        )
-        res.status(400).send("Event was not created")
-        return
-    }
-
     try {
+
+        validateAddEvent(body, uid)
         const group: Group = await getGroupById(groupId);
-        const findUid: string | undefined = group.people.find((id) => id === uid)
-        if (findUid === undefined) {
-            console.log("Token userid not found in group", { groupId: groupId, uid: uid });
-            res.status(404).send("Could not find group")
-            return
-        }
+        validateUserMembership(uid, group);
 
         if (eventDTO.type === "change") {
             const updatedExpenseDTO = (eventDTO as ExpenseChangeEventDTO).groupExpenseEdited;
@@ -64,7 +48,6 @@ export const addEventImpl = async (req: Request, res: Response, uid: string) => 
         console.log("response", eventDTO);
         res.status(200).send(response);
     } catch (e) {
-        console.error(e);
-        res.status(500).send(e);
+        handleError(e, res)
     }
 }
