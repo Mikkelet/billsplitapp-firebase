@@ -5,8 +5,8 @@ import { ExpenseEvent } from "../interfaces/models/events";
 import { IndividualExpense } from "../interfaces/models/individual-expense";
 
 export const scheduledServicesImpl = async (_: functions.EventContext) => {
-    const servicesWithGroupId = await getAllServices()
     try {
+        const servicesWithGroupId = await getAllServices()
         for await (const serviceWithGroupId of servicesWithGroupId) {
             const service = serviceWithGroupId.service
             const groupId = serviceWithGroupId.groupId
