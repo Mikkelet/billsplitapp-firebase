@@ -10,14 +10,9 @@ const eventsCollection = (groupId: string) =>
  * @return {Promise<Event[]>} events related to the group
  */
 export async function getEvents(groupId: string): Promise<Event[]> {
-    try {
-        const query = await eventsCollection(groupId).get()
-        const events: Event[] = query.docs.map((doc) => doc.data() as Event)
-        return events;
-    } catch (e) {
-        console.error(e);
-        throw e;
-    }
+    const query = await eventsCollection(groupId).get()
+    const events: Event[] = query.docs.map((doc) => doc.data() as Event)
+    return events;
 }
 
 /**

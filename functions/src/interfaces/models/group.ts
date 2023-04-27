@@ -7,6 +7,7 @@ export interface Group {
     id: string;
     name: string;
     people: string[];
+    pastMembers: string[],
     createdBy: string;
     timeStamp: string;
     debts: Debt[] | undefined;
@@ -29,6 +30,7 @@ export function convertDTOtoGroup(createdByUid: string, groupDTO: GroupDTO): Gro
         name: groupDTO.name,
         timeStamp: groupDTO.timeStamp,
         createdBy: createdByUid,
+        pastMembers: groupDTO.pastMembers.map((m) => m.id),
         people: groupDTO.people.map((p) => p.id),
         debts: groupDTO.debts.map((dto) => convertDebtToDTO(dto)),
         latestEvent: latestEvent,

@@ -3,47 +3,29 @@ import { addGroup } from "../collections/group-collection";
 import { AddGroupRequest, AddGroupResponse } from "../interfaces/add-group";
 import { GroupDTO } from "../interfaces/dto/group-dto";
 import { convertDTOtoGroup } from "../interfaces/models/group";
+import { handleError } from "../utils/error-utils";
+import { validateGroup } from "../middleware/group/validate-group";
+import { validateUserMembership } from "../middleware/validate-user-membership";
+import { validateCreatedBy } from "../middleware/validate-created-by";
 
-export const addGroupImpl = async (req: Request, res: Response, createdBy: string) => {
+export const addGroupImpl = async (req: Request, res: Response, uid: string) => {
     const body = req.body as AddGroupRequest;
-    console.log("request", body);
-
+    console.log("add group request", body);
     const groupDTO: GroupDTO = body.group;
-
-    if (!groupDTO.name) {
-        res.status(400).send("missing groupName");
-        return
-    }
-
-    if (!groupDTO.people || groupDTO.people.length === 0) {
-        res.status(400).send("No people included");
-        return
-    }
-
-    const groupPeopleIds: string[] = groupDTO.people.map((dto) => dto.id)
-    const findUid: string | undefined = groupPeopleIds.find((id) => id === createdBy)
-    if (findUid === undefined) {
-        res.status(400).send("You are not part of the group you're creating");
-        return
-    }
-
-    if (groupDTO.createdBy.id !== createdBy) {
-        console.error(
-            "User trying to create a group on behalf of another user",
-            { uid: createdBy, createdBy: groupDTO.createdBy })
-        res.status(400).send("Group was not created")
-        return
-    }
+    const group = convertDTOtoGroup(uid, groupDTO)
 
     try {
-        const group = await addGroup(convertDTOtoGroup(createdBy, groupDTO));
-        groupDTO.id = group.id;
+        validateGroup(group)
+        validateUserMembership(uid, group)
+        validateCreatedBy(uid, groupDTO)
+
+        const newGroup = await addGroup(group);
+        groupDTO.id = newGroup.id;
 
         const response: AddGroupResponse = { group: groupDTO };
         console.log("response", response);
         res.status(200).send(response);
     } catch (e) {
-        console.error(e);
-        res.status(500).send(e);
+        handleError(e, res)
     }
 }

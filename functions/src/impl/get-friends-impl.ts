@@ -4,8 +4,12 @@ import { getFriends } from "../collections/friend-collection";
 import { convertFriendToDTO, FriendDTO } from "../interfaces/dto/friend-dto";
 import { findPerson, getPeople } from "../collections/user-collection";
 import { Person } from "../interfaces/models/person";
+import { handleError } from "../utils/error-utils";
 
 export const getFriendsImpl = async (_: Request, res: Response, uid: string) => {
+    console.log("get friends request", {
+        uid: uid,
+    });
 
     try {
         const response: GetFriendsResponse = {
@@ -27,7 +31,6 @@ export const getFriendsImpl = async (_: Request, res: Response, uid: string) => 
         console.log("response", response);
         res.status(200).send(response);
     } catch (e) {
-        console.error(e);
-        res.status(500).send(e);
+        handleError(e, res)
     }
 }

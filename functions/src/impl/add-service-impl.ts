@@ -6,26 +6,19 @@ import { ServiceDTO } from "../interfaces/dto/service-dto";
 import { Group } from "../interfaces/models/group";
 import { convertDTOtoService, Service } from "../interfaces/models/service";
 import { validateAddService } from "../middleware/service/add-service-validator";
+import { handleError } from "../utils/error-utils";
+import { validateUserMembership } from "../middleware/validate-user-membership";
 
 export const addServiceImpl = async (req: Request, res: Response, uid: string) => {
     const body = req.body as AddServiceRequest
-    const groupId = body.groupId
+    const groupId = req.params.groupId
     const serviceDto: ServiceDTO = body.service
-    const service: Service = convertDTOtoService(groupId, serviceDto)
-    console.log("request", body)
-
-    if (!validateAddService(res, uid, service)) {
-        return
-    }
-
+    const service: Service = convertDTOtoService(serviceDto)
+    console.log("add service", { body: body }, { groupId: groupId })
     try {
+        validateAddService(uid, service)
         const group: Group = await getGroupById(groupId);
-        const findUid: string | undefined = group.people.find((id) => id === uid)
-        if (findUid === undefined) {
-            console.log("Token userid not found in group", { groupId: groupId, uid: uid });
-            res.status(404).send("Could not find group")
-            return
-        }
+        validateUserMembership(uid, group)
 
         const addServiceResponse = await addService(groupId, service)
         serviceDto.id = addServiceResponse.id
@@ -35,7 +28,6 @@ export const addServiceImpl = async (req: Request, res: Response, uid: string) =
 
         res.status(200).send(response)
     } catch (e) {
-        console.error(e);
-        res.status(500).send(e);
+        handleError(e, res)
     }
 }

@@ -5,14 +5,18 @@ import { getPeople } from "../collections/user-collection";
 import { convertEventToDTO, EventDTO } from "../interfaces/dto/event-dto";
 import { GetEventsRequest, GetEventsResponse } from "../interfaces/get-events";
 import { Event } from "../interfaces/models/events";
+import { handleError } from "../utils/error-utils";
+import { validateUserMembership } from "../middleware/validate-user-membership";
 
 export const getEventsImpl = async (req: Request, res: Response, uid: string) => {
     const body = req.body as GetEventsRequest;
-    console.log("request", body);
+    console.log("get events request", body);
     const groupId = body.groupId;
 
     try {
         const group = await getGroupById(groupId);
+        validateUserMembership(uid, group)
+
         const people = await getPeople(group.people);
         const events: Event[] = await getEvents(groupId)
 
@@ -20,12 +24,6 @@ export const getEventsImpl = async (req: Request, res: Response, uid: string) =>
             return convertEventToDTO(event, people)
         })
 
-        const findUid: string | undefined = group.people.find((id) => id === uid)
-        if (findUid === undefined) {
-            console.error("User trying to access forbiddin group", { uid: uid, group: group });
-            res.status(400).send("You are not part of this group")
-            return
-        }
 
         const response: GetEventsResponse = {
             events: dtos,
@@ -33,7 +31,6 @@ export const getEventsImpl = async (req: Request, res: Response, uid: string) =>
         console.log("response", response);
         res.status(200).send(response);
     } catch (e) {
-        console.error(e);
-        res.status(500).send(e);
+        handleError(e, res)
     }
 }
