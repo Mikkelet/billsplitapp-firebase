@@ -2,11 +2,11 @@ import { Request, Response } from "firebase-functions";
 import { updateUser } from "../collections/user-collection";
 import { convertDTOToPerson } from "../interfaces/models/person";
 import { UpdateUserRequest } from "../interfaces/update-user";
+import logRequest from "../utils/log-utils";
 
 export const updateUserImpl = async (req: Request, res: Response) => {
+    logRequest(req)
     const body = req.body as UpdateUserRequest;
-    console.log("request", body);
-
     const userDTO = body.user;
 
     try {

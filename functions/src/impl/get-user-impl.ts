@@ -7,9 +7,11 @@ import { convertGroupToDTO, GroupDTO } from "../interfaces/dto/group-dto";
 import { Friend } from "../interfaces/models/friend";
 import { Group } from "../interfaces/models/group";
 import { Person } from "../interfaces/models/person";
+import logRequest from "../utils/log-utils";
 
 
-export const getUserProfile = async (_: Request, res: Response, uid: string) => {
+export const getUserProfile = async (req: Request, res: Response, uid: string) => {
+    logRequest(req)
 
     try {
         const user: Person = await getExistingUserById(uid);

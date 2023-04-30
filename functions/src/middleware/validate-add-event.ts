@@ -13,7 +13,7 @@ export function validateAddEvent(request: AddEventRequest, uid: string) {
     if (debts.length === 0) {
         throw billSplitError(400, "An unexptected error occurred. Please contact the developer!")
     }
-    if (event.createdBy.id !== uid) {
+    if (event.id === "" && event.createdBy.id !== uid) {
         console.error(
             "User trying to create an event on behalf of another user",
             { uid: uid, createdBy: event.createdBy },

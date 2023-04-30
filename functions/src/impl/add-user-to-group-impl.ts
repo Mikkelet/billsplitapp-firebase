@@ -7,11 +7,12 @@ import { Person } from "../interfaces/models/person";
 import { getPeople } from "../collections/user-collection";
 import { AddToGroupRequest } from "../interfaces/add-to-group";
 import { validateUserMembership } from "../middleware/validate-user-membership";
+import logRequest from "../utils/log-utils";
 
 export const addToGroupImpl = async (req: Request, res: Response, uid: string) => {
+    logRequest(req)
     const body = req.body as AddToGroupRequest;
     const groupId = req.params.groupId
-    console.log("addToGroup request", body);
 
     try {
         const group: Group = await getGroupById(groupId);

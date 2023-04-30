@@ -11,10 +11,11 @@ import { convertFriendToDTO } from "../interfaces/dto/friend-dto";
 import { Friend, FriendStatus } from "../interfaces/models/friend";
 import { Person } from "../interfaces/models/person";
 import { billSplitError, handleError } from "../utils/error-utils";
+import logRequest from "../utils/log-utils";
 
 export const addFriendImpl = async (req: Request, res: Response, uid: string) => {
+    logRequest(req)
     const body = req.body as AddFriendRequest;
-    console.log("addFriend request", body);
 
     try {
         let friendUser: Person | null = null

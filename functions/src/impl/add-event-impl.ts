@@ -9,17 +9,18 @@ import { Group } from "../interfaces/models/group";
 import { handleError } from "../utils/error-utils";
 import { validateUserMembership } from "../middleware/validate-user-membership";
 import { validateAddEvent } from "../middleware/validate-add-event";
+import logRequest from "../utils/log-utils";
 
 export const addEventImpl = async (req: Request, res: Response, uid: string) => {
+    logRequest(req)
     const body = req.body as AddEventRequest;
-    console.log("request", body);
 
-    const groupId = body.groupId
-    const eventDTO: EventDTO = body.event;
-    const debtDtos = body.debts;
-    const event: Event = convertDTOtoEvent(uid, eventDTO);
-    const debts: Debt[] = debtDtos.map((dto) => convertDTOtoDebt(dto));
     try {
+        const groupId = body.groupId
+        const eventDTO: EventDTO = body.event;
+        const debtDtos = body.debts;
+        const event: Event = convertDTOtoEvent(uid, eventDTO);
+        const debts: Debt[] = debtDtos.map((dto) => convertDTOtoDebt(dto));
 
         validateAddEvent(body, uid)
         const group: Group = await getGroupById(groupId);

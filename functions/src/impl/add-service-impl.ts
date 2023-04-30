@@ -8,14 +8,16 @@ import { convertDTOtoService, Service } from "../interfaces/models/service";
 import { validateAddService } from "../middleware/service/add-service-validator";
 import { handleError } from "../utils/error-utils";
 import { validateUserMembership } from "../middleware/validate-user-membership";
+import logRequest from "../utils/log-utils";
 
 export const addServiceImpl = async (req: Request, res: Response, uid: string) => {
+    logRequest(req)
     const body = req.body as AddServiceRequest
     const groupId = req.params.groupId
     const serviceDto: ServiceDTO = body.service
-    const service: Service = convertDTOtoService(serviceDto)
-    console.log("add service", { body: body }, { groupId: groupId })
+
     try {
+        const service: Service = convertDTOtoService(serviceDto)
         validateAddService(uid, service)
         const group: Group = await getGroupById(groupId);
         validateUserMembership(uid, group)

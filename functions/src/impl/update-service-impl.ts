@@ -6,14 +6,17 @@ import { UpdateServiceRequest } from "../interfaces/update-service";
 import { validateUpdateService } from "../middleware/service/update-service-validator";
 import { validateUserMembership } from "../middleware/validate-user-membership";
 import { getGroupById } from "../collections/group-collection";
+import logRequest from "../utils/log-utils";
 
 export const updateServiceImpl = async (req: Request, res: Response, uid: string) => {
+    logRequest(req)
     const groupId = req.params.groupId;
     const body = req.body as UpdateServiceRequest
     const serviceDto: ServiceDTO = body.service
-    const service: Service = convertDTOtoService(serviceDto)
 
     try {
+        const service: Service = convertDTOtoService(serviceDto)
+
         validateUpdateService(uid, service)
         const group = await getGroupById(groupId)
         validateUserMembership(uid, group)

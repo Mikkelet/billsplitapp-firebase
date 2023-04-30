@@ -5,11 +5,10 @@ import { convertFriendToDTO, FriendDTO } from "../interfaces/dto/friend-dto";
 import { findPerson, getPeople } from "../collections/user-collection";
 import { Person } from "../interfaces/models/person";
 import { handleError } from "../utils/error-utils";
+import logRequest from "../utils/log-utils";
 
-export const getFriendsImpl = async (_: Request, res: Response, uid: string) => {
-    console.log("get friends request", {
-        uid: uid,
-    });
+export const getFriendsImpl = async (req: Request, res: Response, uid: string) => {
+    logRequest(req)
 
     try {
         const response: GetFriendsResponse = {

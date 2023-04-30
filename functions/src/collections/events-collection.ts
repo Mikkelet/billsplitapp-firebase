@@ -21,7 +21,7 @@ export async function getEvents(groupId: string): Promise<Event[]> {
  * @param {ExpenseEvent} expenseEvent expense to be updated
  */
 export async function updateExpense(groupId: string, expenseEvent: ExpenseEvent) {
-    return eventsCollection(groupId).doc(expenseEvent.id).set(expenseEvent);
+    return eventsCollection(groupId).doc(expenseEvent.id).update(expenseEvent);
 }
 
 /**

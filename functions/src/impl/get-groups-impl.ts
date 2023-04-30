@@ -4,8 +4,11 @@ import { GetGroupsResponse } from "../interfaces/get-groups";
 import { getGroupsByUser } from "../collections/group-collection";
 import { findPerson, getPeople } from "../collections/user-collection";
 import { handleError } from "../utils/error-utils";
+import logRequest from "../utils/log-utils";
 
-export const getGroupsImpl = async (_: Request, res: Response, uid: string) => {
+export const getGroupsImpl = async (req: Request, res: Response, uid: string) => {
+    logRequest(req)
+
     try {
         const groups = await getGroupsByUser(uid);
         if (groups.length === 0) {

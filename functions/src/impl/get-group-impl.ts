@@ -13,11 +13,12 @@ import { convertServiceToDTO, Service } from "../interfaces/models/service";
 import { getServicesForGrouo } from "../collections/services-collection";
 import { handleError } from "../utils/error-utils";
 import { validateUserMembership } from "../middleware/validate-user-membership";
+import logRequest from "../utils/log-utils";
 
 export const getGroupImpl = async (req: Request, res: Response, uid: string) => {
+    logRequest(req)
     const body = req.params.id
     const groupId = body
-    console.log("get group request", { groupId: groupId });
 
     try {
         const group: Group = await getGroupById(groupId);

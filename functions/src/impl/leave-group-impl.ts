@@ -6,11 +6,12 @@ import { convertGroupToDTO } from "../interfaces/dto/group-dto";
 import { Person } from "../interfaces/models/person";
 import { getPeople } from "../collections/user-collection";
 import { handleError } from "../utils/error-utils";
+import logRequest from "../utils/log-utils";
 
 export const leaveGroupImpl = async (req: Request, res: Response, uid: string) => {
+    logRequest(req)
     const body = req.params.groupId
     const groupId = body
-    console.log("leaveGroup request", groupId);
 
     try {
         const group: Group = await getGroupById(groupId);
