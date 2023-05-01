@@ -46,7 +46,7 @@ export function convertDTOtoEvent(createdByUid: string, event: EventDTO): Event 
         return {
             type: event.type,
             id: event.id,
-            createdBy: createdByUid,
+            createdBy: event.createdBy.id,
             description: event.description,
             payee: event.payee.id,
             timeStamp: event.timeStamp,
@@ -60,7 +60,7 @@ export function convertDTOtoEvent(createdByUid: string, event: EventDTO): Event 
             type: event.type,
             paidTo: event.paidTo.id,
             timeStamp: event.timeStamp,
-            createdBy: createdByUid,
+            createdBy: event.createdBy.id,
             amount: event.amount,
         } as PaymentEvent
     }
