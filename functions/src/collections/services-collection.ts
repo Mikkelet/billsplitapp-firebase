@@ -23,7 +23,7 @@ export async function getAllServices(): Promise<ServiceWithGroupId[]> {
     return query.docs.map((doc) => {
         return {
             service: doc.data(),
-            groupId: doc.ref.parent.id,
+            groupId: doc.ref.parent.parent?.id ?? "services",
         } as ServiceWithGroupId
     })
 }
