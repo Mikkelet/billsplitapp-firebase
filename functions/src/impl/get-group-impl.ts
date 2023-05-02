@@ -25,7 +25,7 @@ export const getGroupImpl = async (req: Request, res: Response, uid: string) => 
         validateUserMembership(uid, group)
 
 
-        const uids = [...group.pastMembers, ...group.people]
+        const uids: string[] = [...group.pastMembers, ...group.people]
         const people: Person[] = await getPeople(uids);
         const events: Event[] = await getEvents(groupId);
         const services: Service[] = await getServicesForGrouo(groupId);
