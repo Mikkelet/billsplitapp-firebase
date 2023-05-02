@@ -13,23 +13,24 @@ export const addToGroupImpl = async (req: Request, res: Response, uid: string) =
     logRequest(req)
     const body = req.body as AddToGroupRequest;
     const groupId = req.params.groupId
+    const newUserId = body.userId;
 
     try {
         const group: Group = await getGroupById(groupId);
         validateUserMembership(uid, group)
 
-        // create new pastMembers list without uid
-        const peopleWithUid: string[] = [...new Set([...group.pastMembers, uid])]
+        // create new list of people with newUserId
+        const peopleWithNewUser: string[] = [...new Set([...group.people, newUserId])]
 
-        // create new people list with uid
-        const pastMembersWithoutUid: string[] = group.people.filter((p) => p !== body.userId)
+        // create new past member list without newUserId
+        const pastMembersWithoutNewUser: string[] = group.pastMembers.filter((p) => p !== newUserId)
 
         // Apply new lists
-        group.people = peopleWithUid
-        group.pastMembers = pastMembersWithoutUid
+        group.people = peopleWithNewUser
+        group.pastMembers = pastMembersWithoutNewUser
 
         // get people of uids
-        const allUids: string[] = [...peopleWithUid, ...pastMembersWithoutUid]
+        const allUids: string[] = [...peopleWithNewUser, ...pastMembersWithoutNewUser]
         const allPeople: Person[] = await getPeople(allUids)
 
         // update group
