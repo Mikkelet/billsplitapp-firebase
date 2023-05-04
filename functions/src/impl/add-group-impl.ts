@@ -1,5 +1,5 @@
 import { Request, Response } from "firebase-functions";
-import { addGroup } from "../collections/group-collection";
+import { addGroup, updateGroup } from "../collections/group-collection";
 import { AddGroupRequest, AddGroupResponse } from "../interfaces/add-group";
 import { GroupDTO } from "../interfaces/dto/group-dto";
 import { convertDTOtoGroup } from "../interfaces/models/group";
@@ -21,8 +21,12 @@ export const addGroupImpl = async (req: Request, res: Response, uid: string) => 
         validateUserMembership(uid, group)
         validateCreatedBy(uid, groupDTO)
 
-        const newGroup = await addGroup(group);
-        groupDTO.id = newGroup.id;
+        if (groupDTO.id === "") {
+            const newGroup = await addGroup(group);
+            groupDTO.id = newGroup.id;
+        } else {
+            await updateGroup(group);
+        }
 
         const response: AddGroupResponse = { group: groupDTO };
         console.log("response", response);

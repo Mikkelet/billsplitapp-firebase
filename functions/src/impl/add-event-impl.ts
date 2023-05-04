@@ -36,12 +36,14 @@ export const addEventImpl = async (req: Request, res: Response, uid: string) => 
         eventDTO.id = dbEvent.id
 
         let latestEvent: Event | null = null
-        if (group.latestEvent === undefined) {
-            latestEvent = event
-        } else if (group.latestEvent === null) {
-            latestEvent = event
-        } else if (event.timeStamp > group.latestEvent.timeStamp) {
-            latestEvent = event
+        if (event.type === "expense") {
+            if (group.latestEvent === undefined) {
+                latestEvent = event
+            } else if (group.latestEvent === null) {
+                latestEvent = event
+            } else if (event.timeStamp > group.latestEvent.timeStamp) {
+                latestEvent = event
+            }
         }
         await updateGroupDebt(groupId, debts, latestEvent);
 
