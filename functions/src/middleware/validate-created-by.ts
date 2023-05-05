@@ -6,7 +6,7 @@ type NewDTO = { id: string, createdBy: PersonDTO }
 
 /**
  * Validate if new event/group is created by same use as request sender
- * 
+ *
  * @param {string} uid uid to request
  * @param {NewDTO} dto dto with createdBy field
  */

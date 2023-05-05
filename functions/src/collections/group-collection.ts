@@ -21,11 +21,9 @@ export async function addGroup(group: Group): Promise<Group> {
 /**
  * update group
  * @param {Group} group group to update
- * @return {Group} return updated group
  */
-export async function updateGroup(group: Group): Promise<Group> {
+export async function updateGroup(group: Group) {
     await groupCollection.doc(group.id).update(group)
-    return group
 }
 
 /**
