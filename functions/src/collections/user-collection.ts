@@ -154,6 +154,7 @@ export async function getFCMTokens(users: string[]) {
 
 /**
  * Update user
+ * @param {string} uid for user
  * @param {UpdatePerson} updateData user to update
  */
 export async function updateUser(uid: string, updateData: UpdateUserRequest) {

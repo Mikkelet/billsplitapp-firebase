@@ -1,7 +1,7 @@
 import * as firebase from "firebase-admin";
-const serviceAccount = require(`/Users/mikkelthygesen/Downloads/billsplittapp-54ac75f46eb9.json`);
+//  const serviceAccount = require(`/Users/mikkelthygesen/Downloads/billsplittapp-54ac75f46eb9.json`);
 firebase.initializeApp({
-    credential: firebase.credential.cert(serviceAccount),
+    credential: firebase.credential.applicationDefault(),
 });
 
 import * as express from "express"

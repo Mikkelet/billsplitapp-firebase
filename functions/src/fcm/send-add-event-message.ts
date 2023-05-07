@@ -9,20 +9,23 @@ import { EventDTO } from "../interfaces/dto/event-dto";
  */
 export default async function sendEventAddedNotification(groupId: string, event: EventDTO) {
 
-    const title = `New expense`
-    const body = `${event.createdBy.name} added a new expense`
+    let title = "New expense"
+    let body = `${event.createdBy.name} added a new expense`
+    if (event.id !== "") {
+        title = "Expense updated"
+        body = `${event.createdBy.name} updated an expense`
+    }
 
     const payload: MessagingPayload = {
         data: {
             groupId: groupId,
             eventId: event.id,
         },
-    
         notification: {
             title: title,
             body: body,
             clickAction: "FLUTTER_NOTIFICATION_CLICK",
-        }
+        },
     }
-    await firebase.messaging().sendToTopic(`group-${groupId}`, payload, {contentAvailable: true})
+    await firebase.messaging().sendToTopic(`group-${groupId}`, payload, { contentAvailable: true })
 }
