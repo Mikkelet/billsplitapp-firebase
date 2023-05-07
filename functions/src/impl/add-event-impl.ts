@@ -8,8 +8,9 @@ import { convertDTOtoEvent, Event, ExpenseEvent } from "../interfaces/models/eve
 import { Group } from "../interfaces/models/group";
 import { handleError } from "../utils/error-utils";
 import { validateUserMembership } from "../middleware/validate-user-membership";
-import { validateAddEvent } from "../middleware/validate-add-event";
 import logRequest from "../utils/log-utils";
+import sendEventAddedNotification from "../fcm/send-add-event-message";
+import validateAddEvent from "../middleware/validate-add-event";
 
 export const addEventImpl = async (req: Request, res: Response, uid: string) => {
     logRequest(req)
@@ -49,6 +50,7 @@ export const addEventImpl = async (req: Request, res: Response, uid: string) => 
 
         const response: AddEventResponse = { event: eventDTO }
         console.log("response", eventDTO);
+        sendEventAddedNotification(body.groupId, eventDTO)
         res.status(200).send(response);
     } catch (e) {
         handleError(e, res)

@@ -1,5 +1,6 @@
-import { PersonDTO } from "./dto/person-dto";
 
 export interface UpdateUserRequest {
-    user: PersonDTO
+    name?: string;
+    pfpUrl?: string;
+    fcmToken?: string;
 }

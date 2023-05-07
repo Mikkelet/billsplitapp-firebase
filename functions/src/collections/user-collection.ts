@@ -2,6 +2,7 @@ import * as firebase from "firebase-admin";
 import { UserRecord } from "firebase-functions/v1/auth";
 import { Person, PersonWithId } from "../interfaces/models/person";
 import { billSplitError } from "../utils/error-utils";
+import { UpdateUserRequest } from "../interfaces/update-user";
 
 const firestore = firebase.firestore();
 
@@ -90,6 +91,7 @@ export async function getPeople(uids: string[]): Promise<Person[]> {
         return { uid: id }
     })
     const response = await firebase.auth().getUsers(userIdentifiers);
+
     const users = response.users;
     const people: Person[] = users.map((user) => {
         return {
@@ -136,13 +138,29 @@ export function findPerson<T extends PersonWithId>(people: T[], uid: string): T 
 }
 
 /**
- * Update user
- * @param {Person} user user to update
+ * get fcmtokens of users
+ * @param {string[]} users
  */
-export async function updateUser(user: Person) {
-    const updateData = {
-        name: user.name,
-        pfpUrl: user.pfpUrl,
-    } as Person
-    await userCollection.doc(user.id).update(updateData)
+export async function getFCMTokens(users: string[]) {
+    const tokens: string[] = []
+    for await (const user of users) {
+        const doc = await userCollection.doc(user).get()
+        const data = doc.data() as Person
+        if (data.fcmToken !== null && data.fcmToken !== undefined) {
+            tokens.push(data.fcmToken)
+        }
+    }
+}
+
+/**
+ * Update user
+ * @param {UpdatePerson} updateData user to update
+ */
+export async function updateUser(uid: string, updateData: UpdateUserRequest) {
+    const doc = await userCollection.doc(uid).get()
+    if (doc.exists) {
+        await userCollection.doc(uid).update(updateData)
+    } else {
+        await userCollection.doc(uid).set(updateData)
+    }
 }

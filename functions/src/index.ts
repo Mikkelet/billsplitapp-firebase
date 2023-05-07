@@ -1,5 +1,8 @@
 import * as firebase from "firebase-admin";
-firebase.initializeApp();
+const serviceAccount = require(`/Users/mikkelthygesen/Downloads/billsplittapp-54ac75f46eb9.json`);
+firebase.initializeApp({
+    credential: firebase.credential.cert(serviceAccount),
+});
 
 import * as express from "express"
 import * as cors from "cors"
@@ -17,9 +20,13 @@ import { updateServiceImpl } from "./impl/update-service-impl";
 import { leaveGroupImpl } from "./impl/leave-group-impl";
 import { addToGroupImpl } from "./impl/add-user-to-group-impl";
 import { deleteServiceImpl } from "./impl/delete-service-impl";
+import { updateUserImpl } from "./impl/update-user-impl";
 
 const app = express()
 app.use(cors({ origin: true }))
+
+// User
+app.put("/user", (req, res) => authInterceptor(updateUserImpl)(req, res))
 
 // Groups
 app.get("/groups", (req, res) => authInterceptor(getGroupsImpl)(req, res))
@@ -47,7 +54,6 @@ app.delete("/group/:groupId/service/:serviceId", (req, res) =>
 app.all("*", functions.https.onRequest(async (_, res) => {
     res.status(404).send("Invalid request")
 }))
-
 
 export const v2 = functions.https.onRequest(app)
 

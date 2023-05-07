@@ -1,20 +1,17 @@
 import { Request, Response } from "firebase-functions";
 import { updateUser } from "../collections/user-collection";
-import { convertDTOToPerson } from "../interfaces/models/person";
 import { UpdateUserRequest } from "../interfaces/update-user";
 import logRequest from "../utils/log-utils";
+import { handleError } from "../utils/error-utils";
 
-export const updateUserImpl = async (req: Request, res: Response) => {
+export const updateUserImpl = async (req: Request, res: Response, uid: string) => {
     logRequest(req)
-    const body = req.body as UpdateUserRequest;
-    const userDTO = body.user;
+    const updateData = req.body as UpdateUserRequest;
 
     try {
-        const user = convertDTOToPerson(userDTO);
-        await updateUser(user);
+        await updateUser(uid, updateData);
         res.status(204).send();
     } catch (e) {
-        console.error(e);
-        res.status(500).send(e);
+        handleError(e, res)
     }
 }

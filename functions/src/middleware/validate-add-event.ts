@@ -6,7 +6,7 @@ import { billSplitError } from "../utils/error-utils";
  * @param {AddEventRequest} request requst to validate
  * @param {string} uid uid of request
  */
-export function validateAddEvent(request: AddEventRequest, uid: string) {
+export default function validateAddEvent(request: AddEventRequest, uid: string) {
     const debts = request.debts
     const event = request.event
 
