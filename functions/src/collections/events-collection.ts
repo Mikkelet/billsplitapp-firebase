@@ -38,3 +38,24 @@ export async function insertEvent(groupId: string, event: Event): Promise<Event>
     await eventsCollection(groupId).doc(event.id).set(event);
     return event;
 }
+
+/**
+ * Checks if an events exists
+ * @param {string} groupId id of group with event
+ * @param {string} eventId id of event
+ * @return {Promise<boolean>} true if event exists
+ */
+export async function eventExists(groupId: string, eventId: string): Promise<boolean> {
+    const query = await eventsCollection(groupId).doc(eventId).get()
+    return query.exists
+}
+
+/**
+ * Deletes an event
+ * @param {string} groupId id of group with event
+ * @param {string} eventId id of event
+ */
+export async function deleteEvent(groupId: string, eventId: string) {
+    await eventsCollection(groupId).doc(eventId).delete()
+}
+

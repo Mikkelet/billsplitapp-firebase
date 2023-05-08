@@ -9,7 +9,7 @@ import { Group } from "../interfaces/models/group";
 import { handleError } from "../utils/error-utils";
 import { validateUserMembership } from "../middleware/validate-user-membership";
 import logRequest from "../utils/log-utils";
-import sendEventAddedNotification from "../fcm/send-add-event-message";
+import sendEventAddedNotification from "../fcm/send-add-event-message"
 import validateAddEvent from "../middleware/validate-add-event";
 
 export const addEventImpl = async (req: Request, res: Response, uid: string) => {
