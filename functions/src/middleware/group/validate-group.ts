@@ -5,7 +5,7 @@ import { billSplitError } from "../../utils/error-utils";
  * Validate group
  * @param {Group} group group to validate
  */
-export function validateGroup(group: Group) {
+export default function validateGroup(group: Group) {
     if (!group.name) {
         throw billSplitError(400, "Missing group name");
     }

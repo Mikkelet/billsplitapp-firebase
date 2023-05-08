@@ -43,8 +43,9 @@ const checkAuth = async (req: Request, res: Response,
 /**
  * intercept the request to check if user is authenticated
  * @param {Callback} request Callback for request
- * @return {Void} request
+ * @return {void} request
  */
-export function authInterceptor(request: (req: Request, res: Response, uid: string) => void) {
+export default function authInterceptor(
+    request: (req: Request, res: Response, uid: string) => void) {
     return functions.https.onRequest((req, res) => checkAuth(req, res, request));
 }

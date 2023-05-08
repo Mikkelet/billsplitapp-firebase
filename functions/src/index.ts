@@ -8,21 +8,21 @@ firebase.initializeApp({
 import * as express from "express"
 import * as cors from "cors"
 import * as functions from "firebase-functions";
-import { authInterceptor } from "./middleware/auth-interceptor";
-import { addEventImpl } from "./impl/add-event-impl";
-import { addFriendImpl } from "./impl/add-friend-impl";
-import { addGroupImpl } from "./impl/add-group-impl";
-import { getFriendsImpl } from "./impl/get-friends-impl";
-import { getGroupImpl } from "./impl/get-group-impl";
-import { getGroupsImpl } from "./impl/get-groups-impl";
-import { addServiceImpl } from "./impl/add-service-impl";
-import { scheduledServicesImpl } from "./cron/services-cron-impl";
-import { updateServiceImpl } from "./impl/update-service-impl";
-import { leaveGroupImpl } from "./impl/leave-group-impl";
-import { addToGroupImpl } from "./impl/add-user-to-group-impl";
-import { deleteServiceImpl } from "./impl/delete-service-impl";
-import { updateUserImpl } from "./impl/update-user-impl";
-import { deleteEventImpl } from "./impl/delete-event-impl";
+import authInterceptor from "./middleware/auth-interceptor";
+import addEventImpl from "./impl/add-event-impl";
+import addFriendImpl from "./impl/add-friend-impl";
+import addGroupImpl from "./impl/add-group-impl";
+import getFriendsImpl from "./impl/get-friends-impl";
+import getGroupImpl from "./impl/get-group-impl";
+import getGroupsImpl from "./impl/get-groups-impl";
+import addServiceImpl from "./impl/add-service-impl";
+import scheduledServicesImpl from "./cron/services-cron-impl";
+import updateServiceImpl from "./impl/update-service-impl";
+import leaveGroupImpl from "./impl/leave-group-impl";
+import addToGroupImpl from "./impl/add-user-to-group-impl";
+import deleteServiceImpl from "./impl/delete-service-impl";
+import deleteEventImpl from "./impl/delete-event-impl";
+import updateUserImpl from "./impl/update-user-impl";
 
 const app = express()
 app.use(cors({ origin: true }))

@@ -11,7 +11,7 @@ import { validateUserMembership } from "../middleware/validate-user-membership";
 import logRequest from "../utils/log-utils";
 import sendServiceAddedNotification from "../fcm/send-add-service-notification";
 
-export const addServiceImpl = async (req: Request, res: Response, uid: string) => {
+const addServiceImpl = async (req: Request, res: Response, uid: string) => {
     logRequest(req)
     const body = req.body as AddServiceRequest
     const groupId = req.params.groupId
@@ -35,3 +35,5 @@ export const addServiceImpl = async (req: Request, res: Response, uid: string) =
         handleError(e, res)
     }
 }
+
+export default addServiceImpl

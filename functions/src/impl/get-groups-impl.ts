@@ -6,7 +6,7 @@ import { findPerson, getPeople } from "../collections/user-collection";
 import { handleError } from "../utils/error-utils";
 import logRequest from "../utils/log-utils";
 
-export const getGroupsImpl = async (req: Request, res: Response, uid: string) => {
+const getGroupsImpl = async (req: Request, res: Response, uid: string) => {
     logRequest(req)
 
     try {
@@ -37,3 +37,5 @@ export const getGroupsImpl = async (req: Request, res: Response, uid: string) =>
         handleError(e, res)
     }
 }
+
+export default getGroupsImpl

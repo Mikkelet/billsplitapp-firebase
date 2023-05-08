@@ -10,7 +10,7 @@ import { Person } from "../interfaces/models/person";
 import logRequest from "../utils/log-utils";
 
 
-export const getUserProfile = async (req: Request, res: Response, uid: string) => {
+const getUserProfile = async (req: Request, res: Response, uid: string) => {
     logRequest(req)
 
     try {
@@ -43,3 +43,5 @@ export const getUserProfile = async (req: Request, res: Response, uid: string) =
         res.status(500).send(e)
     }
 }
+
+export default getUserProfile

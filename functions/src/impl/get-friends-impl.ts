@@ -7,7 +7,7 @@ import { Person } from "../interfaces/models/person";
 import { handleError } from "../utils/error-utils";
 import logRequest from "../utils/log-utils";
 
-export const getFriendsImpl = async (req: Request, res: Response, uid: string) => {
+const getFriendsImpl = async (req: Request, res: Response, uid: string) => {
     logRequest(req)
 
     try {
@@ -33,3 +33,5 @@ export const getFriendsImpl = async (req: Request, res: Response, uid: string) =
         handleError(e, res)
     }
 }
+
+export default getFriendsImpl

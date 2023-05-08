@@ -9,7 +9,7 @@ import { handleError } from "../utils/error-utils";
 import { validateUserMembership } from "../middleware/validate-user-membership";
 import logRequest from "../utils/log-utils";
 
-export const getEventsImpl = async (req: Request, res: Response, uid: string) => {
+const getEventsImpl = async (req: Request, res: Response, uid: string) => {
     logRequest(req)
     const body = req.body as GetEventsRequest;
     const groupId = body.groupId;
@@ -35,3 +35,5 @@ export const getEventsImpl = async (req: Request, res: Response, uid: string) =>
         handleError(e, res)
     }
 }
+
+export default getEventsImpl

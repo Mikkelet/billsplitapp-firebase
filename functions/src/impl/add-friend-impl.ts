@@ -13,7 +13,7 @@ import { Person } from "../interfaces/models/person";
 import { billSplitError, handleError } from "../utils/error-utils";
 import logRequest from "../utils/log-utils";
 
-export const addFriendImpl = async (req: Request, res: Response, uid: string) => {
+const addFriendImpl = async (req: Request, res: Response, uid: string) => {
     logRequest(req)
     const body = req.body as AddFriendRequest;
 
@@ -94,3 +94,5 @@ async function handleExistingFriendRequest(
     await updateFriendStatus(friend.id, "accepted");
     return "accepted"
 }
+
+export default addFriendImpl

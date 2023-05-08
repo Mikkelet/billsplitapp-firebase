@@ -4,17 +4,17 @@ import { AddGroupRequest, AddGroupResponse } from "../interfaces/add-group";
 import { GroupDTO } from "../interfaces/dto/group-dto";
 import { convertDTOtoGroup } from "../interfaces/models/group";
 import { handleError } from "../utils/error-utils";
-import { validateGroup } from "../middleware/group/validate-group";
-import { validateUserMembership } from "../middleware/validate-user-membership";
-import { validateCreatedBy } from "../middleware/validate-created-by";
+import validateGroup from "../middleware/group/validate-group";
+import validateUserMembership from "../middleware/validate-user-membership";
+import validateCreatedBy from "../middleware/validate-created-by";
 import logRequest from "../utils/log-utils";
 
-export const addGroupImpl = async (req: Request, res: Response, uid: string) => {
+const addGroupImpl = async (req: Request, res: Response, uid: string) => {
     logRequest(req)
-    const body = req.body as AddGroupRequest;
-    const groupDTO: GroupDTO = body.group;
-
     try {
+        const body = req.body as AddGroupRequest;
+        const groupDTO: GroupDTO = body.group;
+
         const group = convertDTOtoGroup(uid, groupDTO)
 
         validateGroup(group)
@@ -35,3 +35,5 @@ export const addGroupImpl = async (req: Request, res: Response, uid: string) => 
         handleError(e, res)
     }
 }
+
+export default addGroupImpl

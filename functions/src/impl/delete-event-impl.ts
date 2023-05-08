@@ -5,7 +5,7 @@ import logRequest from "../utils/log-utils";
 import { billSplitError, handleError } from "../utils/error-utils";
 import { DeleteEventRequest } from "../interfaces/delete-event";
 
-export const deleteEventImpl = async (req: Request, res: Response, uid: string) => {
+const deleteEventImpl = async (req: Request, res: Response, uid: string) => {
     logRequest(req)
 
     try {
@@ -28,3 +28,5 @@ export const deleteEventImpl = async (req: Request, res: Response, uid: string) 
         handleError(e, res)
     }
 }
+
+export default deleteEventImpl

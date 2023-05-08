@@ -12,7 +12,7 @@ import logRequest from "../utils/log-utils";
 import sendEventAddedNotification from "../fcm/send-add-event-message"
 import validateAddEvent from "../middleware/validate-add-event";
 
-export const addEventImpl = async (req: Request, res: Response, uid: string) => {
+const addEventImpl = async (req: Request, res: Response, uid: string) => {
     logRequest(req)
     const body = req.body as AddEventRequest;
 
@@ -58,3 +58,5 @@ export const addEventImpl = async (req: Request, res: Response, uid: string) => 
         handleError(e, res)
     }
 }
+
+export default addEventImpl

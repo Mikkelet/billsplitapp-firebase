@@ -8,7 +8,7 @@ import { validateUserMembership } from "../middleware/validate-user-membership";
 import { getGroupById } from "../collections/group-collection";
 import logRequest from "../utils/log-utils";
 
-export const updateServiceImpl = async (req: Request, res: Response, uid: string) => {
+const updateServiceImpl = async (req: Request, res: Response, uid: string) => {
     logRequest(req)
     const groupId = req.params.groupId;
     const body = req.body as UpdateServiceRequest
@@ -29,3 +29,5 @@ export const updateServiceImpl = async (req: Request, res: Response, uid: string
         res.status(500).send(e);
     }
 }
+
+export default updateServiceImpl

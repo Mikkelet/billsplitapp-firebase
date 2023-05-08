@@ -9,7 +9,7 @@ import { AddToGroupRequest } from "../interfaces/add-to-group";
 import { validateUserMembership } from "../middleware/validate-user-membership";
 import logRequest from "../utils/log-utils";
 
-export const addToGroupImpl = async (req: Request, res: Response, uid: string) => {
+const addToGroupImpl = async (req: Request, res: Response, uid: string) => {
     logRequest(req)
     const body = req.body as AddToGroupRequest;
     const groupId = req.params.groupId
@@ -47,3 +47,5 @@ export const addToGroupImpl = async (req: Request, res: Response, uid: string) =
         res.status(500).send(e);
     }
 }
+
+export default addToGroupImpl

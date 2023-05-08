@@ -8,7 +8,7 @@ import { getPeople } from "../collections/user-collection";
 import { handleError } from "../utils/error-utils";
 import logRequest from "../utils/log-utils";
 
-export const leaveGroupImpl = async (req: Request, res: Response, uid: string) => {
+const leaveGroupImpl = async (req: Request, res: Response, uid: string) => {
     logRequest(req)
     const body = req.params.groupId
     const groupId = body
@@ -43,3 +43,5 @@ export const leaveGroupImpl = async (req: Request, res: Response, uid: string) =
         handleError(e, res)
     }
 }
+
+export default leaveGroupImpl

@@ -15,7 +15,7 @@ import { handleError } from "../utils/error-utils";
 import { validateUserMembership } from "../middleware/validate-user-membership";
 import logRequest from "../utils/log-utils";
 
-export const getGroupImpl = async (req: Request, res: Response, uid: string) => {
+const getGroupImpl = async (req: Request, res: Response, uid: string) => {
     logRequest(req)
     const body = req.params.id
     const groupId = body
@@ -47,3 +47,5 @@ export const getGroupImpl = async (req: Request, res: Response, uid: string) => 
         handleError(e, res)
     }
 }
+
+export default getGroupImpl

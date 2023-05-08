@@ -3,7 +3,7 @@ import { UserRecord } from "firebase-functions/v1/auth";
 import { addPerson } from "../collections/user-collection";
 import { Person } from "../interfaces/models/person";
 
-export const onUserCreateImpl = async (userRecord: UserRecord, _: EventContext) => {
+const onUserCreateImpl = async (userRecord: UserRecord, _: EventContext) => {
     console.log("request", userRecord);
     const user: Person = {
         id: userRecord.uid,
@@ -13,3 +13,5 @@ export const onUserCreateImpl = async (userRecord: UserRecord, _: EventContext) 
     }
     return await addPerson(user).catch(console.log);
 }
+
+export default onUserCreateImpl

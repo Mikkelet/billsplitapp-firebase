@@ -10,7 +10,7 @@ type NewDTO = { id: string, createdBy: PersonDTO }
  * @param {string} uid uid to request
  * @param {NewDTO} dto dto with createdBy field
  */
-export function validateCreatedBy(uid: string, dto: NewDTO) {
+export default function validateCreatedBy(uid: string, dto: NewDTO) {
     if (dto.id === "" && dto.createdBy.id !== uid) {
         console.error(
             "User trying to insert on behalf of another user",

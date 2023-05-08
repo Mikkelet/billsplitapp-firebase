@@ -4,7 +4,7 @@ import { UpdateUserRequest } from "../interfaces/update-user";
 import logRequest from "../utils/log-utils";
 import { handleError } from "../utils/error-utils";
 
-export const updateUserImpl = async (req: Request, res: Response, uid: string) => {
+const updateUserImpl = async (req: Request, res: Response, uid: string) => {
     logRequest(req)
     const updateData = req.body as UpdateUserRequest;
 
@@ -15,3 +15,5 @@ export const updateUserImpl = async (req: Request, res: Response, uid: string) =
         handleError(e, res)
     }
 }
+
+export default updateUserImpl

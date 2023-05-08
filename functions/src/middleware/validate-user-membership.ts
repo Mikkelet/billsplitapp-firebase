@@ -6,7 +6,7 @@ import { billSplitError } from "../utils/error-utils";
  * @param {string} uid id of user
  * @param {Group} group id of group
  */
-export function validateUserMembership(uid: string, group: Group) {
+export default function validateUserMembership(uid: string, group: Group) {
     const findUid: string | undefined = group.people.find((id) => id === uid)
 
     if (findUid === undefined) {

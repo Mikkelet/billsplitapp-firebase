@@ -4,7 +4,7 @@ import { getAllServices } from "../collections/services-collection";
 import { ExpenseEvent } from "../interfaces/models/events";
 import { IndividualExpense } from "../interfaces/models/individual-expense";
 
-export const scheduledServicesImpl = async (_: functions.EventContext) => {
+const scheduledServicesImpl = async (_: functions.EventContext) => {
     console.log("Starting services cron job");
     try {
         const servicesWithGroupId = await getAllServices()
@@ -40,3 +40,5 @@ export const scheduledServicesImpl = async (_: functions.EventContext) => {
         console.error("Failed to run cron job", e)
     }
 }
+
+export default scheduledServicesImpl
