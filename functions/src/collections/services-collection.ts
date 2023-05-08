@@ -46,7 +46,7 @@ export async function addService(groupId: string, service: Service): Promise<Ser
  * @param {string} groupId group id of services
  * @return {Promise<Service[]>} services of group
  */
-export async function getServicesForGrouo(groupId: string): Promise<Service[]> {
+export async function getServicesForGroup(groupId: string): Promise<Service[]> {
     const query = await serviceCollection(groupId).get()
     const services: Service[] = query.docs.map((doc) => doc.data() as Service)
     return services

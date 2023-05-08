@@ -6,7 +6,7 @@ import { convertGroupToDTO } from "../interfaces/dto/group-dto";
 import { Person } from "../interfaces/models/person";
 import { getPeople } from "../collections/user-collection";
 import { AddToGroupRequest } from "../interfaces/add-to-group";
-import { validateUserMembership } from "../middleware/validate-user-membership";
+import validateUserMembership from "../middleware/validate-user-membership";
 import logRequest from "../utils/log-utils";
 
 const addToGroupImpl = async (req: Request, res: Response, uid: string) => {

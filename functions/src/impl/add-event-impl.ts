@@ -7,7 +7,7 @@ import { convertDTOtoDebt, Debt } from "../interfaces/models/debt";
 import { convertDTOtoEvent, Event, ExpenseEvent } from "../interfaces/models/events";
 import { Group } from "../interfaces/models/group";
 import { handleError } from "../utils/error-utils";
-import { validateUserMembership } from "../middleware/validate-user-membership";
+import validateUserMembership from "../middleware/validate-user-membership";
 import logRequest from "../utils/log-utils";
 import sendEventAddedNotification from "../fcm/send-add-event-message"
 import validateAddEvent from "../middleware/validate-add-event";

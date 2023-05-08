@@ -6,7 +6,7 @@ import { convertEventToDTO, EventDTO } from "../interfaces/dto/event-dto";
 import { GetEventsRequest, GetEventsResponse } from "../interfaces/get-events";
 import { Event } from "../interfaces/models/events";
 import { handleError } from "../utils/error-utils";
-import { validateUserMembership } from "../middleware/validate-user-membership";
+import validateUserMembership from "../middleware/validate-user-membership";
 import logRequest from "../utils/log-utils";
 
 const getEventsImpl = async (req: Request, res: Response, uid: string) => {
