@@ -2,7 +2,7 @@ import { Request, Response } from "firebase-functions";
 import { insertEvent, updateExpense } from "../collections/events-collection";
 import { getGroupById, updateGroupDebt } from "../collections/group-collection";
 import { AddEventRequest, AddEventResponse } from "../interfaces/add-event";
-import { EventDTO, ExpenseChangeEventDTO } from "../interfaces/dto/event-dto";
+import { EventDTO, ExpenseChangeEventDTO, ExpenseEventDTO } from "../interfaces/dto/event-dto";
 import { convertDTOtoDebt, Debt } from "../interfaces/models/debt";
 import { convertDTOtoEvent, Event, ExpenseEvent } from "../interfaces/models/events";
 import { Group } from "../interfaces/models/group";
@@ -34,6 +34,9 @@ export const addEventImpl = async (req: Request, res: Response, uid: string) => 
             await updateExpense(groupId, updatedExpense);
         }
         const dbEvent = await insertEvent(groupId, event)
+        if (event.type === "expense") {
+            sendEventAddedNotification(uid, group, eventDTO as ExpenseEventDTO)
+        }
         eventDTO.id = dbEvent.id
 
         let latestEvent: Event | null = null
@@ -50,7 +53,6 @@ export const addEventImpl = async (req: Request, res: Response, uid: string) => 
 
         const response: AddEventResponse = { event: eventDTO }
         console.log("response", eventDTO);
-        sendEventAddedNotification(body.groupId, eventDTO)
         res.status(200).send(response);
     } catch (e) {
         handleError(e, res)
