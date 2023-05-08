@@ -3,6 +3,7 @@ import { MessagingPayload } from "firebase-admin/lib/messaging/messaging-api";
 import { ExpenseEventDTO } from "../interfaces/dto/event-dto";
 import { getUserById } from "../collections/user-collection";
 import { Group } from "../interfaces/models/group";
+import { getTopicForNewExpense, getTopicForUpdateExpense } from "./topics";
 
 /**
  * Send a new notification to group members
@@ -21,10 +22,18 @@ export default async function sendEventAddedNotification(
         body = `${user?.name} updated an expense in ${group.name}`
     }
 
+    let topic: string = ""
+    if (event.id === "") {
+        topic = getTopicForNewExpense(group.id)
+    } else {
+        topic = getTopicForUpdateExpense(group.id)
+    }
+
     const payload: MessagingPayload = {
         data: {
             groupId: group.id,
             eventId: event.id,
+            topic: topic,
         },
         notification: {
             title: title,
@@ -32,5 +41,6 @@ export default async function sendEventAddedNotification(
             clickAction: "FLUTTER_NOTIFICATION_CLICK",
         },
     }
-    await firebase.messaging().sendToTopic(`group-${group.id}`, payload, { contentAvailable: true })
+
+    await firebase.messaging().sendToTopic(topic, payload, { contentAvailable: true })
 }

@@ -9,6 +9,7 @@ import { validateAddService } from "../middleware/service/add-service-validator"
 import { handleError } from "../utils/error-utils";
 import { validateUserMembership } from "../middleware/validate-user-membership";
 import logRequest from "../utils/log-utils";
+import sendServiceAddedNotification from "../fcm/send-add-service-notification";
 
 export const addServiceImpl = async (req: Request, res: Response, uid: string) => {
     logRequest(req)
@@ -27,6 +28,7 @@ export const addServiceImpl = async (req: Request, res: Response, uid: string) =
         const response: AddServiceResponse = {
             service: serviceDto,
         }
+        sendServiceAddedNotification(group, serviceDto)
 
         res.status(200).send(response)
     } catch (e) {
