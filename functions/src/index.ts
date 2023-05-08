@@ -1,5 +1,6 @@
 import * as firebase from "firebase-admin";
-//  const serviceAccount = require(`/Users/mikkelthygesen/Downloads/billsplittapp-54ac75f46eb9.json`);
+//  const serviceAccount =
+// require(`/Users/mikkelthygesen/Downloads/billsplittapp-54ac75f46eb9.json`);
 firebase.initializeApp({
     credential: firebase.credential.applicationDefault(),
 });
@@ -36,7 +37,8 @@ app.get("/groups", (req, res) => authInterceptor(getGroupsImpl)(req, res))
 app.post("/group", (req, res) => authInterceptor(addGroupImpl)(req, res))
 app.get("/group/:id", (req, res) => authInterceptor(getGroupImpl)(req, res))
 app.post("/group/:groupId/user", (req, res) => authInterceptor(addToGroupImpl)(req, res))
-app.delete("/group/:groupId/events/:eventId", (req, res) => authInterceptor(deleteEventImpl)(req, res))
+app.delete("/group/:groupId/events/:eventId", (req, res) =>
+    authInterceptor(deleteEventImpl)(req, res))
 app.delete("/group/:groupId/user/:userId", (req, res) => authInterceptor(leaveGroupImpl)(req, res))
 app.get("/leaveGroup/:groupId", (req, res) => authInterceptor(leaveGroupImpl)(req, res))
 

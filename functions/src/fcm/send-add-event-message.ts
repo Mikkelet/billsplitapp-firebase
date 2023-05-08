@@ -22,7 +22,7 @@ export default async function sendEventAddedNotification(
         body = `${user?.name} updated an expense in ${group.name}`
     }
 
-    let topic: string = ""
+    let topic = ""
     if (event.id === "") {
         topic = getTopicForNewExpense(group.id)
     } else {

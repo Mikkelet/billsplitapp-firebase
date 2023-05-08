@@ -11,9 +11,8 @@ import { ServiceDTO } from "../interfaces/dto/service-dto";
  */
 export default async function sendServiceAddedNotification(group: Group, service: ServiceDTO) {
 
-    let title = `${service.createdBy.name} added a new service to ${group.name}`
-    let body = service.name === "" ? "" : service.name
-
+    const title = `${service.createdBy.name} added a new service to ${group.name}`
+    const body = service.name === "" ? "" : service.name
     const topic = getTopicForNewService(group.id)
 
     const payload: MessagingPayload = {
