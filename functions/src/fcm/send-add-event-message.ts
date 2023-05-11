@@ -1,9 +1,9 @@
-import * as firebase from "firebase-admin";
-import { MessagingPayload } from "firebase-admin/lib/messaging/messaging-api";
 import { ExpenseEventDTO } from "../interfaces/dto/event-dto";
 import { getUserById } from "../collections/user-collection";
 import { Group } from "../interfaces/models/group";
 import { getTopicForNewExpense, getTopicForUpdateExpense } from "./topics";
+import sendNotification from "./send-notification";
+import { DataMessagePayload } from "firebase-admin/lib/messaging/messaging-api";
 
 /**
  * Send a new notification to group members
@@ -29,18 +29,11 @@ export default async function sendEventAddedNotification(
         topic = getTopicForUpdateExpense(group.id)
     }
 
-    const payload: MessagingPayload = {
-        data: {
-            groupId: group.id,
-            eventId: event.id,
-            topic: topic,
-        },
-        notification: {
-            title: title,
-            body: body,
-            clickAction: "FLUTTER_NOTIFICATION_CLICK",
-        },
+    const data: DataMessagePayload = {
+        groupId: group.id,
+        eventId: event.id,
+        topic: topic,
     }
 
-    await firebase.messaging().sendToTopic(topic, payload, { contentAvailable: true })
+    await sendNotification(topic, title, body, data)
 }

@@ -2,7 +2,7 @@ import { Request, Response } from "firebase-functions";
 import { insertEvent, updateExpense } from "../collections/events-collection";
 import { getGroupById, updateGroupDebt } from "../collections/group-collection";
 import { AddEventRequest, AddEventResponse } from "../interfaces/add-event";
-import { EventDTO, ExpenseChangeEventDTO, ExpenseEventDTO } from "../interfaces/dto/event-dto";
+import { EventDTO, ExpenseChangeEventDTO, ExpenseEventDTO, PaymentEventDTO } from "../interfaces/dto/event-dto";
 import { convertDTOtoDebt, Debt } from "../interfaces/models/debt";
 import { convertDTOtoEvent, Event, ExpenseEvent } from "../interfaces/models/events";
 import { Group } from "../interfaces/models/group";
@@ -11,6 +11,7 @@ import validateUserMembership from "../middleware/validate-user-membership";
 import logRequest from "../utils/log-utils";
 import sendEventAddedNotification from "../fcm/send-add-event-message"
 import validateAddEvent from "../middleware/validate-add-event";
+import sendPaymentNotification from "../fcm/send-payment-notification";
 
 const addEventImpl = async (req: Request, res: Response, uid: string) => {
     logRequest(req)
@@ -36,6 +37,8 @@ const addEventImpl = async (req: Request, res: Response, uid: string) => {
         const dbEvent = await insertEvent(groupId, event)
         if (event.type === "expense") {
             sendEventAddedNotification(uid, group, eventDTO as ExpenseEventDTO)
+        } else if (event.type === "payment") {
+            sendPaymentNotification(group, eventDTO as PaymentEventDTO)
         }
         eventDTO.id = dbEvent.id
 

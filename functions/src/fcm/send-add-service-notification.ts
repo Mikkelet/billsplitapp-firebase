@@ -1,8 +1,8 @@
-import * as firebase from "firebase-admin";
-import { MessagingPayload } from "firebase-admin/lib/messaging/messaging-api";
+import { DataMessagePayload } from "firebase-admin/lib/messaging/messaging-api";
 import { Group } from "../interfaces/models/group";
 import { getTopicForNewService } from "./topics";
 import { ServiceDTO } from "../interfaces/dto/service-dto";
+import sendNotification from "./send-notification";
 
 /**
  * Send a new notification to group members
@@ -15,18 +15,11 @@ export default async function sendServiceAddedNotification(group: Group, service
     const body = service.name === "" ? "" : service.name
     const topic = getTopicForNewService(group.id)
 
-    const payload: MessagingPayload = {
-        data: {
-            groupId: group.id,
-            serviceId: service.id,
-            topic: topic,
-        },
-        notification: {
-            title: title,
-            body: body,
-            clickAction: "FLUTTER_NOTIFICATION_CLICK",
-        },
+    const data: DataMessagePayload = {
+        groupId: group.id,
+        serviceId: service.id,
+        topic: topic,
     }
 
-    await firebase.messaging().sendToTopic(topic, payload, { contentAvailable: true })
+    await sendNotification(topic, title, body, data)
 }
