@@ -1,19 +1,20 @@
 import * as firebase from "firebase-admin";
-import { AndroidConfig, AndroidNotification, ApnsConfig, DataMessagePayload, TopicMessage } from "firebase-admin/lib/messaging/messaging-api"
+import { AndroidConfig, AndroidNotification, ApnsConfig, DataMessagePayload, TopicMessage }
+    from "firebase-admin/lib/messaging/messaging-api"
 
 /**
  * Send notification message to specified topic
- * @param topic topic to send message to
- * @param title title of message
- * @param body body of message
- * @param data data of messsage
+ * @param {string} topic topic to send message to
+ * @param {string} title title of message
+ * @param {string} body body of message
+ * @param {DataMessagePayload} data data of messsage
  */
 export default async function sendNotification(
     topic: string,
     title: string,
     body: string,
     data: DataMessagePayload,
-){
+) {
     const apns: ApnsConfig = {
         payload: {
             aps: {
@@ -23,7 +24,7 @@ export default async function sendNotification(
                 },
                 contentAvailable: true,
             },
-        }
+        },
     }
 
     const androidNotification: AndroidNotification = {
@@ -34,7 +35,7 @@ export default async function sendNotification(
 
     const android: AndroidConfig = {
         data: data,
-        notification: androidNotification
+        notification: androidNotification,
     }
 
     const payload: TopicMessage = {

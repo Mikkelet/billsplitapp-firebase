@@ -2,7 +2,8 @@ import { Request, Response } from "firebase-functions";
 import { insertEvent, updateExpense } from "../collections/events-collection";
 import { getGroupById, updateGroupDebt } from "../collections/group-collection";
 import { AddEventRequest, AddEventResponse } from "../interfaces/add-event";
-import { EventDTO, ExpenseChangeEventDTO, ExpenseEventDTO, PaymentEventDTO } from "../interfaces/dto/event-dto";
+import { EventDTO, ExpenseChangeEventDTO, ExpenseEventDTO, PaymentEventDTO }
+    from "../interfaces/dto/event-dto";
 import { convertDTOtoDebt, Debt } from "../interfaces/models/debt";
 import { convertDTOtoEvent, Event, ExpenseEvent } from "../interfaces/models/events";
 import { Group } from "../interfaces/models/group";
