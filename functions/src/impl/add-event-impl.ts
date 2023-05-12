@@ -4,7 +4,6 @@ import { getGroupById, updateGroupDebt } from "../collections/group-collection";
 import { AddEventRequest, AddEventResponse } from "../interfaces/add-event";
 import { EventDTO, ExpenseChangeEventDTO, ExpenseEventDTO, PaymentEventDTO }
     from "../interfaces/dto/event-dto";
-import { convertDTOtoDebt, Debt } from "../interfaces/models/debt";
 import { convertDTOtoEvent, Event, ExpenseEvent } from "../interfaces/models/events";
 import { Group } from "../interfaces/models/group";
 import { handleError } from "../utils/error-utils";
@@ -21,9 +20,8 @@ const addEventImpl = async (req: Request, res: Response, uid: string) => {
     try {
         const groupId = body.groupId
         const eventDTO: EventDTO = body.event;
-        const debtDtos = body.debts;
+        const debts = body.debts;
         const event: Event = convertDTOtoEvent(uid, eventDTO);
-        const debts: Debt[] = debtDtos.map((dto) => convertDTOtoDebt(dto));
 
         validateAddEvent(body, uid)
         const group: Group = await getGroupById(groupId);

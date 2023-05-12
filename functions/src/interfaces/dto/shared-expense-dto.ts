@@ -1,12 +1,13 @@
 import { findPerson } from "../../collections/user-collection";
 import { PersonWithId } from "../models/person";
 import { SharedExpense } from "../models/shared-expenses";
+import SymbolizedExpense from "../models/symbolized-expense";
 import { PersonDTO } from "./person-dto";
 
 export interface SharedExpenseDTO {
     description: string,
     participants: PersonDTO[],
-    expense: number,
+    expense: SymbolizedExpense,
 }
 
 /**

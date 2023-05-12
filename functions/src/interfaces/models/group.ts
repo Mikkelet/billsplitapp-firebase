@@ -1,6 +1,5 @@
-import { convertDebtToDTO } from "../dto/debt-dto";
 import { GroupDTO } from "../dto/group-dto";
-import { Debt } from "./debt";
+import Debt from "./debt";
 import { convertDTOtoEvent, Event } from "./events";
 
 export interface Group {
@@ -32,7 +31,7 @@ export function convertDTOtoGroup(createdByUid: string, groupDTO: GroupDTO): Gro
         createdBy: createdByUid,
         pastMembers: groupDTO.pastMembers.map((m) => m.id),
         people: groupDTO.people.map((p) => p.id),
-        debts: groupDTO.debts.map((dto) => convertDebtToDTO(dto)),
+        debts: groupDTO.debts,
         latestEvent: latestEvent,
     }
 }

@@ -7,7 +7,6 @@ export interface Person {
     name: string;
     pfpUrl: string;
     email: string;
-    fcmToken?: string | null;
 }
 
 /**

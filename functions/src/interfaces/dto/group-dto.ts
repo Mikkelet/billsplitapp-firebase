@@ -1,7 +1,7 @@
 import { findPerson } from "../../collections/user-collection";
+import Debt from "../models/debt";
 import { Group } from "../models/group";
 import { PersonWithId } from "../models/person";
-import { convertDebtToDTO, DebtDTO } from "./debt-dto";
 import { convertEventToDTO, EventDTO } from "./event-dto";
 import { PersonDTO } from "./person-dto";
 
@@ -12,7 +12,7 @@ export interface GroupDTO {
     pastMembers: PersonDTO[];
     createdBy: PersonDTO;
     timeStamp: string;
-    debts: DebtDTO[],
+    debts: Debt[],
     latestEvent: EventDTO | null;
 }
 
@@ -23,8 +23,6 @@ export interface GroupDTO {
  * @return {GroupDTO} return converted group
  */
 export function convertGroupToDTO(group: Group, people: PersonWithId[]): GroupDTO {
-    const debts: DebtDTO[] = group.debts === undefined ? [] : group.debts
-        .map((debt) => convertDebtToDTO(debt));
 
     let latestEvent: EventDTO | null = null
     if (group.latestEvent !== null && group.latestEvent !== undefined) {
@@ -38,7 +36,7 @@ export function convertGroupToDTO(group: Group, people: PersonWithId[]): GroupDT
         pastMembers: group.pastMembers.map((pm) => findPerson(people, pm)),
         createdBy: findPerson(people, group.createdBy),
         people: group.people.map((p) => findPerson(people, p)),
-        debts: debts,
+        debts: group.debts ?? [],
         latestEvent: latestEvent,
     }
 }

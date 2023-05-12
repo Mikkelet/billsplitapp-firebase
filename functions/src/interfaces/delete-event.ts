@@ -1,5 +1,5 @@
-import { DebtDTO } from "./dto/debt-dto";
+import Debt from "./models/debt";
 
 export interface DeleteEventRequest {
-    debts: DebtDTO[];
+    debts: Debt[];
 }

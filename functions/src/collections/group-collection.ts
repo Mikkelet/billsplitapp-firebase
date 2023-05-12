@@ -1,5 +1,5 @@
 import * as firebase from "firebase-admin";
-import { Debt } from "../interfaces/models/debt";
+import Debt from "../interfaces/models/debt";
 import { Event } from "../interfaces/models/events";
 import { Group } from "../interfaces/models/group";
 import { billSplitError } from "../utils/error-utils";
