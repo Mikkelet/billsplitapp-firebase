@@ -2,13 +2,14 @@ import { findPerson } from "../../collections/user-collection";
 import { PersonDTO } from "../dto/person-dto";
 import { ServiceDTO } from "../dto/service-dto";
 import { PersonWithId } from "./person";
+import SymbolizedExpense from "./symbolized-expense";
 
 export interface Service {
     id: string,
     name: string,
     createdBy: string,
     imageUrl: string,
-    monthlyExpense: number,
+    monthlyExpense: SymbolizedExpense,
     payer: string,
     participants: string[]
 }

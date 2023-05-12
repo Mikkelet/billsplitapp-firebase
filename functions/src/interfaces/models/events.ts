@@ -1,7 +1,6 @@
 import { EventDTO } from "../dto/event-dto";
-import { convertDTOsToIndividualExpenses } from "../dto/individual-expense-dto";
-import { IndividualExpense } from "./individual-expense";
 import { SharedExpense, convertDTOtoSharedExpenses } from "./shared-expenses";
+import SymbolizedExpense from "./symbolized-expense";
 
 export type Event = ExpenseChangeEvent | PaymentEvent | ExpenseEvent
 
@@ -12,7 +11,6 @@ export interface ExpenseEvent {
     description: string;
     payee: string;
     sharedExpenses: SharedExpense[],
-    individualExpenses: IndividualExpense[];
     timeStamp: number;
 }
 
@@ -21,7 +19,7 @@ export interface PaymentEvent {
     type: "payment";
     createdBy: string;
     paidTo: string;
-    amount: number;
+    amount: SymbolizedExpense;
     timeStamp: number;
 }
 
@@ -51,8 +49,6 @@ export function convertDTOtoEvent(createdByUid: string, event: EventDTO): Event 
             payee: event.payee.id,
             timeStamp: event.timeStamp,
             sharedExpenses: convertDTOtoSharedExpenses(event.sharedExpenses),
-            individualExpenses:
-                convertDTOsToIndividualExpenses(event.individualExpenses),
         } as ExpenseEvent
     }
     if (event.type === "payment") {
@@ -78,8 +74,6 @@ export function convertDTOtoEvent(createdByUid: string, event: EventDTO): Event 
                 timeStamp: event.groupExpenseOriginal.timeStamp,
                 sharedExpenses:
                     convertDTOtoSharedExpenses(event.groupExpenseOriginal.sharedExpenses),
-                individualExpenses: convertDTOsToIndividualExpenses(
-                    event.groupExpenseOriginal.individualExpenses),
             } as ExpenseEvent,
             groupExpenseEdited: {
                 type: event.groupExpenseEdited.type,
@@ -90,8 +84,6 @@ export function convertDTOtoEvent(createdByUid: string, event: EventDTO): Event 
                 timeStamp: event.groupExpenseEdited.timeStamp,
                 sharedExpenses:
                     convertDTOtoSharedExpenses(event.groupExpenseEdited.sharedExpenses),
-                individualExpenses: convertDTOsToIndividualExpenses(
-                    event.groupExpenseEdited.individualExpenses),
             } as ExpenseEvent,
         } as ExpenseChangeEvent
     }

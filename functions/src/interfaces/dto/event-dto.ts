@@ -6,9 +6,8 @@ import {
     PaymentEvent,
 } from "../models/events";
 import { FriendStatus } from "../models/friend";
-import { convertIndividualExpensesToDTOs } from "../models/individual-expense";
 import { PersonWithId } from "../models/person";
-import { IndividualExpenseDTO } from "./individual-expense-dto";
+import SymbolizedExpense from "../models/symbolized-expense";
 import { PersonDTO } from "./person-dto";
 import { SharedExpenseDTO, convertSharedExpensesToDTO } from "./shared-expense-dto";
 
@@ -27,7 +26,6 @@ export interface ExpenseEventDTO {
     createdBy: PersonDTO;
     description: string;
     payee: PersonDTO;
-    individualExpenses: IndividualExpenseDTO[];
     sharedExpenses: SharedExpenseDTO[];
     timeStamp: number;
 }
@@ -37,7 +35,7 @@ export interface PaymentEventDTO {
     id: string,
     createdBy: PersonDTO;
     paidTo: PersonDTO;
-    amount: number;
+    amount: SymbolizedExpense;
     timeStamp: number;
 }
 
@@ -66,9 +64,6 @@ export function convertEventToDTO(event: Event, people: PersonWithId[]): EventDT
             description: expense.description,
             payee: findPerson(people, expense.payee),
             sharedExpenses: convertSharedExpensesToDTO(expense.sharedExpenses, people),
-            individualExpenses:
-                convertIndividualExpensesToDTOs(expense.individualExpenses, people),
-            sharedExpense: expense.sharedExpenses,
             timeStamp: expense.timeStamp,
         } as ExpenseEventDTO
     }
@@ -87,8 +82,7 @@ export function convertEventToDTO(event: Event, people: PersonWithId[]): EventDT
                 description: change.groupExpenseEdited.description,
                 sharedExpenses:
                     convertSharedExpensesToDTO(change.groupExpenseEdited.sharedExpenses, people),
-                individualExpenses: convertIndividualExpensesToDTOs(
-                    change.groupExpenseEdited.individualExpenses, people),
+
                 payee: findPerson(people, change.groupExpenseEdited.payee),
                 timeStamp: change.groupExpenseEdited.timeStamp,
             } as ExpenseEventDTO,
@@ -100,8 +94,6 @@ export function convertEventToDTO(event: Event, people: PersonWithId[]): EventDT
                 description: change.groupExpenseOriginal.description,
                 sharedExpenses:
                     convertSharedExpensesToDTO(change.groupExpenseOriginal.sharedExpenses, people),
-                individualExpenses: convertIndividualExpensesToDTOs(
-                    change.groupExpenseOriginal.individualExpenses, people),
                 payee: findPerson(people, change.groupExpenseOriginal.payee),
                 timeStamp: change.groupExpenseOriginal.timeStamp,
             } as ExpenseEventDTO,
