@@ -122,7 +122,7 @@ export function convertPaymentV2toV3(payment: PaymentV2): PaymentEvent {
         currency: {
             symbol: "usd",
             rateSnapshot: 1,
-        }
+        },
     }
 }
 
@@ -138,6 +138,6 @@ export function convertExpenseV2ToV3(expense: ExpenseEventV2): ExpenseEvent {
         currency: {
             symbol: "usd",
             rateSnapshot: 1,
-        }
+        },
     }
 }
