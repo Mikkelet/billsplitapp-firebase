@@ -1,4 +1,3 @@
-import SymbolizedExpense from "../models/symbolized-expense";
 import { PersonDTO } from "./person-dto";
 
 export interface ServiceDTO {
@@ -6,7 +5,8 @@ export interface ServiceDTO {
     name: string,
     createdBy: PersonDTO,
     imageUrl: string,
-    monthlyExpense: SymbolizedExpense,
+    monthlyExpense: number,
+    currency: string,
     payer: PersonDTO,
     participants: PersonDTO[]
 }

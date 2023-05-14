@@ -4,7 +4,7 @@ import { convertPersonToDTO, PersonDTO } from "./person-dto";
 
 export interface FriendDTO {
     id: string,
-    timeStamp: number,
+    timestamp: number,
     createdBy: string,
     status: FriendStatus,
     friend: PersonDTO,

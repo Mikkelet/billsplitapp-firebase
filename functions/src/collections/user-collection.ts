@@ -138,21 +138,6 @@ export function findPerson<T extends PersonWithId>(people: T[], uid: string): T 
 }
 
 /**
- * get fcmtokens of users
- * @param {string[]} users
- */
-export async function getFCMTokens(users: string[]) {
-    const tokens: string[] = []
-    for await (const user of users) {
-        const doc = await userCollection.doc(user).get()
-        const data = doc.data() as Person
-        if (data.fcmToken !== null && data.fcmToken !== undefined) {
-            tokens.push(data.fcmToken)
-        }
-    }
-}
-
-/**
  * Update user
  * @param {string} uid for user
  * @param {UpdatePerson} updateData user to update

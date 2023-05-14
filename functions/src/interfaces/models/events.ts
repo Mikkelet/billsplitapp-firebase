@@ -1,6 +1,6 @@
 import { EventDTO } from "../dto/event-dto";
 import { SharedExpense, convertDTOtoSharedExpenses } from "./shared-expenses";
-import SymbolizedExpense from "./symbolized-expense";
+import Currency from "./currency";
 
 export type Event = ExpenseChangeEvent | PaymentEvent | ExpenseEvent
 
@@ -11,7 +11,8 @@ export interface ExpenseEvent {
     description: string;
     payee: string;
     sharedExpenses: SharedExpense[],
-    timeStamp: number;
+    timestamp: number;
+    currency: Currency;
 }
 
 export interface PaymentEvent {
@@ -19,8 +20,9 @@ export interface PaymentEvent {
     type: "payment";
     createdBy: string;
     paidTo: string;
-    amount: SymbolizedExpense;
-    timeStamp: number;
+    amount: number;
+    timestamp: number;
+    currency: Currency;
 }
 
 export interface ExpenseChangeEvent {
@@ -29,7 +31,7 @@ export interface ExpenseChangeEvent {
     createdBy: string;
     groupExpenseOriginal: ExpenseEvent;
     groupExpenseEdited: ExpenseEvent;
-    timeStamp: number;
+    timestamp: number;
 }
 
 /**
@@ -47,7 +49,7 @@ export function convertDTOtoEvent(createdByUid: string, event: EventDTO): Event 
             createdBy: event.createdBy.id,
             description: event.description,
             payee: event.payee.id,
-            timeStamp: event.timeStamp,
+            timestamp: event.timestamp,
             sharedExpenses: convertDTOtoSharedExpenses(event.sharedExpenses),
         } as ExpenseEvent
     }
@@ -55,7 +57,7 @@ export function convertDTOtoEvent(createdByUid: string, event: EventDTO): Event 
         return {
             type: event.type,
             paidTo: event.paidTo.id,
-            timeStamp: event.timeStamp,
+            timestamp: event.timestamp,
             createdBy: event.createdBy.id,
             amount: event.amount,
         } as PaymentEvent
@@ -64,14 +66,14 @@ export function convertDTOtoEvent(createdByUid: string, event: EventDTO): Event 
         return {
             type: event.type,
             createdBy: createdByUid,
-            timeStamp: event.timeStamp,
+            timestamp: event.timestamp,
             groupExpenseOriginal: {
                 type: event.groupExpenseOriginal.type,
                 id: event.groupExpenseOriginal.id,
                 createdBy: event.groupExpenseOriginal.createdBy.id,
                 description: event.groupExpenseOriginal.description,
                 payee: event.groupExpenseOriginal.payee.id,
-                timeStamp: event.groupExpenseOriginal.timeStamp,
+                timestamp: event.groupExpenseOriginal.timestamp,
                 sharedExpenses:
                     convertDTOtoSharedExpenses(event.groupExpenseOriginal.sharedExpenses),
             } as ExpenseEvent,
@@ -81,11 +83,61 @@ export function convertDTOtoEvent(createdByUid: string, event: EventDTO): Event 
                 createdBy: event.groupExpenseEdited.createdBy.id,
                 description: event.groupExpenseEdited.description,
                 payee: event.groupExpenseEdited.payee.id,
-                timeStamp: event.groupExpenseEdited.timeStamp,
+                timestamp: event.groupExpenseEdited.timestamp,
                 sharedExpenses:
                     convertDTOtoSharedExpenses(event.groupExpenseEdited.sharedExpenses),
             } as ExpenseEvent,
         } as ExpenseChangeEvent
     }
     throw Error("Invalid type")
+}
+
+// V2
+export type EventV2 = PaymentV2 | ExpenseEventV2
+
+
+export interface PaymentV2 {
+    id: string,
+    type: "payment";
+    createdBy: string;
+    paidTo: string;
+    amount: number;
+    timeStamp: number;
+}
+
+export interface ExpenseEventV2 {
+    id: string;
+    type: "expense";
+    createdBy: string;
+    description: string;
+    payee: string;
+    sharedExpenses: SharedExpense[],
+    timeStamp: number;
+}
+
+export function convertPaymentV2toV3(payment: PaymentV2): PaymentEvent {
+    return {
+        ...payment,
+        timestamp: payment.timeStamp,
+        currency: {
+            symbol: "usd",
+            rateSnapshot: 1,
+        }
+    }
+}
+
+export function convertExpenseV2ToV3(expense: ExpenseEventV2): ExpenseEvent {
+    return {
+        id: expense.id,
+        createdBy: expense.createdBy,
+        description: expense.description,
+        payee: expense.payee,
+        sharedExpenses: expense.sharedExpenses,
+        timestamp: expense.timeStamp,
+        type: expense.type,
+        currency: {
+            symbol: "usd",
+            rateSnapshot: 1,
+        }
+    }
 }

@@ -22,7 +22,27 @@ export function convertDTOtoFriend(friendDTO: FriendDTO): Friend {
     return {
         id: friendDTO.id,
         createdBy: friendDTO.createdBy,
-        status: friendDTO.status.type,
+        status: friendDTO.status,
         users: [user1, user2],
     } as Friend
+}
+
+
+// V2
+export interface FriendV2 {
+    id: string,
+    createdBy: string,
+    status: {
+        type: FriendStatus
+    },
+    users: string[],
+}
+
+export function convertFriendV2toV3(friend: FriendV2): Friend {
+    return {
+        createdBy: friend.createdBy,
+        id: friend.createdBy,
+        status: friend.status.type,
+        users: friend.users
+    }
 }

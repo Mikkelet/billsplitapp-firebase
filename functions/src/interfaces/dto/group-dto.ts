@@ -11,9 +11,10 @@ export interface GroupDTO {
     people: PersonDTO[];
     pastMembers: PersonDTO[];
     createdBy: PersonDTO;
-    timeStamp: string;
+    timestamp: string;
     debts: Debt[],
     latestEvent: EventDTO | null;
+    defaultCurrency: string;
 }
 
 /**
@@ -32,11 +33,12 @@ export function convertGroupToDTO(group: Group, people: PersonWithId[]): GroupDT
     return {
         id: group.id,
         name: group.name,
-        timeStamp: group.timeStamp,
+        timestamp: group.timestamp,
         pastMembers: group.pastMembers.map((pm) => findPerson(people, pm)),
         createdBy: findPerson(people, group.createdBy),
         people: group.people.map((p) => findPerson(people, p)),
         debts: group.debts ?? [],
         latestEvent: latestEvent,
+        defaultCurrency: group.defaultCurrency
     }
 }

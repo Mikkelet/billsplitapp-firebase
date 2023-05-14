@@ -47,7 +47,7 @@ const addEventImpl = async (req: Request, res: Response, uid: string) => {
                 latestEvent = event
             } else if (group.latestEvent === null) {
                 latestEvent = event
-            } else if (event.timeStamp > group.latestEvent.timeStamp) {
+            } else if (event.timestamp > group.latestEvent.timestamp) {
                 latestEvent = event
             }
         }

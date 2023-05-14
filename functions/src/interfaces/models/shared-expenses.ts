@@ -1,9 +1,8 @@
 import { SharedExpenseDTO } from "../dto/shared-expense-dto";
-import SymbolizedExpense from "./symbolized-expense";
 
 export interface SharedExpense {
     participants: string[];
-    expense: SymbolizedExpense;
+    expense: number;
     description: string;
 }
 

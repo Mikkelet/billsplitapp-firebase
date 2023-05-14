@@ -2,14 +2,14 @@ import { findPerson } from "../../collections/user-collection";
 import { PersonDTO } from "../dto/person-dto";
 import { ServiceDTO } from "../dto/service-dto";
 import { PersonWithId } from "./person";
-import SymbolizedExpense from "./symbolized-expense";
 
 export interface Service {
     id: string,
     name: string,
     createdBy: string,
     imageUrl: string,
-    monthlyExpense: SymbolizedExpense,
+    monthlyExpense: number,
+    currency: string,
     payer: string,
     participants: string[]
 }
@@ -28,6 +28,7 @@ export function convertServiceToDTO(service: Service, people: PersonWithId[]): S
         imageUrl: service.imageUrl,
         createdBy: findPerson(people, service.createdBy),
         monthlyExpense: service.monthlyExpense,
+        currency: service.currency,
         name: service.name,
         participants: peopleDTOs,
         payer: findPerson(people, service.payer),
@@ -46,8 +47,28 @@ export function convertDTOtoService(service: ServiceDTO): Service {
         imageUrl: service.imageUrl,
         createdBy: service.createdBy.id,
         monthlyExpense: service.monthlyExpense,
+        currency: service.currency,
         name: service.name,
         participants: peopleIds,
         payer: service.payer.id,
+    }
+}
+
+
+// V2
+export interface ServiceV2 {
+    id: string,
+    name: string,
+    createdBy: string,
+    imageUrl: string,
+    monthlyExpense: number,
+    payer: string,
+    participants: string[]
+}
+
+export function convertServiceV2toV3(service: ServiceV2): Service {
+    return {
+        ...service,
+        currency: "usd",
     }
 }
