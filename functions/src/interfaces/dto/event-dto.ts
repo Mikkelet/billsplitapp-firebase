@@ -67,6 +67,7 @@ export function convertEventToDTO(event: Event, people: PersonWithId[]): EventDT
             payee: findPerson(people, expense.payee),
             sharedExpenses: convertSharedExpensesToDTO(expense.sharedExpenses, people),
             timestamp: expense.timestamp,
+            currency: expense.currency,
         } as ExpenseEventDTO
     }
     if (event.type === "change") {
@@ -87,7 +88,7 @@ export function convertEventToDTO(event: Event, people: PersonWithId[]): EventDT
 
                 payee: findPerson(people, change.groupExpenseEdited.payee),
                 timestamp: change.groupExpenseEdited.timestamp,
-                currency: change.groupExpenseEdited.currency
+                currency: change.groupExpenseEdited.currency,
             } as ExpenseEventDTO,
             groupExpenseOriginal: {
                 type: change.groupExpenseOriginal.type,
@@ -112,6 +113,7 @@ export function convertEventToDTO(event: Event, people: PersonWithId[]): EventDT
             amount: payment.amount,
             paidTo: findPerson(people, payment.paidTo),
             timestamp: payment.timestamp,
+            currency: payment.currency,
         } as PaymentEventDTO
     }
     throw Error("Invalid event type")

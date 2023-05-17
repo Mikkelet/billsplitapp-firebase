@@ -1,9 +1,12 @@
-import * as firebase from 'firebase-admin'
+import * as firebase from "firebase-admin"
 const fs = firebase.firestore();
 
 // https://github.com/Mikkelet/firebase-helpers/blob/master/batch_bulk.ts
 
-
+/**
+ * This class can help with submitting many batches in one go.
+ * A batch transactions only allow 500 changes, so this class will batch multiple batches
+ */
 export default class BatchInstance {
     private _batch: firebase.firestore.WriteBatch;
     private _size = 0;
@@ -19,9 +22,9 @@ export default class BatchInstance {
     /**
      * Set or overwrite data to new or existing document
      * @param {firebase.firestore.DocumentReference} doc Docuement to be set
-     * @param {any} data Data to be applied
+     * @param {Record<string, unknown>} data Data to be applied
      */
-    set(doc: firebase.firestore.DocumentReference, data: any) {
+    set(doc: firebase.firestore.DocumentReference, data: Record<string, unknown>) {
         this._batch.set(doc, data);
         this._size++;
         this.addBatchIfFull()
@@ -38,9 +41,9 @@ export default class BatchInstance {
     /**
      * Apply an update to a document. The document MUST exist or the entire batch fails.
      * @param {firebase.firestore.DocumentReference} doc what doc to update
-     * @param {any} data the data that needs updating
+     * @param {Record<string, unknown>} data the data that needs updating
      */
-    update(doc: firebase.firestore.DocumentReference, data: any) {
+    update(doc: firebase.firestore.DocumentReference, data: Record<string, unknown>) {
         this._batch.update(doc, data);
         this._size++;
         this.addBatchIfFull();
@@ -57,23 +60,24 @@ export default class BatchInstance {
 
     /**
      * Commits changes
-     * @param commitInOrder specify if transactions in the order submitted
+     * @param {boolean} commitInOrder specify if transactions in the order submitted
      */
-    async commit(commitInOrder: boolean = false) {
+    async commit(commitInOrder = false) {
         // if any docs left in current batch, push to batch list
-        if (this._size > 0)
+        if (this._size > 0) {
             this._batches.push(this._batch);
+        }
 
         // if batch list has any batches
         if (this._batches.length > 0) {
-            console.log("Committing " + ((this._batches.length - 1) * 500 + this._size) + " changes")
+            console.log(`Committing ${((this._batches.length - 1) * 500 + this._size)} changes`)
             // if they have to be commited in order:
-            if (commitInOrder)
+            if (commitInOrder) {
                 for (const b of this._batches) {
                     await b.commit()
                 }
             // else commit them to a new list of promises
-            else {
+            } else {
                 const asyncCommits: Promise<firebase.firestore.WriteResult[]>[] = []
                 this._batches.forEach((b) => asyncCommits.push(b.commit()))
                 await Promise.all(asyncCommits);

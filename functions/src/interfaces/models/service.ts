@@ -63,9 +63,14 @@ export interface ServiceV2 {
     imageUrl: string,
     monthlyExpense: number,
     payer: string,
-    participants: string[]
+    participants: string[],
 }
 
+/**
+ * Convert V2 to V3
+ * @param {ServiceV2} service
+ * @return {Service} service
+ */
 export function convertServiceV2toV3(service: ServiceV2): Service {
     return {
         ...service,

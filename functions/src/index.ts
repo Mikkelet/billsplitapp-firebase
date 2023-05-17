@@ -23,12 +23,8 @@ import addToGroupImpl from "./impl/add-user-to-group-impl";
 import deleteServiceImpl from "./impl/delete-service-impl";
 import deleteEventImpl from "./impl/delete-event-impl";
 import updateUserImpl from "./impl/update-user-impl";
-import { groupCollection } from "./collections/group-collection";
-import BatchInstance from "./utils/batch_helper";
-import { ServiceV2, convertServiceV2toV3 } from "./interfaces/models/service";
-import { EventV2, ExpenseEventV2, PaymentV2, convertExpenseV2ToV3, convertPaymentV2toV3 } from "./interfaces/models/events";
-import { handleError } from "./utils/error-utils";
-import { GroupV2, convertGroupV2toV3 } from "./interfaces/models/group";
+import getExchangeRatesImpl from "./impl/get-exchage-rates-impl";
+import syncExchangeRatesImpl from "./cron/sync-exchange-rates-cron-impl";
 
 const app = express()
 app.use(cors({ origin: true }))
@@ -55,6 +51,9 @@ app.post("/event", (req, res) => authInterceptor(addEventImpl)(req, res))
 app.post("/friends", (req, res) => authInterceptor(addFriendImpl)(req, res))
 app.get("/friends", (req, res) => authInterceptor(getFriendsImpl)(req, res))
 
+// rates
+app.get("/rates", (req, res) => authInterceptor(getExchangeRatesImpl)(req, res))
+
 // Service
 app.post("/group/:groupId/service", (req, res) => authInterceptor(addServiceImpl)(req, res))
 app.put("/group/:groupId/service", (req, res) => authInterceptor(updateServiceImpl)(req, res))
@@ -65,93 +64,12 @@ app.all("*", functions.https.onRequest(async (_, res) => {
     res.status(404).send("Invalid request")
 }))
 
-export const v2 = functions.https.onRequest(app)
+export const v3 = functions.https.onRequest(app)
 
 export const scheduledServicesV2 = functions.pubsub
     .schedule("0 0 1 * *")
     .onRun(scheduledServicesImpl)
 
-// Data migration
-
-const firestore = firebase.firestore()
-const groupsV3Collection = firestore.collection("groups-v4")
-const eventsCollection = firestore.collectionGroup("events")
-const servicesCollection = firestore.collectionGroup("services")
-export const migrateGroupsV2toV3 = functions.https.onRequest(async (req, res) => {
-    const batchBulk = new BatchInstance()
-
-    try {
-        const groupsRequest = await groupCollection.get()
-
-        for (const doc of groupsRequest.docs) {
-            const ref = groupsV3Collection.doc(doc.id)
-            const dataV2 = doc.data() as GroupV2
-            const dataV3 = convertGroupV2toV3(dataV2)
-            batchBulk.set(ref, dataV3)
-        }
-        await batchBulk.commit()
-        res.send()
-    } catch (e) {
-        handleError(e, res)
-    }
-})
-
-export const migrateEventsV2toV3 = functions.https.onRequest(async (req, res) => {
-    const batchBulk = new BatchInstance()
-
-    try {
-        const eventsRequest = await eventsCollection.get()
-        eventloop:for (const doc of eventsRequest.docs) {
-            const event = doc.ref
-            if (event.parent.parent?.parent?.id !== "groups-v3") {
-                console.log(`parent id was ${event.parent.parent?.parent?.id}`);
-                continue eventloop;
-            }
-
-            const groupId = event.parent.parent?.id
-            if (!groupId) continue
-
-            const dataV2 = doc.data() as EventV2
-            if (dataV2.type === "expense") {
-                console.log(`converting expense ${doc.ref.path}`);
-                const dataV3 = convertExpenseV2ToV3(dataV2 as ExpenseEventV2)
-                const ref = groupsV3Collection.doc(groupId).collection("events").doc(doc.id)
-                batchBulk.set(ref, dataV3)
-            } else if (dataV2.type === "payment") {
-                console.log(`converting payment ${doc.id}`);
-                const dataV3 = convertPaymentV2toV3(dataV2 as PaymentV2)
-                const ref = groupsV3Collection.doc(groupId).collection("events").doc(doc.id)
-                batchBulk.set(ref, dataV3)
-            }
-        }
-        await batchBulk.commit()
-        res.send()
-    } catch (e) {
-        handleError(e, res)
-    }
-})
-
-
-export const migrateServicesV2toV3 = functions.https.onRequest(async (req, res) => {
-    const batchBulk = new BatchInstance()
-    try {
-        const services = await servicesCollection.get()
-        for (const doc of services.docs) {
-            const event = doc.ref
-            if (event.parent.parent?.parent?.id !== "groups-v3") {
-                console.log(`parent id was ${event.parent.parent?.parent?.id}`);
-                continue;
-            }
-            const groupId = event.parent.parent?.id
-            if (!groupId) continue
-            const dataV2 = doc.data() as ServiceV2
-            const dataV3 = convertServiceV2toV3(dataV2)
-            const ref = groupsV3Collection.doc(groupId).collection("services").doc(doc.id)
-            batchBulk.set(ref, dataV3)
-        }
-        await batchBulk.commit()
-        res.send()
-    } catch (e) {
-        handleError(e, res)
-    }
-})
+export const scheduledSyncExchangeRates = functions.pubsub
+    .schedule("0 */3 * * *")
+    .onRun(syncExchangeRatesImpl)

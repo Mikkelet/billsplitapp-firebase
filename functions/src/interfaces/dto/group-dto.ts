@@ -39,6 +39,6 @@ export function convertGroupToDTO(group: Group, people: PersonWithId[]): GroupDT
         people: group.people.map((p) => findPerson(people, p)),
         debts: group.debts ?? [],
         latestEvent: latestEvent,
-        defaultCurrency: group.defaultCurrency
+        defaultCurrency: group.defaultCurrency,
     }
 }

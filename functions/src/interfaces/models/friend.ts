@@ -38,11 +38,16 @@ export interface FriendV2 {
     users: string[],
 }
 
+/**
+ * convert v2 to v3
+ * @param {FriendV2} friend
+ * @return {Friend} friend
+ */
 export function convertFriendV2toV3(friend: FriendV2): Friend {
     return {
         createdBy: friend.createdBy,
         id: friend.createdBy,
         status: friend.status.type,
-        users: friend.users
+        users: friend.users,
     }
 }
