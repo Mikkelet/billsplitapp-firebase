@@ -22,9 +22,9 @@ export default class BatchInstance {
     /**
      * Set or overwrite data to new or existing document
      * @param {firebase.firestore.DocumentReference} doc Docuement to be set
-     * @param {Record<string, unknown>} data Data to be applied
+     * @param {any} data Data to be applied
      */
-    set(doc: firebase.firestore.DocumentReference, data: Record<string, unknown>) {
+    set(doc: firebase.firestore.DocumentReference, data: any) {
         this._batch.set(doc, data);
         this._size++;
         this.addBatchIfFull()
@@ -41,9 +41,9 @@ export default class BatchInstance {
     /**
      * Apply an update to a document. The document MUST exist or the entire batch fails.
      * @param {firebase.firestore.DocumentReference} doc what doc to update
-     * @param {Record<string, unknown>} data the data that needs updating
+     * @param {any} data the data that needs updating
      */
-    update(doc: firebase.firestore.DocumentReference, data: Record<string, unknown>) {
+    update(doc: firebase.firestore.DocumentReference, data: any) {
         this._batch.update(doc, data);
         this._size++;
         this.addBatchIfFull();

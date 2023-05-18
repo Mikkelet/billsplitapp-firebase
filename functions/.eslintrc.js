@@ -36,5 +36,6 @@ module.exports = {
             "code": 100,
         }],
         "padded-blocks": 0,
+        "@typescript-eslint/no-explicit-any": "off",
     },
 };
