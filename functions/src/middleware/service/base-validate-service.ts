@@ -17,7 +17,7 @@ export function validateService(uid: string, service: Service) {
     if (service.monthlyExpense <= 0) {
         throw billSplitError(400, "Monthly expense must be positive number");
     }
-    if (uid !== service.createdBy) {
+    if (service.id === "" && uid !== service.createdBy) {
         console.error(
             "User trying to create an event on behalf of another user",
             { uid: uid, createdBy: service.createdBy },
