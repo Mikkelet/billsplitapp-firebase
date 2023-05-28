@@ -12,6 +12,7 @@ import { Friend, FriendStatus } from "../interfaces/models/friend";
 import { Person } from "../interfaces/models/person";
 import { billSplitError, handleError } from "../utils/error-utils";
 import logRequest from "../utils/log-utils";
+import sendFriendRequestNotification from "../fcm/send-friend-request-notification";
 
 const addFriendImpl = async (req: Request, res: Response, uid: string) => {
     logRequest(req)
@@ -53,9 +54,11 @@ const addFriendImpl = async (req: Request, res: Response, uid: string) => {
                 users: users,
             };
             const addedFriend = await addFriend(friendRequest)
+            sendFriendRequestNotification(uid, friendUser.id, addedFriend.status)
             response = { friend: convertFriendToDTO(addedFriend, friendUser) }
         } else {
             const status = await handleExistingFriendRequest(uid, friend)
+            sendFriendRequestNotification(uid, friendUser.id, status)
             friend.status = status
             response = { friend: convertFriendToDTO(friend, friendUser) }
         }

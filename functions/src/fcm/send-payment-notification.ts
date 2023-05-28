@@ -11,7 +11,7 @@ import sendNotification from "./send-notification";
 export default async function sendPaymentNotification(group: Group, payment: PaymentEventDTO) {
 
     const title = `${payment.createdBy.name} marked a payment to you in ${group.name}`
-    const body = `$${payment.amount}`
+    const body = `${payment.currency.symbol.toUpperCase()} ${payment.amount}`
     const topic = `user-${payment.paidTo.id}`
 
     const data: DataMessagePayload = {
