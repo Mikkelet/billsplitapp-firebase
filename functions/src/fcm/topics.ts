@@ -39,6 +39,6 @@ export function getTopicForAddedToGroup(groupId: string): string {
  * @param {string} userId
  * @return {string} generated topic for user
  */
-export function getTopicForUser(userId: string):string{
+export function getTopicForUser(userId: string): string {
     return `user-${userId}`
 }
