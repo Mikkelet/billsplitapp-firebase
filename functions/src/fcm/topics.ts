@@ -33,3 +33,12 @@ export function getTopicForNewService(groupId: string): string {
 export function getTopicForAddedToGroup(groupId: string): string {
     return `group-added-${groupId}`
 }
+
+/**
+ * gets generated topic
+ * @param {string} userId
+ * @return {string} generated topic for user
+ */
+export function getTopicForUser(userId: string):string{
+    return `user-${userId}`
+}

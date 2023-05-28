@@ -1,7 +1,7 @@
 import { ExpenseEventDTO } from "../interfaces/dto/event-dto";
 import { getUserById } from "../collections/user-collection";
 import { Group } from "../interfaces/models/group";
-import { getTopicForNewExpense, getTopicForUpdateExpense } from "./topics";
+import { getTopicForUser } from "./topics";
 import sendNotification from "./send-notification";
 import { DataMessagePayload } from "firebase-admin/lib/messaging/messaging-api";
 
@@ -22,18 +22,14 @@ export default async function sendEventAddedNotification(
         body = `${user?.name} updated an expense in ${group.name}`
     }
 
-    let topic = ""
-    if (event.id === "") {
-        topic = getTopicForNewExpense(group.id)
-    } else {
-        topic = getTopicForUpdateExpense(group.id)
-    }
+    const userTopics = group.people.map((uid) => getTopicForUser(uid))
+    userTopics.forEach((topic) => {
+        const data: DataMessagePayload = {
+            groupId: group.id,
+            eventId: event.id,
+            topic: topic,
+        }
+        sendNotification(topic, title, body, data)
+    })
 
-    const data: DataMessagePayload = {
-        groupId: group.id,
-        eventId: event.id,
-        topic: topic,
-    }
-
-    await sendNotification(topic, title, body, data)
 }
