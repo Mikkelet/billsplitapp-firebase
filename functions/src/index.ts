@@ -26,6 +26,8 @@ import updateUserImpl from "./impl/update-user-impl";
 
 import getExchangeRatesImpl from "./impl/get-exchage-rates-impl";
 import syncExchangeRatesImpl from "./cron/sync-exchange-rates-cron-impl";
+import { migrateEventsV3toV5, migrateGroupV3toV5, migrateServicesV3toV5 } from "./migrations/v3_v5/migrate_v3_v5";
+import { copyGroupsCollection } from "./migrations/copy-collections/copy_groups_v5";
 
 const app = express()
 app.use(cors({ origin: true }))
@@ -64,6 +66,11 @@ app.delete("/group/:groupId/service/:serviceId", (req, res) =>
 app.all("*", functions.https.onRequest(async (_, res) => {
     res.status(404).send("Invalid request")
 }))
+
+export const migrateGroups = migrateGroupV3toV5
+export const migrateEvents = migrateEventsV3toV5
+export const migrateServices = migrateServicesV3toV5
+export const copyGroups = copyGroupsCollection
 
 export const v3 = functions.https.onRequest(app)
 

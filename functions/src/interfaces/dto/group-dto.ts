@@ -1,5 +1,4 @@
 import { findPerson } from "../../collections/user-collection";
-import Debt from "../models/debt";
 import { Group } from "../models/group";
 import { PersonWithId } from "../models/person";
 import { convertEventToDTO, EventDTO } from "./event-dto";
@@ -12,7 +11,6 @@ export interface GroupDTO {
     pastMembers: PersonDTO[];
     createdBy: PersonDTO;
     timestamp: string;
-    debts: Debt[],
     latestEvent: EventDTO | null;
     defaultCurrency: string;
 }
@@ -37,7 +35,6 @@ export function convertGroupToDTO(group: Group, people: PersonWithId[]): GroupDT
         pastMembers: group.pastMembers.map((pm) => findPerson(people, pm)),
         createdBy: findPerson(people, group.createdBy),
         people: group.people.map((p) => findPerson(people, p)),
-        debts: group.debts ?? [],
         latestEvent: latestEvent,
         defaultCurrency: group.defaultCurrency,
     }
