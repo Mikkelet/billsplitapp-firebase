@@ -31,6 +31,11 @@ export async function updateExpense(groupId: string, expenseEvent: ExpenseEvent)
  * @return {Event} event with new ID
  */
 export async function insertEvent(groupId: string, event: Event): Promise<Event> {
+    console.log("insertEvent", {
+        groupId: groupId,
+        event: event,
+    });
+
     if (event.id === undefined || event.id === "") {
         const eventId = eventsCollection(groupId).doc().id
         event.id = eventId;

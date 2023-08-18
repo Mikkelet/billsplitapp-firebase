@@ -27,8 +27,8 @@ const scheduledServicesImpl = async (_: functions.EventContext) => {
             }
 
             await insertEvent(groupId, expense)
-            console.log("services", { services: servicesWithGroupId.length });
         }
+        console.log("service events added", { services: servicesWithGroupId.length });
     } catch (e) {
         console.error("Failed to run cron job", e)
     }
