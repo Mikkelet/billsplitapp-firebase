@@ -5,6 +5,7 @@ import BatchInstance from "../../utils/batch_helper";
 import { handleError } from "../../utils/error-utils";
 import { convertGroupV3toV5 } from "./convert_group_v3_v5";
 import { GroupV3 } from "../models/group_v3";
+import { EventV3, convertEventV3ToV5 } from "./convert_events_v3_v5";
 
 const firestore = firebase.firestore()
 const groupsV3Collection = firestore.collection("groups-v4-copy")
@@ -27,7 +28,8 @@ export const migrateEventsV3toV5 = functions.https.onRequest(async (req, res) =>
             const groupId = event.parent.parent?.id
             if (!groupId) continue
             const ref = groupsV5collection.doc(groupId).collection("events").doc(doc.id)
-            batchBulk.set(ref, doc.data())
+            const eventV5 = convertEventV3ToV5(doc.data() as EventV3)
+            batchBulk.set(ref, eventV5)
         }
 
         await batchBulk.commit()

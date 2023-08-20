@@ -26,7 +26,8 @@ import updateUserImpl from "./impl/update-user-impl";
 
 import getExchangeRatesImpl from "./impl/get-exchage-rates-impl";
 import syncExchangeRatesImpl from "./cron/sync-exchange-rates-cron-impl";
-import { migrateEventsV3toV5, migrateGroupV3toV5, migrateServicesV3toV5 } from "./migrations/v3_v5/migrate_v3_v5";
+import { migrateEventsV3toV5, migrateGroupV3toV5, migrateServicesV3toV5 }
+    from "./migrations/v3_v5/migrate_v3_v5";
 import { copyGroupsCollection } from "./migrations/copy-collections/copy_groups_v5";
 
 const app = express()

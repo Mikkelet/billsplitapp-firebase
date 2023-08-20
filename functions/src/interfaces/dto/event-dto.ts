@@ -10,6 +10,7 @@ import { PersonWithId } from "../models/person";
 import Currency from "../models/currency";
 import { PersonDTO } from "./person-dto";
 import { SharedExpenseDTO, convertSharedExpensesToDTO } from "./shared-expense-dto";
+import { TempParticipant } from "../models/temp-participant";
 
 export interface FriendStatusDTO {
     type: FriendStatus
@@ -26,6 +27,7 @@ export interface ExpenseEventDTO {
     createdBy: PersonDTO;
     description: string;
     payee: PersonDTO;
+    tempParticipants: TempParticipant[];
     sharedExpenses: SharedExpenseDTO[];
     timestamp: number;
     currency: Currency;

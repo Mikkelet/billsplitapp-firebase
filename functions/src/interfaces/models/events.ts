@@ -1,6 +1,7 @@
 import { EventDTO } from "../dto/event-dto";
 import { SharedExpense, convertDTOtoSharedExpenses } from "./shared-expenses";
 import Currency from "./currency";
+import { TempParticipant } from "./temp-participant";
 
 export type Event = ExpenseChangeEvent | PaymentEvent | ExpenseEvent
 
@@ -11,6 +12,7 @@ export interface ExpenseEvent {
     description: string;
     payee: string;
     sharedExpenses: SharedExpense[],
+    tempParticipants: TempParticipant[],
     timestamp: number;
     currency: Currency;
 }
