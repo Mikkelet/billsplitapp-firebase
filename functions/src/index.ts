@@ -26,6 +26,7 @@ import updateUserImpl from "./impl/update-user-impl";
 
 import getExchangeRatesImpl from "./impl/get-exchage-rates-impl";
 import syncExchangeRatesImpl from "./cron/sync-exchange-rates-cron-impl";
+import getAppVersionImpl from "./impl/get-app-version";
 
 const app = express()
 app.use(cors({ origin: true }))
@@ -60,6 +61,9 @@ app.post("/group/:groupId/service", (req, res) => authInterceptor(addServiceImpl
 app.put("/group/:groupId/service", (req, res) => authInterceptor(updateServiceImpl)(req, res))
 app.delete("/group/:groupId/service/:serviceId", (req, res) =>
     authInterceptor(deleteServiceImpl)(req, res))
+
+// App Data
+app.get("/appVersion", (req, res) => getAppVersionImpl(req, res))
 
 app.all("*", functions.https.onRequest(async (_, res) => {
     res.status(404).send("Invalid request")
