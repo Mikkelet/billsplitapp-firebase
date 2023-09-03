@@ -1,6 +1,4 @@
 import * as firebase from "firebase-admin";
-import Debt from "../interfaces/models/debt";
-import { Event } from "../interfaces/models/events";
 import { Group } from "../interfaces/models/group";
 import { billSplitError } from "../utils/error-utils";
 
@@ -48,20 +46,4 @@ export async function getGroupsByUser(userId: string): Promise<Group[]> {
     if (query.empty) return [];
     const groups: Group[] = query.docs.map((doc) => doc.data() as Group);
     return groups;
-}
-
-/**
- * Update debt of group
- * @param {string} groupId group id of debt
- * @param {Debt[]} debts debt to udpdate
- * @param {Event} event latest event submitted
- */
-export async function updateGroupDebt(groupId: string, debts: Debt[], event: Event | null) {
-    const updateData = {
-        debts: debts,
-    } as Group
-    if (event !== null) {
-        updateData.latestEvent = event
-    }
-    await groupCollection.doc(groupId).update(updateData)
 }

@@ -53,27 +53,3 @@ export function convertDTOtoService(service: ServiceDTO): Service {
         payer: service.payer.id,
     }
 }
-
-
-// V2
-export interface ServiceV2 {
-    id: string,
-    name: string,
-    createdBy: string,
-    imageUrl: string,
-    monthlyExpense: number,
-    payer: string,
-    participants: string[],
-}
-
-/**
- * Convert V2 to V3
- * @param {ServiceV2} service
- * @return {Service} service
- */
-export function convertServiceV2toV3(service: ServiceV2): Service {
-    return {
-        ...service,
-        currency: "usd",
-    }
-}
