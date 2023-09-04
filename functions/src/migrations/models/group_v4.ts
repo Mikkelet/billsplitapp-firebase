@@ -1,7 +1,7 @@
 import Debt from "../../interfaces/models/debt";
-import { EventV3 } from "../v3_v5/convert_events_v4_v5";
+import { EventV4 } from "./event_v4";
 
-export interface GroupV3 {
+export interface GroupV4 {
     id: string;
     name: string;
     people: string[];
@@ -9,6 +9,6 @@ export interface GroupV3 {
     createdBy: string;
     timestamp: string;
     debts: Debt[] | undefined;
-    latestEvent: EventV3 | null;
+    latestEvent: EventV4 | null;
     defaultCurrency: string,
 }

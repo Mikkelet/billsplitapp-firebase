@@ -1,6 +1,6 @@
 import { Request, Response } from "firebase-functions";
 import { insertEvent, updateExpense } from "../collections/events-collection";
-import { getGroupById, updateGroupDebt } from "../collections/group-collection";
+import { getGroupById, updateGroup } from "../collections/group-collection";
 import { AddEventRequest, AddEventResponse } from "../interfaces/add-event";
 import { EventDTO, ExpenseChangeEventDTO, ExpenseEventDTO, PaymentEventDTO }
     from "../interfaces/dto/event-dto";
@@ -20,7 +20,6 @@ const addEventImpl = async (req: Request, res: Response, uid: string) => {
     try {
         const groupId = body.groupId
         const eventDTO: EventDTO = body.event;
-        const debts = body.debts;
         const event: Event = convertDTOtoEvent(uid, eventDTO);
 
         validateAddEvent(body, uid)
@@ -51,7 +50,8 @@ const addEventImpl = async (req: Request, res: Response, uid: string) => {
                 latestEvent = event
             }
         }
-        await updateGroupDebt(groupId, debts, latestEvent);
+        group.latestEvent = latestEvent
+        await updateGroup(group)
 
         const response: AddEventResponse = { event: eventDTO }
         console.log("response", eventDTO);

@@ -53,6 +53,7 @@ export function convertDTOtoEvent(createdByUid: string, event: EventDTO): Event 
             payee: event.payee.id,
             timestamp: event.timestamp,
             currency: event.currency,
+            tempParticipants: event.tempParticipants,
             sharedExpenses: convertDTOtoSharedExpenses(event.sharedExpenses),
         } as ExpenseEvent
     }

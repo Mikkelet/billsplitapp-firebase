@@ -21,6 +21,7 @@ const scheduledServicesImpl = async (_: functions.EventContext) => {
                     expense: service.monthlyExpense,
                     participants: service.participants,
                 }],
+                tempParticipants: [],
                 currency: { symbol: service.currency, rateSnapshot: 1 },
                 timestamp: Date.now(),
                 type: "expense",

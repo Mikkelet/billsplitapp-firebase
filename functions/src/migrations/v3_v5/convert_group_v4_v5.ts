@@ -1,16 +1,17 @@
 import { Group } from "../../interfaces/models/group";
-import { GroupV3 } from "../models/group_v3";
+import { GroupV4 } from "../models/group_v4";
+import { convertEventV4ToV5 } from "./convert_events_v4_v5";
 
 /**
  * conver V2 to V3
  * @param {GroupV2} group
  * @return {GroupV3} group
  */
-export function convertGroupV3toV5(group: GroupV3): Group {
+export function convertGroupV4toV5(group: GroupV4): Group {
     return {
         id: group.id,
         createdBy: group.createdBy,
-        latestEvent: group.latestEvent,
+        latestEvent: convertEventV4ToV5(group.latestEvent),
         name: group.name,
         pastMembers: group.pastMembers,
         people: group.people,

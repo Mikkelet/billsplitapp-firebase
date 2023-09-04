@@ -27,7 +27,6 @@ import updateUserImpl from "./impl/update-user-impl";
 import getExchangeRatesImpl from "./impl/get-exchage-rates-impl";
 import syncExchangeRatesImpl from "./cron/sync-exchange-rates-cron-impl";
 import getAppVersionImpl from "./impl/get-app-version";
-
 const app = express()
 app.use(cors({ origin: true }))
 
