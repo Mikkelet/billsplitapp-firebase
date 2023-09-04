@@ -1,22 +1,16 @@
 import Currency from "../../interfaces/models/currency";
 import { SharedExpense } from "../../interfaces/models/shared-expenses";
+import { PaymentV3 } from "./event_v3";
 
-export interface ExpenseEventV3 {
+export type EventV4 = PaymentV3 | ExpenseEventV4
+
+export interface ExpenseEventV4 {
     id: string;
     type: "expense";
     createdBy: string;
     description: string;
     payee: string;
     sharedExpenses: SharedExpense[];
-    timeStamp: number;
-    currency: Currency;
-}
-
-export interface PaymentV3 {
-    id: string,
-    type: "payment";
-    createdBy: string;
-    paidTo: string;
-    amount: number;
     timestamp: number;
+    currency: Currency;
 }

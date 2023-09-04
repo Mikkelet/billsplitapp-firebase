@@ -3,7 +3,7 @@ import { Group } from "../interfaces/models/group";
 import { billSplitError } from "../utils/error-utils";
 
 const firestore = firebase.firestore();
-export const groupCollection = firestore.collection("groups-v4");
+export const groupCollection = firestore.collection("groups-v5");
 
 /**
  * Add group
@@ -43,6 +43,7 @@ export async function getGroupById(groupId: string): Promise<Group> {
  */
 export async function getGroupsByUser(userId: string): Promise<Group[]> {
     const query = await groupCollection.where("people", "array-contains", userId).get();
+
     if (query.empty) return [];
     const groups: Group[] = query.docs.map((doc) => doc.data() as Group);
     return groups;

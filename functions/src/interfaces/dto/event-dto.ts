@@ -69,6 +69,7 @@ export function convertEventToDTO(event: Event, people: PersonWithId[]): EventDT
             payee: findPerson(people, expense.payee),
             sharedExpenses: convertSharedExpensesToDTO(expense.sharedExpenses, people),
             timestamp: expense.timestamp,
+            tempParticipants: expense.tempParticipants,
             currency: expense.currency,
         } as ExpenseEventDTO
     }

@@ -1,5 +1,6 @@
-import { ExpenseEvent, PaymentEvent } from "../../interfaces/models/events";
+import { PaymentEvent } from "../../interfaces/models/events";
 import { ExpenseEventV2, PaymentV2 } from "../models/event_v2";
+import { EventV3 } from "../v3_v5/convert_events_v4_v5";
 
 /**
  * Convert v2 to v3
@@ -23,7 +24,7 @@ export function convertPaymentV2toV3(payment: PaymentV2): PaymentEvent {
  * @return {ExpenseEvent | PaymentEvent | null } expense
  */
 export function convertExpenseV2ToV3(expense: ExpenseEventV2 | PaymentV2 | null):
-    ExpenseEvent | PaymentEvent | null {
+    EventV3 {
     if (expense === undefined) return null;
     if (expense === null) return null;
     if (expense.type === "payment") return convertPaymentV2toV3(expense as PaymentV2);
@@ -33,7 +34,7 @@ export function convertExpenseV2ToV3(expense: ExpenseEventV2 | PaymentV2 | null)
         description: expense.description,
         payee: expense.payee,
         sharedExpenses: expense.sharedExpenses,
-        timestamp: expense.timeStamp,
+        timeStamp: expense.timeStamp,
         type: expense.type,
         currency: {
             symbol: "usd",

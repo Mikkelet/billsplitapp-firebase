@@ -7,12 +7,8 @@ import { billSplitError } from "../utils/error-utils";
  * @param {string} uid uid of request
  */
 export default function validateAddEvent(request: AddEventRequest, uid: string) {
-    const debts = request.debts
     const event = request.event
 
-    if (debts.length === 0) {
-        throw billSplitError(400, "An unexptected error occurred. Please contact the developer!")
-    }
     if (event.id === "" && event.createdBy.id !== uid) {
         console.error(
             "User trying to create an event on behalf of another user",
