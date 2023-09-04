@@ -43,7 +43,6 @@ export async function getGroupById(groupId: string): Promise<Group> {
  */
 export async function getGroupsByUser(userId: string): Promise<Group[]> {
     const query = await groupCollection.where("people", "array-contains", userId).get();
-
     if (query.empty) return [];
     const groups: Group[] = query.docs.map((doc) => doc.data() as Group);
     return groups;
