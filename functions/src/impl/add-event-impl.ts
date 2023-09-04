@@ -18,11 +18,12 @@ const addEventImpl = async (req: Request, res: Response, uid: string) => {
     const body = req.body as AddEventRequest;
 
     try {
+        validateAddEvent(body, uid)
+        
         const groupId = body.groupId
         const eventDTO: EventDTO = body.event;
         const event: Event = convertDTOtoEvent(uid, eventDTO);
 
-        validateAddEvent(body, uid)
         const group: Group = await getGroupById(groupId);
         validateUserMembership(uid, group);
 
