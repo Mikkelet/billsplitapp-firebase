@@ -69,7 +69,7 @@ app.all("*", functions.https.onRequest(async (_, res) => {
     res.status(404).send("Invalid request")
 }))
 
-export const v3 = functions.https.onRequest(app)
+export const v4 = functions.https.onRequest(app)
 
 export const scheduledServicesV2 = functions.pubsub
     .schedule("0 0 1 * *")
