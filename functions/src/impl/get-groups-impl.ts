@@ -7,7 +7,7 @@ import { handleError } from "../utils/error-utils";
 import logRequest from "../utils/log-utils";
 
 const getGroupsImpl = async (req: Request, res: Response, uid: string) => {
-    logRequest(req)    
+    logRequest(req)
 
     try {
         const groups = await getGroupsByUser(uid);

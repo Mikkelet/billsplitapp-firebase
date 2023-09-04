@@ -14,8 +14,8 @@ export function convertEventV4ToV5(event: EventV4 | null):
     if (event === undefined) return null;
     if (event === null) return null;
     if (event.type === "payment") return event as PaymentEvent
-    if(event.timestamp === undefined) console.log(event.id);
-    
+    if (event.timestamp === undefined) console.log(event.id);
+
     return {
         ...event,
         tempParticipants: [],

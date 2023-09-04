@@ -28,13 +28,13 @@ async function migrateEventsV3toV5() {
         const event = doc.ref
         const groupCollectionId = event.parent.parent?.parent?.id
         const groupId = event.parent.parent?.id
-        if (!groupId) continue
+        if (!groupId) {
+            continue
+        }
         if (groupCollectionId !== groupsV3Collection.id) {
             continue;
         }
         const ref = groupsV5collection.doc(groupId).collection("events").doc(doc.id)
-        console.log("Converting event, id="+doc.id);
-        
         const eventV5 = convertEventV4ToV5(doc.data() as EventV4)
         batchBulk.set(ref, eventV5)
     }
@@ -73,7 +73,7 @@ async function migrateGroupV4toV5() {
     const groupsRequest = await groupsV3Collection.get()
     for (const doc of groupsRequest.docs) {
         const dataV3 = doc.data() as GroupV4
-        console.log("converting group id="+doc.id);
+        console.log("converting group id=" + doc.id);
 
         const dataV5 = convertGroupV4toV5(dataV3)
         const ref = groupsV5collection.doc(doc.id)
