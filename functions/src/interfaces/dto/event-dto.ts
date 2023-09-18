@@ -10,7 +10,7 @@ import { PersonWithId } from "../models/person";
 import Currency from "../models/currency";
 import { PersonDTO } from "./person-dto";
 import { SharedExpenseDTO, convertSharedExpensesToDTO } from "./shared-expense-dto";
-import { TempParticipant } from "../models/temp-participant";
+import TempParticipant from "../models/temp-participant";
 
 export interface FriendStatusDTO {
     type: FriendStatus
@@ -37,6 +37,7 @@ export interface PaymentEventDTO {
     type: "payment";
     id: string,
     createdBy: PersonDTO;
+    paidBy: PersonDTO;
     paidTo: PersonDTO;
     amount: number;
     timestamp: number;
@@ -59,6 +60,8 @@ export interface ExpenseChangeEventDTO {
  * @return {EventDTO} EventDTO
  */
 export function convertEventToDTO(event: Event, people: PersonWithId[]): EventDTO {
+    console.log("converting event", event.id);
+    
     if (event.type === "expense") {
         const expense = event as ExpenseEvent
         return {
@@ -88,7 +91,6 @@ export function convertEventToDTO(event: Event, people: PersonWithId[]): EventDT
                 description: change.groupExpenseEdited.description,
                 sharedExpenses:
                     convertSharedExpensesToDTO(change.groupExpenseEdited.sharedExpenses, people),
-
                 payee: findPerson(people, change.groupExpenseEdited.payee),
                 timestamp: change.groupExpenseEdited.timestamp,
                 currency: change.groupExpenseEdited.currency,
@@ -116,6 +118,7 @@ export function convertEventToDTO(event: Event, people: PersonWithId[]): EventDT
             amount: payment.amount,
             paidTo: findPerson(people, payment.paidTo),
             timestamp: payment.timestamp,
+            paidBy: findPerson(people, payment.paidBy),
             currency: payment.currency,
         } as PaymentEventDTO
     }

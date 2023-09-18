@@ -1,6 +1,10 @@
 import { PersonDTO } from "../dto/person-dto";
 
-export type PersonWithId = Person | PersonDTO
+export type PersonWithId = {
+    name: string,
+    id: string,
+    pfpUrl: string;
+}
 
 export interface Person {
     id: string;
