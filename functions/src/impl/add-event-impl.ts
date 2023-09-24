@@ -18,11 +18,12 @@ const addEventImpl = async (req: Request, res: Response, uid: string) => {
     const body = req.body as AddEventRequest;
 
     try {
+        validateAddEvent(body, uid)
+
         const groupId = body.groupId
         const eventDTO: EventDTO = body.event;
         const event: Event = convertDTOtoEvent(uid, eventDTO);
 
-        validateAddEvent(body, uid)
         const group: Group = await getGroupById(groupId);
         validateUserMembership(uid, group);
 
@@ -40,18 +41,16 @@ const addEventImpl = async (req: Request, res: Response, uid: string) => {
         }
         eventDTO.id = dbEvent.id
 
-        let latestEvent: Event | null = null
         if (event.type === "expense") {
             if (group.latestEvent === undefined) {
-                latestEvent = event
+                group.latestEvent = event
             } else if (group.latestEvent === null) {
-                latestEvent = event
+                group.latestEvent = event
             } else if (event.timestamp > group.latestEvent.timestamp) {
-                latestEvent = event
+                group.latestEvent = event
             }
+            await updateGroup(group)
         }
-        group.latestEvent = latestEvent
-        await updateGroup(group)
 
         const response: AddEventResponse = { event: eventDTO }
         console.log("response", eventDTO);

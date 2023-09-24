@@ -1,5 +1,5 @@
-import { GroupV2 } from "../models/group_v2";
-import { GroupV3 } from "../models/group_v3";
+import { GroupV2 } from "../models/group/group_v2";
+import { GroupV3 } from "../models/group/group_v3";
 import { convertExpenseV2ToV3 } from "./convert_events_v2_v3";
 
 /**

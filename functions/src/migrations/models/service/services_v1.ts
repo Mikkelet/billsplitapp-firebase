@@ -1,5 +1,5 @@
 // V2
-export interface ServiceV2 {
+export interface ServiceV1 {
     id: string,
     name: string,
     createdBy: string,
