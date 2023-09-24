@@ -72,8 +72,6 @@ app.all("*", functions.https.onRequest(async (_, res) => {
 
 export const v4 = functions.https.onRequest(app)
 
-export const migrateToV5 = functions.https.onRequest(migrateV4toV5)
-
 export const scheduledServicesV2 = functions.pubsub
     .schedule("0 0 1 * *")
     .onRun(scheduledServicesImpl)

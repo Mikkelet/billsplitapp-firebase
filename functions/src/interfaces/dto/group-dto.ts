@@ -7,7 +7,7 @@ import { PersonDTO } from "./person-dto";
 export interface GroupDTO {
     id: string;
     name: string;
-    people: PersonDTO[];
+    people: PersonDTO[]; 
     pastMembers: PersonDTO[];
     createdBy: PersonDTO;
     timestamp: string;
