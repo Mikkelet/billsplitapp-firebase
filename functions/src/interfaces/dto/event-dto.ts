@@ -61,7 +61,7 @@ export interface ExpenseChangeEventDTO {
  */
 export function convertEventToDTO(event: Event, people: PersonWithId[]): EventDTO {
     console.log("converting event", event.id);
-    
+
     if (event.type === "expense") {
         const expense = event as ExpenseEvent
         return {

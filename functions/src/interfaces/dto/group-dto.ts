@@ -7,6 +7,7 @@ import { PersonDTO } from "./person-dto";
 export interface GroupDTO {
     id: string;
     name: string;
+    coverImageUrl: string;
     people: PersonDTO[];
     pastMembers: PersonDTO[];
     createdBy: PersonDTO;
@@ -31,6 +32,7 @@ export function convertGroupToDTO(group: Group, people: PersonWithId[]): GroupDT
     return {
         id: group.id,
         name: group.name,
+        coverImageUrl: group.coverImageUrl,
         timestamp: group.timestamp,
         pastMembers: group.pastMembers.map((pm) => findPerson(people, pm)),
         createdBy: findPerson(people, group.createdBy),

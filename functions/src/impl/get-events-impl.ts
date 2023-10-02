@@ -13,6 +13,10 @@ import TempParticipant from "../interfaces/models/temp-participant";
 
 /**
  * DEPRECATED
+ * Get events
+ * @param {Request} req request
+ * @param {Response} res response
+ * @param {string} uid user id
  */
 const getEventsImpl = async (req: Request, res: Response, uid: string) => {
     logRequest(req)

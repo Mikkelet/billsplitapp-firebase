@@ -28,7 +28,7 @@ const addServiceImpl = async (req: Request, res: Response, uid: string) => {
         const response: AddServiceResponse = {
             service: serviceDto,
         }
-        sendServiceAddedNotification(group, serviceDto)
+        sendServiceAddedNotification(uid, group, serviceDto)
 
         res.status(200).send(response)
     } catch (e) {
