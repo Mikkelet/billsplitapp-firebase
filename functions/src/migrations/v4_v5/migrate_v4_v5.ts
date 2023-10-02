@@ -38,10 +38,7 @@ async function migrateEventsV3toV4() {
 
         const ref = newGroupCollection.doc(groupId).collection("events").doc(doc.id)
         const eventV5 = convertEventV3ToV4(doc.data() as EventV3)
-        console.log("migrating event",doc.id);
-        if (doc.id === "5JZ8ShTfjN3dESFKPACr") {
-            console.log(doc.data(), " ->", eventV5);
-        }
+        console.log("migrating event", doc.id);
         batchBulk.set(ref, eventV5)
     }
     await batchBulk.commit()

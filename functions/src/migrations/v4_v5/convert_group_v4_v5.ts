@@ -12,6 +12,7 @@ export function convertGroupV4toV5(group: GroupV4): Group {
         id: group.id,
         createdBy: group.createdBy,
         latestEvent: convertEventV3ToV4(group.latestEvent),
+        coverImageUrl: "",
         name: group.name,
         pastMembers: group.pastMembers,
         people: group.people,
