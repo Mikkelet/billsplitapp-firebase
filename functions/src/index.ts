@@ -27,6 +27,7 @@ import updateUserImpl from "./impl/update-user-impl";
 import getExchangeRatesImpl from "./impl/get-exchage-rates-impl";
 import syncExchangeRatesImpl from "./cron/sync-exchange-rates-cron-impl";
 import getAppVersionImpl from "./impl/get-app-version";
+import { migrateV4toV5 } from "./migrations/v4_v5/migrate_v4_v5";
 
 const app = express()
 app.use(cors({ origin: true }))
@@ -69,7 +70,9 @@ app.all("*", functions.https.onRequest(async (_, res) => {
     res.status(404).send("Invalid request")
 }))
 
-export const v4 = functions.https.onRequest(app)
+export const v5 = functions.https.onRequest(app)
+
+export const migrate = functions.https.onRequest(migrateV4toV5)
 
 export const scheduledServices = functions.pubsub
     .schedule("0 0 1 * *")
