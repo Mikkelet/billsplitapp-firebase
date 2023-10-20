@@ -10,6 +10,7 @@ export interface Group {
     createdBy: string;
     timestamp: string;
     latestEvent: Event | undefined | null;
+    lastUpdated: number;
     defaultCurrency: string;
 }
 
@@ -30,6 +31,7 @@ export function convertDTOtoGroup(createdByUid: string, groupDTO: GroupDTO): Gro
         coverImageUrl: groupDTO.coverImageUrl,
         timestamp: groupDTO.timestamp,
         createdBy: createdByUid,
+        lastUpdated: groupDTO.lastUpdated,
         pastMembers: groupDTO.pastMembers.map((m) => m.id),
         people: groupDTO.people.map((p) => p.id),
         latestEvent: latestEvent,

@@ -14,6 +14,7 @@ export interface GroupDTO {
     timestamp: string;
     latestEvent: EventDTO | null;
     defaultCurrency: string;
+    lastUpdated: number;
 }
 
 /**
@@ -37,6 +38,7 @@ export function convertGroupToDTO(group: Group, people: PersonWithId[]): GroupDT
         pastMembers: group.pastMembers.map((pm) => findPerson(people, pm)),
         createdBy: findPerson(people, group.createdBy),
         people: group.people.map((p) => findPerson(people, p)),
+        lastUpdated: group.lastUpdated,
         latestEvent: latestEvent,
         defaultCurrency: group.defaultCurrency,
     }

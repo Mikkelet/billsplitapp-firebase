@@ -14,6 +14,7 @@ export interface ExpenseEvent {
     sharedExpenses: SharedExpense[],
     tempParticipants: TempParticipant[],
     timestamp: number;
+    receiptImageUrl: string | null,
     currency: Currency;
 }
 
