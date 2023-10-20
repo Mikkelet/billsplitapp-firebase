@@ -10,7 +10,7 @@ import { EventV3 } from "../models/event/event_v3";
 import { convertEventV3ToV4 } from "./convert_events_v3_v4";
 
 const firestore = firebase.firestore()
-const oldGroupCollection = firestore.collection("groups-backup2")
+const oldGroupCollection = firestore.collection("groups-v4")
 const newGroupCollection = firestore.collection("groups-v5")
 const eventsCollection = firestore.collectionGroup("events")
 const servicesCollection = firestore.collectionGroup("services")
