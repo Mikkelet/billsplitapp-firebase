@@ -4,21 +4,21 @@ import * as functions from "firebase-functions";
 import BatchInstance from "../../utils/batch_helper";
 import { handleError } from "../../utils/error-utils";
 import logRequest from "../../utils/log-utils";
-import { convertGroupV4toV5 } from "./convert_group_v4_v5";
-import { GroupV4 } from "../models/group/group_v4";
-import { EventV3 } from "../models/event/event_v3";
-import { convertEventV3ToV4 } from "./convert_events_v3_v4";
+import { convertEventV4ToV5 } from "./convert_event_v4_v5";
+import { EventV4 } from "../models/event/event_v4";
+import { convertGroupV5toV6 } from "./convert_group_v5_v6";
+import { GroupV5 } from "../models/group/group_v5";
 
 const firestore = firebase.firestore()
-const oldGroupCollection = firestore.collection("groups-v4")
-const newGroupCollection = firestore.collection("groups-v5")
+const oldGroupCollection = firestore.collection("groups-v5")
+const newGroupCollection = firestore.collection("groups-v6")
 const eventsCollection = firestore.collectionGroup("events")
 const servicesCollection = firestore.collectionGroup("services")
 
 /**
  * migrates events to V5
  */
-async function migrateEventsV3toV4() {
+async function migrateEvents() {
     console.log("Migrating events...");
 
     const batchBulk = new BatchInstance()
@@ -35,9 +35,8 @@ async function migrateEventsV3toV4() {
             continue;
         }
 
-
         const ref = newGroupCollection.doc(groupId).collection("events").doc(doc.id)
-        const eventV5 = convertEventV3ToV4(doc.data() as EventV3)
+        const eventV5 = convertEventV4ToV5(doc.data() as EventV4)
         console.log("migrating event", doc.id);
         batchBulk.set(ref, eventV5)
     }
@@ -47,7 +46,7 @@ async function migrateEventsV3toV4() {
 /**
  * Migrates services to v5
  */
-async function migrateServicesV4toV5() {
+async function migrateServices() {
     console.log("Migrating services...");
 
     const batchBulk = new BatchInstance()
@@ -70,17 +69,17 @@ async function migrateServicesV4toV5() {
 /**
  * Migrates groups to v5
  */
-async function migrateGroupV4toV5() {
+async function migrateGroups() {
     console.log("Migrating groups...");
     const batchBulk = new BatchInstance()
     const groupsRequest = await oldGroupCollection.get()
     for (const doc of groupsRequest.docs) {
-        const dataV3 = doc.data() as GroupV4
+        const oldGroup = doc.data() as GroupV5
         console.log("converting group id=" + doc.id);
 
-        const dataV5 = convertGroupV4toV5(dataV3)
+        const newGroup = convertGroupV5toV6(oldGroup)
         const ref = newGroupCollection.doc(doc.id)
-        batchBulk.set(ref, dataV5)
+        batchBulk.set(ref, newGroup)
     }
     await batchBulk.commit()
 }
@@ -89,10 +88,10 @@ async function migrateGroupV4toV5() {
 export const migrateV4toV5 = functions.https.onRequest(async (req, res) => {
     logRequest(req)
     try {
-        await migrateGroupV4toV5()
-        await migrateEventsV3toV4()
-        await migrateServicesV4toV5()
-        res.send()
+        await migrateGroups()
+        await migrateEvents()
+        await migrateServices()
+        res.send("OK")
     } catch (e) {
         handleError(e, res)
     }

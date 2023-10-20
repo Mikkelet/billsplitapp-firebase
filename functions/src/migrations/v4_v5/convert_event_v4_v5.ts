@@ -27,7 +27,7 @@ function convertExpense(event: ExpenseEventV3): ExpenseEvent {
         description: event.description,
         id: event.id,
         payee: event.payee,
-        receiptImageUrl: null,
+        receiptImageUrl: "",
         sharedExpenses: event.sharedExpenses,
         timestamp: event.timestamp,
         type: event.type,

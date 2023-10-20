@@ -7,7 +7,7 @@ import { convertEventV4ToV5 } from "./convert_event_v4_v5";
  * @param {GroupV5} group
  * @return {Group} group
  */
-export function convertGroupV4toV5(group: GroupV5): Group {
+export function convertGroupV5toV6(group: GroupV5): Group {
     return {
         id: group.id,
         createdBy: group.createdBy,
