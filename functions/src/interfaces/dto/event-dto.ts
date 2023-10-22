@@ -27,6 +27,7 @@ export interface ExpenseEventDTO {
     createdBy: PersonDTO;
     description: string;
     payee: PersonDTO;
+    receiptImageUrl: string;
     tempParticipants: TempParticipant[];
     sharedExpenses: SharedExpenseDTO[];
     timestamp: number;
@@ -69,6 +70,7 @@ export function convertEventToDTO(event: Event, people: PersonWithId[]): EventDT
             id: expense.id,
             createdBy: findPerson(people, expense.createdBy),
             description: expense.description,
+            receiptImageUrl: event.receiptImageUrl,
             payee: findPerson(people, expense.payee),
             sharedExpenses: convertSharedExpensesToDTO(expense.sharedExpenses, people),
             timestamp: expense.timestamp,

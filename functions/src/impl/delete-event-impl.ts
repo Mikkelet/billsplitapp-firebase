@@ -1,6 +1,6 @@
 import { Request, Response } from "firebase-functions";
 import { deleteEvent, eventExists } from "../collections/events-collection";
-import { getGroupById } from "../collections/group-collection";
+import { getGroupById, updateGroup } from "../collections/group-collection";
 import logRequest from "../utils/log-utils";
 import { billSplitError, handleError } from "../utils/error-utils";
 
@@ -19,7 +19,11 @@ const deleteEventImpl = async (req: Request, res: Response, uid: string) => {
         const group = await getGroupById(groupId)
         const findUser = group.people.find((id) => id === uid)
         if (findUser === undefined) throw Error("User is not part of this group")
+
         await deleteEvent(groupId, eventId)
+        group.lastUpdated = Date.now()
+        await updateGroup(group)
+        
         res.status(204).send()
     } catch (e) {
         handleError(e, res)

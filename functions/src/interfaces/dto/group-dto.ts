@@ -13,8 +13,8 @@ export interface GroupDTO {
     createdBy: PersonDTO;
     timestamp: string;
     latestEvent: EventDTO | null;
-    defaultCurrency: string;
     lastUpdated: number;
+    defaultCurrency: string;
 }
 
 /**

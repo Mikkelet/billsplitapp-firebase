@@ -41,16 +41,10 @@ const addEventImpl = async (req: Request, res: Response, uid: string) => {
         }
         eventDTO.id = dbEvent.id
 
-        if (event.type === "expense") {
-            if (group.latestEvent === undefined) {
-                group.latestEvent = event
-            } else if (group.latestEvent === null) {
-                group.latestEvent = event
-            } else if (event.timestamp > group.latestEvent.timestamp) {
-                group.latestEvent = event
-            }
-            await updateGroup(group)
-        }
+        // update group
+        group.latestEvent = event
+        group.lastUpdated = Date.now()
+        await updateGroup(group)
 
         const response: AddEventResponse = { event: eventDTO }
         console.log("response", eventDTO);
