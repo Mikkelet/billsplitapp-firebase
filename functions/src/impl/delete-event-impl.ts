@@ -23,7 +23,7 @@ const deleteEventImpl = async (req: Request, res: Response, uid: string) => {
         await deleteEvent(groupId, eventId)
         group.lastUpdated = Date.now()
         await updateGroup(group)
-        
+
         res.status(204).send()
     } catch (e) {
         handleError(e, res)

@@ -1,9 +1,10 @@
 import { Request, Response } from "firebase-functions";
 import { addFriend, getFriendship, updateFriendStatus } from "../collections/friend-collection";
-import { getUserByEmail, getUserById } from "../collections/user-collection";
+import { getUserByEmail, getUserById, getUserByPhoneNumber } from "../collections/user-collection";
 import {
     AddFriendRequest,
     AddFriendRequestEmail,
+    AddFriendRequestPhoneNumber,
     AddFriendRequestUserId,
     AddFriendResponse,
 } from "../interfaces/add-friend";
@@ -26,6 +27,9 @@ const addFriendImpl = async (req: Request, res: Response, uid: string) => {
         } else if (body.type === "userId") {
             const friendId = (body as AddFriendRequestUserId).friendId
             friendUser = await getUserById(friendId)
+        } else if (body.type === "phone") {
+            const phoneNum = (body as AddFriendRequestPhoneNumber).phoneNumber;
+            friendUser = await getUserByPhoneNumber(phoneNum);
         } else {
             throw billSplitError(400, "Missing id type")
         }

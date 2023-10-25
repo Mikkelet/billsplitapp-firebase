@@ -80,6 +80,26 @@ export async function getUserByEmail(email: string): Promise<Person | null> {
 }
 
 /**
+ * Retrieves user for given phonenumber, return null if not found
+ * @param {number} phoneNum phonenumber of user
+ * @return {Person | null} Person if exist, else null
+ */
+export async function getUserByPhoneNumber(phoneNum: number): Promise<Person> {
+    try {
+        const userRecord: UserRecord = await firebase.auth().getUserByPhoneNumber(`${phoneNum}`)
+        const person: Person = {
+            id: userRecord.uid,
+            name: userRecord.displayName ?? "",
+            email: userRecord.email ?? "",
+            pfpUrl: userRecord.photoURL ?? "",
+        }
+        return person
+    } catch (e) {
+        throw billSplitError(404, "Person not found")
+    }
+}
+
+/**
  * Get people from list uids to user objects
  * @param {string[]} uids of people uids
  * @return {Promise<Person[]>} list of people objects
