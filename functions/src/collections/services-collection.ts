@@ -2,7 +2,6 @@ import { Service } from "../interfaces/models/service";
 import { groupCollection } from "./group-collection";
 import * as firebase from "firebase-admin";
 
-
 const serviceCollection = (groupId: string) => groupCollection.doc(groupId).collection("services")
 const servicesCollectionGroup = firebase.firestore().collectionGroup("services")
 
@@ -18,9 +17,10 @@ interface ServiceWithGroupId {
  */
 export async function getAllServices(): Promise<ServiceWithGroupId[]> {
     const query = await servicesCollectionGroup.get()
-    query.docs.map((doc) => doc.ref.parent.id)
     if (query.empty) return []
-    return query.docs.map((doc) => {
+    const currentServices = query.docs
+        .filter((doc) => doc.ref.parent.parent?.parent.id === groupCollection.id)
+    return currentServices.map((doc) => {
         return {
             service: doc.data(),
             groupId: doc.ref.parent.parent?.id ?? "services",

@@ -12,6 +12,7 @@ const getAppVersionImpl = async (req: Request, res: Response) => {
         res.send(appVersionData)
     } catch (e) {
         handleError(e, res)
+        res.send(500)
     }
 }
 

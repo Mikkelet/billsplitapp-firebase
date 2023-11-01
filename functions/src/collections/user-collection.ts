@@ -84,7 +84,7 @@ export async function getUserByEmail(email: string): Promise<Person | null> {
  * @param {number} phoneNum phonenumber of user
  * @return {Person | null} Person if exist, else null
  */
-export async function getUserByPhoneNumber(phoneNum: number): Promise<Person> {
+export async function getUserByPhoneNumber(phoneNum: number): Promise<Person | null> {
     try {
         const userRecord: UserRecord = await firebase.auth().getUserByPhoneNumber(`${phoneNum}`)
         const person: Person = {
@@ -95,7 +95,7 @@ export async function getUserByPhoneNumber(phoneNum: number): Promise<Person> {
         }
         return person
     } catch (e) {
-        throw billSplitError(404, "Person not found")
+        return null;
     }
 }
 
