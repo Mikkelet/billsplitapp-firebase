@@ -30,7 +30,7 @@ class MigrateV6V7 extends DatabaseMigrator<GroupV6, Group, Event, Event, Service
     }
 
     /**
-     *
+     * Migrate events
      * @param {Event} event migrate events
      * @return {Event}
      */
@@ -48,7 +48,7 @@ class MigrateV6V7 extends DatabaseMigrator<GroupV6, Group, Event, Event, Service
     }
 }
 
-export const migrateV4toV5 = functions.https.onRequest(async (req, res) => {
+export const migrateV5toV6 = functions.https.onRequest(async (req, res) => {
     logRequest(req)
     const migrator = new MigrateV6V7()
     try {

@@ -45,7 +45,7 @@ export abstract class DatabaseMigrator<G1, G2, E1, E2, S1, S2> {
 
     /**
      * Migrate groups
-     * @param {number} limit limits docs that are migrated for debug purposes
+     * @param limit limits docs that are migrated for debug purposes
      */
     async migrateGroups(limit = 9999) {
         const batchBulk = new BatchInstance()
