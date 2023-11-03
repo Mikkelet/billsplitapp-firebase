@@ -6,7 +6,7 @@ import { convertEventToDTO, EventDTO } from "../interfaces/dto/event-dto";
 import { GetEventsRequest, GetEventsResponse } from "../interfaces/get-events";
 import { Event, ExpenseEvent } from "../interfaces/models/events";
 import { handleError } from "../utils/error-utils";
-import validateUserMembership from "../middleware/validate-user-membership";
+import validateUserMembership from "../middleware/validators/validate-user-membership";
 import logRequest from "../utils/log-utils";
 import { Person, PersonWithId } from "../interfaces/models/person";
 import TempParticipant from "../interfaces/models/temp-participant";

@@ -7,7 +7,7 @@ import { Group } from "../interfaces/models/group";
 import { convertDTOtoService, Service } from "../interfaces/models/service";
 import { validateAddService } from "../middleware/service/add-service-validator";
 import { handleError } from "../utils/error-utils";
-import validateUserMembership from "../middleware/validate-user-membership";
+import validateUserMembership from "../middleware/validators/validate-user-membership";
 import logRequest from "../utils/log-utils";
 import sendServiceAddedNotification from "../fcm/send-add-service-notification";
 

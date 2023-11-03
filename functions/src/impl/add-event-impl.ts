@@ -7,10 +7,10 @@ import { EventDTO, ExpenseChangeEventDTO, ExpenseEventDTO, PaymentEventDTO }
 import { convertDTOtoEvent, Event, ExpenseEvent } from "../interfaces/models/events";
 import { Group } from "../interfaces/models/group";
 import { handleError } from "../utils/error-utils";
-import validateUserMembership from "../middleware/validate-user-membership";
+import validateUserMembership from "../middleware/validators/validate-user-membership";
 import logRequest from "../utils/log-utils";
 import sendEventAddedNotification from "../fcm/send-add-event-message"
-import validateAddEvent from "../middleware/validate-add-event";
+import validateAddEvent from "../middleware/validators/validate-add-event";
 import sendPaymentNotification from "../fcm/send-payment-notification";
 
 const addEventImpl = async (req: Request, res: Response, uid: string) => {

@@ -12,7 +12,7 @@ import { ServiceDTO } from "../interfaces/dto/service-dto";
 import { convertServiceToDTO, Service } from "../interfaces/models/service";
 import { getServicesForGroup } from "../collections/services-collection";
 import { handleError } from "../utils/error-utils";
-import validateUserMembership from "../middleware/validate-user-membership";
+import validateUserMembership from "../middleware/validators/validate-user-membership";
 import logRequest from "../utils/log-utils";
 import TempParticipant from "../interfaces/models/temp-participant";
 

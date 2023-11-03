@@ -1,5 +1,5 @@
-import { PersonDTO } from "../interfaces/dto/person-dto"
-import { billSplitError } from "../utils/error-utils"
+import { PersonDTO } from "../../interfaces/dto/person-dto"
+import { billSplitError } from "../../utils/error-utils"
 
 // A new DTO must have an emprty id and a person that created it
 type NewDTO = { id: string, createdBy: PersonDTO }

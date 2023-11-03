@@ -5,8 +5,8 @@ import { GroupDTO } from "../interfaces/dto/group-dto";
 import { convertDTOtoGroup } from "../interfaces/models/group";
 import { handleError } from "../utils/error-utils";
 import validateGroup from "../middleware/group/validate-group";
-import validateUserMembership from "../middleware/validate-user-membership";
-import validateCreatedBy from "../middleware/validate-created-by";
+import validateUserMembership from "../middleware/validators/validate-user-membership";
+import validateCreatedBy from "../middleware/validators/validate-created-by";
 import logRequest from "../utils/log-utils";
 
 const addGroupImpl = async (req: Request, res: Response, uid: string) => {

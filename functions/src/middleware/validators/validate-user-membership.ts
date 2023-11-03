@@ -1,5 +1,5 @@
-import { Group } from "../interfaces/models/group";
-import { billSplitError } from "../utils/error-utils";
+import { Group } from "../../interfaces/models/group";
+import { billSplitError } from "../../utils/error-utils";
 
 /**
  * Validates user is member of group

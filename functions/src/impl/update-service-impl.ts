@@ -4,7 +4,7 @@ import { ServiceDTO } from "../interfaces/dto/service-dto";
 import { convertDTOtoService, Service } from "../interfaces/models/service";
 import { UpdateServiceRequest } from "../interfaces/update-service";
 import { validateUpdateService } from "../middleware/service/update-service-validator";
-import validateUserMembership from "../middleware/validate-user-membership";
+import validateUserMembership from "../middleware/validators/validate-user-membership";
 import { getGroupById } from "../collections/group-collection";
 import logRequest from "../utils/log-utils";
 

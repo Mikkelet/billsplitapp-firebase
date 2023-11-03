@@ -1,5 +1,5 @@
-import { AddEventRequest } from "../interfaces/add-event";
-import { billSplitError } from "../utils/error-utils";
+import { AddEventRequest } from "../../interfaces/add-event";
+import { billSplitError } from "../../utils/error-utils";
 
 /**
  * Validates request data of AddEvent

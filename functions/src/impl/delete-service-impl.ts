@@ -3,7 +3,7 @@ import { getGroupById } from "../collections/group-collection";
 import { deleteService } from "../collections/services-collection";
 import { Group } from "../interfaces/models/group";
 import { handleError } from "../utils/error-utils";
-import validateUserMembership from "../middleware/validate-user-membership";
+import validateUserMembership from "../middleware/validators/validate-user-membership";
 import logRequest from "../utils/log-utils";
 
 const deleteServiceImpl = async (req: Request, res: Response, uid: string) => {
