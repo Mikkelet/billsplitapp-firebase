@@ -6,6 +6,7 @@ export interface Group {
     name: string;
     people: string[];
     pastMembers: string[];
+    invites: string[];
     coverImageUrl: string;
     createdBy: string;
     timestamp: string;
@@ -34,6 +35,7 @@ export function convertDTOtoGroup(createdByUid: string, groupDTO: GroupDTO): Gro
         lastUpdated: groupDTO.lastUpdated,
         pastMembers: groupDTO.pastMembers.map((m) => m.id),
         people: groupDTO.people.map((p) => p.id),
+        invites: groupDTO.invites.map((p) => p.id),
         latestEvent: latestEvent,
         defaultCurrency: groupDTO.defaultCurrency,
     }

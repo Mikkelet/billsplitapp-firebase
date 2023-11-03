@@ -1,22 +1,22 @@
-import { GroupV5 } from "../models/group/group_v5";
+import { Group } from "../../interfaces/models/group";
 import { GroupV6 } from "../models/group/group_v6";
-import { convertEventV4ToV5 } from "./convert_event_v4_v5";
 
 /**
- * convert V5 to V6
- * @param {GroupV5} group
- * @return {GroupV6} group
+ * convert V6 to V7
+ * @param {GroupV6} group
+ * @return {Group} group
  */
-export function convertGroupV5toV6(group: GroupV5): GroupV6 {
+export function convertGroupV6toV7(group: GroupV6): Group {
     return {
         id: group.id,
         createdBy: group.createdBy,
-        latestEvent: convertEventV4ToV5(group.latestEvent),
+        latestEvent: group.latestEvent,
         lastUpdated: Date.now(),
         coverImageUrl: group.coverImageUrl,
         name: group.name,
         pastMembers: group.pastMembers,
         people: group.people,
+        invites: [],
         timestamp: group.timestamp,
         defaultCurrency: group.defaultCurrency,
     }

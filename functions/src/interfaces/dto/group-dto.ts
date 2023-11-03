@@ -10,6 +10,7 @@ export interface GroupDTO {
     coverImageUrl: string;
     people: PersonDTO[];
     pastMembers: PersonDTO[];
+    invites: PersonDTO[];
     createdBy: PersonDTO;
     timestamp: string;
     latestEvent: EventDTO | null;
@@ -35,7 +36,8 @@ export function convertGroupToDTO(group: Group, people: PersonWithId[]): GroupDT
         name: group.name,
         coverImageUrl: group.coverImageUrl,
         timestamp: group.timestamp,
-        pastMembers: group.pastMembers.map((pm) => findPerson(people, pm)),
+        pastMembers: group.pastMembers.map((p) => findPerson(people, p)),
+        invites: group.invites.map((p) => findPerson(people, p)),
         createdBy: findPerson(people, group.createdBy),
         people: group.people.map((p) => findPerson(people, p)),
         lastUpdated: group.lastUpdated,
