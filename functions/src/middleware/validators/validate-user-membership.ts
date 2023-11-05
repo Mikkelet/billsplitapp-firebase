@@ -7,9 +7,8 @@ import { billSplitError } from "../../utils/error-utils";
  * @param {Group} group id of group
  */
 export default function validateUserMembership(uid: string, group: Group) {
-    const findUid: string | undefined = group.people.find((id) => id === uid)
-
-    if (findUid === undefined) {
+    const findUid: number = group.people.indexOf(uid)
+    if (findUid === -1) {
         console.log("Token userid not found in group", { groupId: group.id, uid: uid });
         throw billSplitError(400, "You are not part of this group")
     }

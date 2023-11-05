@@ -1,4 +1,5 @@
 import { Request, Response } from "firebase-functions";
+import logRequest from "../utils/log-utils";
 import { Group } from "../interfaces/models/group";
 import { getGroupById, updateGroup } from "../collections/group-collection";
 import { LeaveGroupResponse } from "../interfaces/leave-group";
@@ -7,30 +8,31 @@ import { Person } from "../interfaces/models/person";
 import { getPeople } from "../collections/user-collection";
 import { AddToGroupRequest } from "../interfaces/add-to-group";
 import validateUserMembership from "../middleware/validators/validate-user-membership";
-import logRequest from "../utils/log-utils";
+import { handleError } from "../utils/error-utils";
+import { arrayContains, removeFromArray } from "../utils/list-utils";
 
-const addToGroupImpl = async (req: Request, res: Response, uid: string) => {
+const inviteToGroupImpl = async (req: Request, res: Response, uid: string) => {
     logRequest(req)
     const body = req.body as AddToGroupRequest;
-    const groupId = req.params.groupId
+    const groupId = body.groupId
     const newUserId = body.userId;
 
     try {
         const group: Group = await getGroupById(groupId);
         validateUserMembership(uid, group)
 
-        // create new list of people with newUserId
-        const peopleWithNewUser: string[] = [...new Set([...group.people, newUserId])]
-
-        // create new past member list without newUserId
-        const pastMembersWithoutNewUser: string[] = group.pastMembers.filter((p) => p !== newUserId)
-
-        // Apply new lists
-        group.people = peopleWithNewUser
-        group.pastMembers = pastMembersWithoutNewUser
+        if (arrayContains(group.invites, newUserId)) {
+            const invitesWithoutUid = removeFromArray(group.invites, newUserId)
+            // Apply new lists
+            group.people = [...new Set([...group.people, newUserId])]
+            group.pastMembers = removeFromArray(group.pastMembers, newUserId)
+            group.invites = invitesWithoutUid
+        } else {
+            group.invites = [...group.invites, newUserId]
+        }
 
         // get people of uids
-        const allUids: string[] = [...peopleWithNewUser, ...pastMembersWithoutNewUser]
+        const allUids: string[] = [...group.people, ...group.pastMembers, ...group.invites]
         const allPeople: Person[] = await getPeople(allUids)
 
         // update group
@@ -43,9 +45,8 @@ const addToGroupImpl = async (req: Request, res: Response, uid: string) => {
         console.log("response", response);
         res.status(200).send(response);
     } catch (e) {
-        console.error(e);
-        res.status(500).send(e);
+        handleError(e, res)
     }
 }
 
-export default addToGroupImpl
+export default inviteToGroupImpl

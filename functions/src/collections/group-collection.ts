@@ -3,7 +3,7 @@ import { Group } from "../interfaces/models/group";
 import { billSplitError } from "../utils/error-utils";
 
 const firestore = firebase.firestore();
-export const groupCollection = firestore.collection("groups-v6");
+export const groupCollection = firestore.collection("groups-v7");
 
 /**
  * Add group
@@ -46,4 +46,16 @@ export async function getGroupsByUser(userId: string): Promise<Group[]> {
     if (query.empty) return [];
     const groups: Group[] = query.docs.map((doc) => doc.data() as Group);
     return groups;
+}
+
+/**
+ * Retrieves groups that has invited user id to join
+ * @param {strign} userId userId
+ * @return {Promise<Group[]>} List of groups
+ */
+export async function getGroupInvitesByUser(userId: string): Promise<Group[]> {
+    const response = await groupCollection.where("invites", "array-contains", userId).get()
+    if (response.empty) return [];
+    const groups: Group[] = response.docs.map((doc) => doc.data() as Group)
+    return groups
 }

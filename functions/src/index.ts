@@ -19,14 +19,16 @@ import addServiceImpl from "./impl/add-service-impl";
 import scheduledServicesImpl from "./cron/services-cron-impl";
 import updateServiceImpl from "./impl/update-service-impl";
 import leaveGroupImpl from "./impl/leave-group-impl";
-import addToGroupImpl from "./impl/add-user-to-group-impl";
 import deleteServiceImpl from "./impl/delete-service-impl";
 import deleteEventImpl from "./impl/delete-event-impl";
 import updateUserImpl from "./impl/update-user-impl";
-
 import getExchangeRatesImpl from "./impl/get-exchage-rates-impl";
 import syncExchangeRatesImpl from "./cron/sync-exchange-rates-cron-impl";
 import getAppVersionImpl from "./impl/get-app-version";
+import inviteToGroupImpl from "./impl/invite-user-to-group-impl";
+import getGroupInvitesImpl from "./impl/get-group-invites-impl";
+import respondToGroupInvite from "./impl/respond-to-group-invite";
+import getEventsImpl from "./impl/get-events-impl";
 
 const app = express()
 app.use(cors({ origin: true }))
@@ -36,13 +38,16 @@ app.put("/user", (req, res) => authInterceptor(updateUserImpl)(req, res))
 
 // Groups
 app.get("/groups", (req, res) => authInterceptor(getGroupsImpl)(req, res))
+app.get("/groupInvites", (req, res) => authInterceptor(getGroupInvitesImpl)(req, res))
 
 // Group
 app.post("/group", (req, res) => authInterceptor(addGroupImpl)(req, res))
-app.get("/group/:id", (req, res) => authInterceptor(getGroupImpl)(req, res))
-app.post("/group/:groupId/user", (req, res) => authInterceptor(addToGroupImpl)(req, res))
+app.post("/group/invite", (req, res) => authInterceptor(inviteToGroupImpl)(req, res))
+app.post("/group/invitation", (req, res) => authInterceptor(respondToGroupInvite)(req, res))
+app.get("/group/:groupId", (req, res) => authInterceptor(getGroupImpl)(req, res))
 app.delete("/group/:groupId/events/:eventId", (req, res) =>
     authInterceptor(deleteEventImpl)(req, res))
+app.get("/group/:groupId/events", (req, res) => authInterceptor(getEventsImpl)(req, res))
 app.delete("/group/:groupId/user/:userId", (req, res) => authInterceptor(leaveGroupImpl)(req, res))
 app.get("/leaveGroup/:groupId", (req, res) => authInterceptor(leaveGroupImpl)(req, res))
 
@@ -65,11 +70,14 @@ app.delete("/group/:groupId/service/:serviceId", (req, res) =>
 // App Data
 app.get("/appVersion", (req, res) => getAppVersionImpl(req, res))
 
+// migrate
+//app.get("/migrate", (req, res) => migrateV5toV6(req, res))
+
 app.all("*", functions.https.onRequest(async (_, res) => {
     res.status(404).send("Invalid request")
 }))
 
-export const v5 = functions.https.onRequest(app)
+export const v6 = functions.https.onRequest(app)
 
 export const scheduledServices = functions.pubsub
     .schedule("0 0 1 * *")

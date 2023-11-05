@@ -105,7 +105,6 @@ export async function getUserByPhoneNumber(phoneNum: number): Promise<Person | n
  * @return {Promise<Person[]>} list of people objects
  */
 export async function getPeople(uids: string[]): Promise<Person[]> {
-    const queryStart = Date.now()
     const distinctUids: string[] = [...new Set(uids)];
     const userIdentifiers = distinctUids.map((id) => {
         return { uid: id }
@@ -121,14 +120,6 @@ export async function getPeople(uids: string[]): Promise<Person[]> {
             email: user.email ?? "",
         }
     })
-
-    const queryEnd = Date.now()
-    console.log("getPeople query", {
-        people: uids.length,
-        time: queryEnd - queryStart,
-        timePerId: (queryEnd - queryStart) / uids.length,
-    });
-
     return people;
 }
 
