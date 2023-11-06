@@ -9,7 +9,7 @@ import { handleError } from "../../utils/error-utils";
 import * as functions from "firebase-functions";
 
 /**
- * Migrate database V6 to V7
+ * Migrate database V5 to V6
  */
 class MigrateV6V7 extends DatabaseMigrator<GroupV6, Group, Event, Event, Service, Service> {
 
@@ -52,9 +52,9 @@ export const migrateV5toV6 = functions.https.onRequest(async (req, res) => {
     logRequest(req)
     const migrator = new MigrateV6V7()
     try {
-        await migrator.migrateGroups(1)
-        //  await migrator.migrateEvents()
-        //  await migrator.migrateServices()
+        await migrator.migrateGroups()
+        await migrator.migrateEvents()
+        await migrator.migrateServices()
         res.send("OK")
     } catch (e) {
         handleError(e, res)
