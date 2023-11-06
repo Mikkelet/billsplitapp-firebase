@@ -70,16 +70,13 @@ app.delete("/group/:groupId/service/:serviceId", (req, res) =>
 // App Data
 app.get("/appVersion", (req, res) => getAppVersionImpl(req, res))
 
-// migrate
-//app.get("/migrate", (req, res) => migrateV5toV6(req, res))
-
 app.all("*", functions.https.onRequest(async (_, res) => {
     res.status(404).send("Invalid request")
 }))
 
 export const v6 = functions.https.onRequest(app)
 
-export const scheduledServices = functions.pubsub
+export const scheduledServicesV6 = functions.pubsub
     .schedule("0 0 1 * *")
     .onRun(scheduledServicesImpl)
 
