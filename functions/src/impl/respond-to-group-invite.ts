@@ -16,6 +16,9 @@ const respondToGroupInvite = async (req: Request, res: Response, uid: string) =>
         const group = await getGroupById(groupId)
         let invites = group.invites
         if (!arrayContains(invites, uid)) {
+            if (arrayContains(group.people, uid)) {
+                throw billSplitError(500, "User already member of group")
+            }
             throw billSplitError(500, "User not invited to group")
         }
 
