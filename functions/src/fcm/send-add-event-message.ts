@@ -23,13 +23,13 @@ export default async function sendEventAddedNotification(
     }
 
     const userTopics = group.people.map((uid) => getTopicForUser(uid))
-    userTopics.forEach((topic) => {
+    const promises = userTopics.map((topic) => {
         const data: DataMessagePayload = {
             groupId: group.id,
             eventId: event.id,
             topic: topic,
         }
-        sendNotification(topic, title, body, data)
+        return sendNotification(topic, title, body, data)
     })
-
+    await Promise.all(promises);
 }

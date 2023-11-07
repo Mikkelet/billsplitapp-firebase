@@ -44,6 +44,10 @@ export default async function sendNotification(
         android: android,
         data: data,
     }
-
-    await firebase.messaging().send(payload)
+    try {
+        await firebase.messaging().send(payload)
+        console.log("Notification sent", payload);
+    } catch (e) {
+        console.log("Failed to send notification", e, payload);
+    }
 }

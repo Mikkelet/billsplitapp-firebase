@@ -35,9 +35,9 @@ const addEventImpl = async (req: Request, res: Response, uid: string) => {
         }
         const dbEvent = await insertEvent(groupId, event)
         if (event.type === "expense") {
-            sendEventAddedNotification(uid, group, eventDTO as ExpenseEventDTO)
+            await sendEventAddedNotification(uid, group, eventDTO as ExpenseEventDTO)
         } else if (event.type === "payment") {
-            sendPaymentNotification(group, eventDTO as PaymentEventDTO)
+            await sendPaymentNotification(group, eventDTO as PaymentEventDTO)
         }
         eventDTO.id = dbEvent.id
 
