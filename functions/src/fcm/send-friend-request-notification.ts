@@ -1,8 +1,8 @@
-import { DataMessagePayload } from "firebase-admin/lib/messaging/messaging-api";
 import sendNotification from "./send-notification";
 import { getUserById } from "../collections/user-collection";
 import { FriendStatus } from "../interfaces/models/friend";
 import { getTopicForUser } from "./topics";
+import { NotificationData } from "./types";
 
 /**
  * Send a notification for friend request
@@ -18,15 +18,15 @@ export default async function sendFriendRequestNotification(
     const topic = getTopicForUser(friendUid)
     if (status === "pending") {
         const title = `${senderName} sent you a friend request!`
-        const data: DataMessagePayload = {
-            topic: topic,
+        const data: NotificationData = {
+            type: "friendInvite"
         }
 
         await sendNotification(topic, title, "", data)
     } else if (status === "accepted") {
         const title = `${senderName} accepted your request!`
-        const data: DataMessagePayload = {
-            topic: topic,
+        const data: NotificationData = {
+            type: "friendInvite"
         }
 
         await sendNotification(topic, title, "", data)

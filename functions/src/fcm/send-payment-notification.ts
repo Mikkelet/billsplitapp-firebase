@@ -1,8 +1,8 @@
-import { DataMessagePayload } from "firebase-admin/lib/messaging/messaging-api";
 import { PaymentEventDTO } from "../interfaces/dto/event-dto";
 import { Group } from "../interfaces/models/group";
 import sendNotification from "./send-notification";
 import { getTopicForUser } from "./topics";
+import { NotificationData } from "./types";
 
 /**
  * Send a payment notification
@@ -15,9 +15,9 @@ export default async function sendPaymentNotification(group: Group, payment: Pay
     const body = `${payment.currency.symbol.toUpperCase()} ${payment.amount}`
     const topic = getTopicForUser(payment.paidTo.id)
 
-    const data: DataMessagePayload = {
+    const data: NotificationData = {
+        type: "group",
         groupId: group.id,
-        topic: topic,
     }
 
     await sendNotification(topic, title, body, data)

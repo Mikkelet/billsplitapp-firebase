@@ -3,7 +3,7 @@ import { getUserById } from "../collections/user-collection";
 import { Group } from "../interfaces/models/group";
 import { getTopicForUser } from "./topics";
 import sendNotification from "./send-notification";
-import { DataMessagePayload } from "firebase-admin/lib/messaging/messaging-api";
+import { NotificationData } from "./types";
 
 /**
  * Send a new notification to group members
@@ -24,10 +24,10 @@ export default async function sendEventAddedNotification(
 
     const userTopics = group.people.map((uid) => getTopicForUser(uid))
     const promises = userTopics.map((topic) => {
-        const data: DataMessagePayload = {
+        const data: NotificationData = {
+            type: "group",
             groupId: group.id,
             eventId: event.id,
-            topic: topic,
         }
         return sendNotification(topic, title, body, data)
     })

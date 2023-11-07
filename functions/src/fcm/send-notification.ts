@@ -1,6 +1,7 @@
 import * as firebase from "firebase-admin";
 import { AndroidConfig, AndroidNotification, ApnsConfig, DataMessagePayload, TopicMessage }
     from "firebase-admin/lib/messaging/messaging-api"
+import { NotificationType } from "./types";
 
 /**
  * Send notification message to specified topic
@@ -13,7 +14,10 @@ export default async function sendNotification(
     topic: string,
     title: string,
     body: string,
-    data: DataMessagePayload,
+    data: {
+        type: NotificationType,
+        [key: string]: string
+    },
 ) {
     const apns: ApnsConfig = {
         payload: {
@@ -45,6 +49,7 @@ export default async function sendNotification(
         data: data,
     }
     try {
+
         await firebase.messaging().send(payload)
         console.log("Notification sent", payload);
     } catch (e) {
