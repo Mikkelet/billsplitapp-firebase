@@ -19,14 +19,14 @@ export default async function sendFriendRequestNotification(
     if (status === "pending") {
         const title = `${senderName} sent you a friend request!`
         const data: NotificationData = {
-            type: "friendInvite"
+            type: "friendInvite",
         }
 
         await sendNotification(topic, title, "", data)
     } else if (status === "accepted") {
         const title = `${senderName} accepted your request!`
         const data: NotificationData = {
-            type: "friendInvite"
+            type: "friendInvite",
         }
 
         await sendNotification(topic, title, "", data)

@@ -1,5 +1,5 @@
 import * as firebase from "firebase-admin";
-import { AndroidConfig, AndroidNotification, ApnsConfig, DataMessagePayload, TopicMessage }
+import { AndroidConfig, AndroidNotification, ApnsConfig, TopicMessage }
     from "firebase-admin/lib/messaging/messaging-api"
 import { NotificationType } from "./types";
 
