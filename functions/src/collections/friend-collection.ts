@@ -34,7 +34,7 @@ export async function getFriendship(user1: string, user2: string): Promise<Frien
  * @param {FriendStatus} status to be updated
  */
 export async function updateFriendStatus(docId: string, status: FriendStatus): Promise<void> {
-    friendsCollection.doc(docId).update({
+    await friendsCollection.doc(docId).update({
         status: status,
     })
 }
@@ -51,4 +51,12 @@ export async function getFriends(uid: string): Promise<Friend[]> {
     } else {
         return response.docs.map((doc) => doc.data() as Friend);
     }
+}
+
+/**
+ * Remove request
+ * @param {string} requestId id of friend request
+ */
+export async function removeFriendRequest(requestId: string) {
+    await friendsCollection.doc(requestId).delete()
 }

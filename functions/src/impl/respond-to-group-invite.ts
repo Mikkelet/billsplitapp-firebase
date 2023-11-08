@@ -5,7 +5,7 @@ import { getGroupById, updateGroup } from "../collections/group-collection";
 import { billSplitError, handleError } from "../utils/error-utils";
 import { arrayContains, removeFromArray } from "../utils/list-utils";
 
-const respondToGroupInvite = async (req: Request, res: Response, uid: string) => {
+const respondToGroupInviteImpl = async (req: Request, res: Response, uid: string) => {
     logRequest(req)
 
     try {
@@ -37,4 +37,4 @@ const respondToGroupInvite = async (req: Request, res: Response, uid: string) =>
     }
 }
 
-export default respondToGroupInvite
+export default respondToGroupInviteImpl

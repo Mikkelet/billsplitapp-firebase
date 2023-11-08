@@ -27,8 +27,9 @@ import syncExchangeRatesImpl from "./cron/sync-exchange-rates-cron-impl";
 import getAppVersionImpl from "./impl/get-app-version";
 import inviteToGroupImpl from "./impl/invite-user-to-group-impl";
 import getGroupInvitesImpl from "./impl/get-group-invites-impl";
-import respondToGroupInvite from "./impl/respond-to-group-invite";
+import respondToGroupInviteImpl from "./impl/respond-to-group-invite";
 import getEventsImpl from "./impl/get-events-impl";
+import respondToFriendRequestImpl from "./impl/respond-to-friend-request-impl";
 
 const app = express()
 app.use(cors({ origin: true }))
@@ -43,7 +44,7 @@ app.get("/groupInvites", (req, res) => authInterceptor(getGroupInvitesImpl)(req,
 // Group
 app.post("/group", (req, res) => authInterceptor(addGroupImpl)(req, res))
 app.post("/group/invite", (req, res) => authInterceptor(inviteToGroupImpl)(req, res))
-app.post("/group/invitation", (req, res) => authInterceptor(respondToGroupInvite)(req, res))
+app.post("/group/invitation", (req, res) => authInterceptor(respondToGroupInviteImpl)(req, res))
 app.get("/group/:groupId", (req, res) => authInterceptor(getGroupImpl)(req, res))
 app.delete("/group/:groupId/events/:eventId", (req, res) =>
     authInterceptor(deleteEventImpl)(req, res))
@@ -57,6 +58,7 @@ app.post("/event", (req, res) => authInterceptor(addEventImpl)(req, res))
 // Friends
 app.post("/friends", (req, res) => authInterceptor(addFriendImpl)(req, res))
 app.get("/friends", (req, res) => authInterceptor(getFriendsImpl)(req, res))
+app.post("/friendRequest", (req, res) => authInterceptor(respondToFriendRequestImpl)(req, res))
 
 // rates
 app.get("/rates", (req, res) => authInterceptor(getExchangeRatesImpl)(req, res))
