@@ -1,9 +1,11 @@
 import { Request, Response } from "firebase-functions";
 import { FriendRequestResponse } from "../interfaces/friend-request-response";
-import { getFriendship, removeFriendRequest, updateFriendStatus } from "../collections/friend-collection";
+import {
+    getFriendship, removeFriendRequest,
+    updateFriendStatus,
+} from "../collections/friend-collection";
 import { billSplitError, handleError } from "../utils/error-utils";
 import { getUserById } from "../collections/user-collection";
-import { Friend, FriendStatus } from "../interfaces/models/friend";
 
 const respondToFriendRequestImpl = async (req: Request, res: Response, uid: string) => {
     const body = req.body as FriendRequestResponse
