@@ -42,7 +42,6 @@ const addEventImpl = async (req: Request, res: Response, uid: string) => {
         eventDTO.id = dbEvent.id
 
         // update group
-        group.latestEvent = event
         group.lastUpdated = Date.now()
         await updateGroup(group)
 

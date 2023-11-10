@@ -14,6 +14,7 @@ export interface ExpenseEvent {
     sharedExpenses: SharedExpense[],
     tempParticipants: TempParticipant[],
     timestamp: number;
+    date: string;
     receiptImageUrl: string,
     currency: Currency;
 }
@@ -26,6 +27,7 @@ export interface PaymentEvent {
     paidBy: string;
     amount: number;
     timestamp: number;
+    date: string;
     currency: Currency;
 }
 
@@ -36,6 +38,7 @@ export interface ExpenseChangeEvent {
     groupExpenseOriginal: ExpenseEvent;
     groupExpenseEdited: ExpenseEvent;
     timestamp: number;
+    date: string;
 }
 
 /**
@@ -65,6 +68,7 @@ export function convertDTOtoEvent(createdByUid: string, event: EventDTO): Event 
             type: event.type,
             paidTo: event.paidTo.id,
             timestamp: event.timestamp,
+            date: event.date,
             createdBy: event.createdBy.id,
             paidBy: event.paidBy.id,
             amount: event.amount,
@@ -84,6 +88,9 @@ export function convertDTOtoEvent(createdByUid: string, event: EventDTO): Event 
                 description: event.groupExpenseOriginal.description,
                 payee: event.groupExpenseOriginal.payee.id,
                 timestamp: event.groupExpenseOriginal.timestamp,
+                date: event.groupExpenseOriginal.date,
+                receiptImageUrl: event.groupExpenseOriginal.receiptImageUrl,
+                tempParticipants: event.groupExpenseOriginal.tempParticipants,
                 currency: event.groupExpenseOriginal.currency,
                 sharedExpenses:
                     convertDTOtoSharedExpenses(event.groupExpenseOriginal.sharedExpenses),
@@ -94,6 +101,9 @@ export function convertDTOtoEvent(createdByUid: string, event: EventDTO): Event 
                 createdBy: event.groupExpenseEdited.createdBy.id,
                 description: event.groupExpenseEdited.description,
                 payee: event.groupExpenseEdited.payee.id,
+                date: event.groupExpenseEdited.date,
+                receiptImageUrl: event.groupExpenseEdited.date,
+                tempParticipants: event.groupExpenseEdited.tempParticipants,
                 timestamp: event.groupExpenseEdited.timestamp,
                 currency: event.groupExpenseEdited.currency,
                 sharedExpenses:

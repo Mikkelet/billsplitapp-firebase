@@ -3,7 +3,7 @@ import { Group } from "../interfaces/models/group";
 import { billSplitError } from "../utils/error-utils";
 
 const firestore = firebase.firestore();
-export const groupCollection = firestore.collection("groups-v7");
+export const groupCollection = firestore.collection("groups-v8");
 
 /**
  * Add group

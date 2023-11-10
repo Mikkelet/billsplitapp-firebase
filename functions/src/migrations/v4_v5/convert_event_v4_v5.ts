@@ -1,14 +1,15 @@
-import { Event, ExpenseEvent } from "../../interfaces/models/events";
 import { EventV4 } from "../models/event/event_v4";
-import { ExpenseEventV3 } from "../models/expense/expense_v3";
+import { EventV5 } from "../models/event/event_v5";
+import { ExpenseEventV4 } from "../models/expense/expense_v4";
+import { ExpenseEventV5 } from "../models/expense/expense_v5";
 
 /**
  * convert V2 to V3
- * @param {ExpenseEventV4 | PaymentEvent | null} event expense
- * @return {Event | null } expense
+ * @param {EventV4 | null} event expense
+ * @return {EventV5 | null } expense
  */
 export function convertEventV4ToV5(event: EventV4 | null):
-    Event | null {
+    EventV5 | null {
     if (event === undefined) return null;
     if (event === null) return null;
     if (event.type === "payment") return event;
@@ -17,10 +18,10 @@ export function convertEventV4ToV5(event: EventV4 | null):
 
 /**
  * Convert event
- * @param {ExpenseEventV3} event expense event
- * @return {ExpenseEventV4}
+ * @param {ExpenseEventV4} event expense event
+ * @return {ExpenseEventV5}
  */
-function convertExpense(event: ExpenseEventV3): ExpenseEvent {
+function convertExpense(event: ExpenseEventV4): ExpenseEventV5 {
     return {
         createdBy: event.createdBy,
         currency: event.currency,

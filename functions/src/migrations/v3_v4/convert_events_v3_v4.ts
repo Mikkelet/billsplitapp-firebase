@@ -1,9 +1,9 @@
-import { PaymentEvent } from "../../interfaces/models/events";
 import { EventV3 } from "../models/event/event_v3";
 import { EventV4 } from "../models/event/event_v4";
 import { ExpenseEventV3 } from "../models/expense/expense_v3";
 import { ExpenseEventV4 } from "../models/expense/expense_v4";
 import { PaymentEventV3 } from "../models/payment/payment_v3";
+import { PaymentEventV4 } from "../models/payment/payment_v4";
 
 /**
  * convert V2 to V3
@@ -23,7 +23,7 @@ export function convertEventV3ToV4(event: EventV3 | null):
  * @param {PaymentEventV3} event event to convert
  * @return {PaymentEvent}
  */
-function convertPayment(event: PaymentEventV3): PaymentEvent {
+function convertPayment(event: PaymentEventV3): PaymentEventV4 {
     return {
         createdBy: event.createdBy,
         currency: event.currency,

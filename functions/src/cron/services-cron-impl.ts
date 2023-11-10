@@ -26,6 +26,7 @@ const scheduledServicesImpl = async (_: functions.EventContext) => {
                 continue;
             }
 
+            const date = new Date();
             const expense: ExpenseEvent = {
                 createdBy: service.createdBy,
                 description: service.name,
@@ -36,6 +37,7 @@ const scheduledServicesImpl = async (_: functions.EventContext) => {
                     expense: service.monthlyExpense,
                     participants: service.participants,
                 }],
+                date: date.toISOString(),
                 tempParticipants: [],
                 receiptImageUrl: "",
                 currency: { symbol: service.currency, rateSnapshot: rateSnapshot },

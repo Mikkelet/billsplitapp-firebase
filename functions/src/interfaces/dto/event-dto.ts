@@ -31,6 +31,7 @@ export interface ExpenseEventDTO {
     tempParticipants: TempParticipant[];
     sharedExpenses: SharedExpenseDTO[];
     timestamp: number;
+    date: string;
     currency: Currency;
 }
 
@@ -42,6 +43,7 @@ export interface PaymentEventDTO {
     paidTo: PersonDTO;
     amount: number;
     timestamp: number;
+    date: string;
     currency: Currency;
 }
 
@@ -52,6 +54,7 @@ export interface ExpenseChangeEventDTO {
     groupExpenseOriginal: ExpenseEventDTO;
     groupExpenseEdited: ExpenseEventDTO;
     timestamp: number;
+    date: string;
 }
 
 /**
@@ -61,8 +64,6 @@ export interface ExpenseChangeEventDTO {
  * @return {EventDTO} EventDTO
  */
 export function convertEventToDTO(event: Event, people: PersonWithId[]): EventDTO {
-    console.log("converting event", event.id);
-
     if (event.type === "expense") {
         const expense = event as ExpenseEvent
         return {
@@ -74,6 +75,7 @@ export function convertEventToDTO(event: Event, people: PersonWithId[]): EventDT
             payee: findPerson(people, expense.payee),
             sharedExpenses: convertSharedExpensesToDTO(expense.sharedExpenses, people),
             timestamp: expense.timestamp,
+            date: expense.date,
             tempParticipants: expense.tempParticipants,
             currency: expense.currency,
         } as ExpenseEventDTO
@@ -94,15 +96,20 @@ export function convertEventToDTO(event: Event, people: PersonWithId[]): EventDT
                 sharedExpenses:
                     convertSharedExpensesToDTO(change.groupExpenseEdited.sharedExpenses, people),
                 payee: findPerson(people, change.groupExpenseEdited.payee),
+                tempParticipants: change.groupExpenseEdited.tempParticipants,
                 timestamp: change.groupExpenseEdited.timestamp,
+                date: change.groupExpenseEdited.date,
                 currency: change.groupExpenseEdited.currency,
             } as ExpenseEventDTO,
             groupExpenseOriginal: {
                 type: change.groupExpenseOriginal.type,
                 id: change.groupExpenseOriginal.id,
+                date: change.groupExpenseOriginal.date,
+                receiptImageUrl: change.groupExpenseOriginal.date,
                 createdBy:
                     findPerson(people, change.groupExpenseOriginal.createdBy),
                 description: change.groupExpenseOriginal.description,
+                tempParticipants: change.groupExpenseOriginal.tempParticipants,
                 sharedExpenses:
                     convertSharedExpensesToDTO(change.groupExpenseOriginal.sharedExpenses, people),
                 payee: findPerson(people, change.groupExpenseOriginal.payee),
@@ -120,6 +127,7 @@ export function convertEventToDTO(event: Event, people: PersonWithId[]): EventDT
             amount: payment.amount,
             paidTo: findPerson(people, payment.paidTo),
             timestamp: payment.timestamp,
+            date: payment.date,
             paidBy: findPerson(people, payment.paidBy),
             currency: payment.currency,
         } as PaymentEventDTO

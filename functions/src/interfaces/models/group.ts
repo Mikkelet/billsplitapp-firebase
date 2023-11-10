@@ -1,5 +1,4 @@
 import { GroupDTO } from "../dto/group-dto";
-import { Event, convertDTOtoEvent } from "./events";
 
 export interface Group {
     id: string;
@@ -10,7 +9,6 @@ export interface Group {
     coverImageUrl: string;
     createdBy: string;
     timestamp: string;
-    latestEvent: Event | undefined | null;
     lastUpdated: number;
     defaultCurrency: string;
 }
@@ -22,10 +20,6 @@ export interface Group {
  * @return {GroupDTO} return converted group
  */
 export function convertDTOtoGroup(createdByUid: string, groupDTO: GroupDTO): Group {
-    let latestEvent: Event | null = null
-    if (groupDTO.latestEvent !== null) {
-        latestEvent = convertDTOtoEvent(createdByUid, groupDTO.latestEvent)
-    }
     return {
         id: groupDTO.id,
         name: groupDTO.name,
@@ -36,7 +30,6 @@ export function convertDTOtoGroup(createdByUid: string, groupDTO: GroupDTO): Gro
         pastMembers: groupDTO.pastMembers.map((m) => m.id),
         people: groupDTO.people.map((p) => p.id),
         invites: groupDTO.invites.map((p) => p.id),
-        latestEvent: latestEvent,
         defaultCurrency: groupDTO.defaultCurrency,
     }
 }

@@ -1,6 +1,6 @@
-import { EventV4 } from "../event/event_v4";
+import { EventV5 } from "../event/event_v5";
 
-export interface GroupV6 {
+export interface GroupV7 {
     id: string;
     name: string;
     people: string[];
@@ -8,7 +8,8 @@ export interface GroupV6 {
     coverImageUrl: string;
     createdBy: string;
     timestamp: string;
-    latestEvent: EventV4 | undefined | null;
+    latestEvent: EventV5 | undefined | null;
     lastUpdated: number;
     defaultCurrency: string;
+    invites: string[];
 }
