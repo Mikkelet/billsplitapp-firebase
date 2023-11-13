@@ -2,7 +2,8 @@ import { Service } from "../interfaces/models/service";
 import { groupCollection } from "./group-collection";
 import * as firebase from "firebase-admin";
 
-const serviceCollection = (groupId: string) => groupCollection.doc(groupId).collection("services-v2")
+const serviceCollection = (groupId: string) =>
+    groupCollection.doc(groupId).collection("services-v2")
 const servicesCollectionGroup = firebase.firestore().collectionGroup("services-v2")
 
 
