@@ -27,7 +27,6 @@ export interface PaymentEvent {
     paidBy: string;
     amount: number;
     timestamp: number;
-    date: string;
     currency: Currency;
 }
 
@@ -68,7 +67,6 @@ export function convertDTOtoEvent(createdByUid: string, event: EventDTO): Event 
             type: event.type,
             paidTo: event.paidTo.id,
             timestamp: event.timestamp,
-            date: event.date,
             createdBy: event.createdBy.id,
             paidBy: event.paidBy.id,
             amount: event.amount,

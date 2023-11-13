@@ -44,14 +44,10 @@ function convertExpense(event: ExpenseEventV5): ExpenseEvent {
  * @return {ExpenseEventV4}
  */
 function convertPayment(event: PaymentEventV4): PaymentEvent {
-    const date = new Date(0);
-    date.setUTCMilliseconds(event.timestamp)
-    const iso8601date = date.toISOString()
     return {
         createdBy: event.createdBy,
         currency: event.currency,
         id: event.id,
-        date: iso8601date,
         amount: event.amount,
         paidBy: event.paidBy,
         paidTo: event.paidTo,

@@ -43,7 +43,6 @@ export interface PaymentEventDTO {
     paidTo: PersonDTO;
     amount: number;
     timestamp: number;
-    date: string;
     currency: Currency;
 }
 
@@ -127,7 +126,6 @@ export function convertEventToDTO(event: Event, people: PersonWithId[]): EventDT
             amount: payment.amount,
             paidTo: findPerson(people, payment.paidTo),
             timestamp: payment.timestamp,
-            date: payment.date,
             paidBy: findPerson(people, payment.paidBy),
             currency: payment.currency,
         } as PaymentEventDTO
