@@ -55,6 +55,7 @@ export function convertDTOtoEvent(createdByUid: string, event: EventDTO): Event 
             createdBy: event.createdBy.id,
             description: event.description,
             payee: event.payee.id,
+            date: event.date,
             timestamp: event.timestamp,
             receiptImageUrl: event.receiptImageUrl,
             currency: event.currency,
