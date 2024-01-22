@@ -30,6 +30,7 @@ import getGroupInvitesImpl from "./impl/get-group-invites-impl";
 import respondToGroupInviteImpl from "./impl/respond-to-group-invite";
 import getEventsImpl from "./impl/get-events-impl";
 import respondToFriendRequestImpl from "./impl/respond-to-friend-request-impl";
+import deleteUserImpl from "./impl/delete-user-impl";
 
 const app = express()
 app.use(cors({ origin: true }))
@@ -72,6 +73,10 @@ app.delete("/group/:groupId/service/:serviceId", (req, res) =>
 // App Data
 app.get("/appVersion", (req, res) => getAppVersionImpl(req, res))
 
+// Users
+app.delete("/user", (req, res) => authInterceptor(deleteUserImpl)(req, res))
+
+// catch all
 app.all("*", functions.https.onRequest(async (_, res) => {
     res.status(404).send("Invalid request")
 }))
