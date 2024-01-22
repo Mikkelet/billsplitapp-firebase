@@ -17,6 +17,7 @@ import { updateServiceImpl } from "./impl/update-service-impl";
 import { leaveGroupImpl } from "./impl/leave-group-impl";
 import { addToGroupImpl } from "./impl/add-user-to-group-impl";
 import { deleteServiceImpl } from "./impl/delete-service-impl";
+import { deleteUserImpl } from "./impl/delete-user-impl";
 
 const app = express()
 app.use(cors({ origin: true }))
@@ -44,6 +45,10 @@ app.put("/group/:groupId/service", (req, res) => authInterceptor(updateServiceIm
 app.delete("/group/:groupId/service/:serviceId", (req, res) =>
     authInterceptor(deleteServiceImpl)(req, res))
 
+// Users
+app.delete("/user", (req, res) => authInterceptor(deleteUserImpl)(req, res))
+
+// catch all
 app.all("*", functions.https.onRequest(async (_, res) => {
     res.status(404).send("Invalid request")
 }))

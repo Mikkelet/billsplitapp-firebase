@@ -42,6 +42,14 @@ export async function getUserById(userId: string): Promise<Person | null> {
 }
 
 /**
+ * Delete user
+ * @param {string} userId user to be deleted
+ */
+export async function deleteUser(userId: string): Promise<void> {
+    await firebase.auth().deleteUser(userId)
+}
+
+/**
  * Retrieves existing user for given id, throws error if not found
  * @param {string} userId id of user
  * @return {Person} Person if exist, else null
