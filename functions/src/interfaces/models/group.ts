@@ -13,6 +13,10 @@ export interface Group {
     defaultCurrency: string;
 }
 
+export interface GroupLastUpdated {
+    lastUpdated: number;
+}
+
 /**
  * Convert data from database to data readable by frontend
  * @param {string} createdByUid userId for createdBy

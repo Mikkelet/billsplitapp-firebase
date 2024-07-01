@@ -1,10 +1,29 @@
 import * as functions from "firebase-functions";
+import { Request, Response } from "firebase-functions";
 import { insertEvent } from "../collections/events-collection";
 import { getAllServices } from "../collections/services-collection";
 import { ExpenseEvent } from "../interfaces/models/events";
 import { getCurrencies } from "../collections/currenciesCollecttion";
+import { updateGroupLastUpdated } from "../collections/group-collection";
 
 const scheduledServicesImpl = async (_: functions.EventContext) => {
+    await runServices()
+}
+
+// For local testing ONLY, do NOT deploy
+export const runServicesImpl = async (req: Request, res: Response) => {
+    if (req.hostname.includes("localhost")) {
+        await runServices()
+        res.send()
+    } else {
+        res.status(500).send("Cannot run on remote env")
+    }
+}
+
+/**
+ * Run all services
+ */
+async function runServices() {
     console.log("Starting services cron job");
     try {
         const currencies = await getCurrencies();
@@ -46,6 +65,7 @@ const scheduledServicesImpl = async (_: functions.EventContext) => {
                 type: "expense",
             }
 
+            await updateGroupLastUpdated(groupId)
             await insertEvent(groupId, expense)
         }
         console.log("service events added", { services: servicesWithGroupId.length });

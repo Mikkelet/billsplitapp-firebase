@@ -1,5 +1,5 @@
 import * as firebase from "firebase-admin";
-import { Group } from "../interfaces/models/group";
+import { Group, GroupLastUpdated } from "../interfaces/models/group";
 import { billSplitError } from "../utils/error-utils";
 
 const firestore = firebase.firestore();
@@ -22,6 +22,17 @@ export async function addGroup(group: Group): Promise<Group> {
  */
 export async function updateGroup(group: Group) {
     await groupCollection.doc(group.id).update(group)
+}
+
+/**
+ * Update groups last updated field to current timestamp
+ * @param {string} groupId
+ */
+export async function updateGroupLastUpdated(groupId: string) {
+    const groupLastUpdated: GroupLastUpdated = {
+        lastUpdated: Date.now(),
+    }
+    await groupCollection.doc(groupId).update(groupLastUpdated)
 }
 
 /**
