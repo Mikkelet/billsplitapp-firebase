@@ -9,6 +9,7 @@ const scheduledServicesImpl = async (_: functions.EventContext) => {
     try {
         const currencies = await getCurrencies();
         const servicesWithGroupId = await getAllServices()
+        console.log(`Running ${servicesWithGroupId.length} services`);
         for await (const serviceWithGroupId of servicesWithGroupId) {
             const service = serviceWithGroupId.service
             const groupId = serviceWithGroupId.groupId

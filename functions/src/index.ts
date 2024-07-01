@@ -36,45 +36,45 @@ const app = express()
 app.use(cors({ origin: true }))
 
 // User
-app.put("/user", (req, res) => authInterceptor(updateUserImpl)(req, res))
+app.put("/user", (req, res) => authInterceptor(req, res, updateUserImpl))
 
 // Groups
-app.get("/groups", (req, res) => authInterceptor(getGroupsImpl)(req, res))
-app.get("/groupInvites", (req, res) => authInterceptor(getGroupInvitesImpl)(req, res))
+app.get("/groups", (req, res) => authInterceptor(req, res, getGroupsImpl))
+app.get("/groupInvites", (req, res) => authInterceptor(req, res, getGroupInvitesImpl))
 
 // Group
-app.post("/group", (req, res) => authInterceptor(addGroupImpl)(req, res))
-app.post("/group/invite", (req, res) => authInterceptor(inviteToGroupImpl)(req, res))
-app.post("/group/invitation", (req, res) => authInterceptor(respondToGroupInviteImpl)(req, res))
-app.get("/group/:groupId", (req, res) => authInterceptor(getGroupImpl)(req, res))
+app.post("/group", (req, res) => authInterceptor(req, res, addGroupImpl))
+app.post("/group/invite", (req, res) => authInterceptor(req, res, inviteToGroupImpl))
+app.post("/group/invitation", (req, res) => authInterceptor(req, res, respondToGroupInviteImpl))
+app.get("/group/:groupId", (req, res) => authInterceptor(req, res, getGroupImpl))
 app.delete("/group/:groupId/events/:eventId", (req, res) =>
-    authInterceptor(deleteEventImpl)(req, res))
-app.get("/group/:groupId/events", (req, res) => authInterceptor(getEventsImpl)(req, res))
-app.delete("/group/:groupId/user/:userId", (req, res) => authInterceptor(leaveGroupImpl)(req, res))
-app.get("/leaveGroup/:groupId", (req, res) => authInterceptor(leaveGroupImpl)(req, res))
+    authInterceptor(req, res, deleteEventImpl))
+app.get("/group/:groupId/events", (req, res) => authInterceptor(req, res, getEventsImpl))
+app.delete("/group/:groupId/user/:userId", (req, res) => authInterceptor(req, res, leaveGroupImpl))
+app.get("/leaveGroup/:groupId", (req, res) => authInterceptor(req, res, leaveGroupImpl))
 
 // Events
-app.post("/event", (req, res) => authInterceptor(addEventImpl)(req, res))
+app.post("/event", (req, res) => authInterceptor(req, res, addEventImpl))
 
 // Friends
-app.post("/friends", (req, res) => authInterceptor(addFriendImpl)(req, res))
-app.get("/friends", (req, res) => authInterceptor(getFriendsImpl)(req, res))
-app.post("/friendRequest", (req, res) => authInterceptor(respondToFriendRequestImpl)(req, res))
+app.post("/friends", (req, res) => authInterceptor(req, res, addFriendImpl))
+app.get("/friends", (req, res) => authInterceptor(req, res, getFriendsImpl))
+app.post("/friendRequest", (req, res) => authInterceptor(req, res, respondToFriendRequestImpl))
 
 // rates
-app.get("/rates", (req, res) => authInterceptor(getExchangeRatesImpl)(req, res))
+app.get("/rates", (req, res) => authInterceptor(req, res, getExchangeRatesImpl))
 
 // Service
-app.post("/group/:groupId/service", (req, res) => authInterceptor(addServiceImpl)(req, res))
-app.put("/group/:groupId/service", (req, res) => authInterceptor(updateServiceImpl)(req, res))
+app.post("/group/:groupId/service", (req, res) => authInterceptor(req, res, addServiceImpl))
+app.put("/group/:groupId/service", (req, res) => authInterceptor(req, res, updateServiceImpl))
 app.delete("/group/:groupId/service/:serviceId", (req, res) =>
-    authInterceptor(deleteServiceImpl)(req, res))
+    authInterceptor(req, res, deleteServiceImpl))
 
 // App Data
 app.get("/appVersion", (req, res) => getAppVersionImpl(req, res))
 
 // Users
-app.delete("/user", (req, res) => authInterceptor(deleteUserImpl)(req, res))
+app.delete("/user", (req, res) => authInterceptor(req, res, deleteUserImpl))
 
 // catch all
 app.all("*", functions.https.onRequest(async (_, res) => {

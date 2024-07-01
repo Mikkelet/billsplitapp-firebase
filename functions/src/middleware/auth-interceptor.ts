@@ -1,7 +1,5 @@
 import * as firebase from "firebase-admin";
 import { Request, Response } from "firebase-functions";
-import * as functions from "firebase-functions";
-
 
 export interface AuthError {
     errorInfo: ErrorInfo;
@@ -42,10 +40,14 @@ const checkAuth = async (req: Request, res: Response,
 
 /**
  * intercept the request to check if user is authenticated
- * @param {Callback} request Callback for request
- * @return {void} request
+ * @param {Request} req request object
+ * @param {Response} res response object
+ * @param {Callback} callback Callback for request
+ * @return {Promise<void>}
  */
 export default function authInterceptor(
-    request: (req: Request, res: Response, uid: string) => void) {
-    return functions.https.onRequest((req, res) => checkAuth(req, res, request));
+    req: Request,
+    res: Response,
+    callback: (req: Request, res: Response, uid: string) => Promise<void>): Promise<void> {
+    return checkAuth(req, res, callback)
 }
