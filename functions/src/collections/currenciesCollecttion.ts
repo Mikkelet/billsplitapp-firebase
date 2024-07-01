@@ -11,7 +11,7 @@ const currenciesCollection =
 export async function getCurrencies(): Promise<Map<string, number>> {
     const response = await currenciesCollection.get()
     const data = response.data() as ExchangeRates
-    return data.rates
+    return new Map(Object.entries(data.rates))
 }
 
 /**
