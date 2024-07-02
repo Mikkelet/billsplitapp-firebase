@@ -27,6 +27,7 @@ async function runServices() {
     console.log("Starting services cron job");
     try {
         const currencies = await getCurrencies();
+        const rates = new Map(Object.entries(currencies))
         const servicesWithGroupId = await getAllServices()
         console.log(`Running ${servicesWithGroupId.length} services`);
         for await (const serviceWithGroupId of servicesWithGroupId) {
@@ -38,7 +39,7 @@ async function runServices() {
                 service: service,
             });
 
-            const rateSnapshot = currencies.get(service.currency.toUpperCase());
+            const rateSnapshot = rates.get(service.currency.toUpperCase());
             if (rateSnapshot === undefined) {
                 console.error("Rate lookup failed", {
                     currency: service.currency,
