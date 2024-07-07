@@ -1,5 +1,5 @@
 import { Request, Response } from "firebase-functions";
-import { addFriend, getFriendship, updateFriendStatus } from "../collections/friend-collection";
+import { addFriend, updateFriendStatus } from "../collections/friend-collection";
 import { getUserByEmail, getUserById, getUserByPhoneNumber } from "../collections/user-collection";
 import {
     AddFriendRequest,
@@ -14,6 +14,7 @@ import { Person } from "../interfaces/models/person";
 import { billSplitError, handleError } from "../utils/error-utils";
 import logRequest from "../utils/log-utils";
 import sendFriendRequestNotification from "../fcm/send-friend-request-notification";
+import getFriendshipHelper from "./helpers/get_friendship_helper";
 
 const addFriendImpl = async (req: Request, res: Response, uid: string) => {
     logRequest(req)
@@ -38,19 +39,12 @@ const addFriendImpl = async (req: Request, res: Response, uid: string) => {
             throw billSplitError(404, "User not found")
         }
 
-        const sentTo = friendUser.id;
-
-        const user1 = uid > sentTo ? uid : sentTo;
-        const user2 = uid > sentTo ? sentTo : uid;
-        if (user1 === user2) {
-            throw billSplitError(500, "Unexpected error; could not normalize userIds");
-        }
-
-        const friend = await getFriendship(user1, user2)
+        const friendshipResponse = await getFriendshipHelper(friendUser, uid)
+        const friendship = friendshipResponse.friendship
 
         let response: AddFriendResponse;
-        if (friend === null) {
-            const users = [user1, user2]
+        if (friendship === null) {
+            const users = [friendshipResponse.user1, friendshipResponse.user2]
             const friendRequest: Friend = {
                 id: "",
                 createdBy: uid,
@@ -58,13 +52,13 @@ const addFriendImpl = async (req: Request, res: Response, uid: string) => {
                 users: users,
             };
             const addedFriend = await addFriend(friendRequest)
-            sendFriendRequestNotification(uid, friendUser.id, addedFriend.status)
+            await sendFriendRequestNotification(uid, friendUser.id, addedFriend.status)
             response = { friend: convertFriendToDTO(addedFriend, friendUser) }
         } else {
-            const status = await handleExistingFriendRequest(uid, friend)
-            sendFriendRequestNotification(uid, friendUser.id, status)
-            friend.status = status
-            response = { friend: convertFriendToDTO(friend, friendUser) }
+            const status = await handleExistingFriendRequest(uid, friendship)
+            await sendFriendRequestNotification(uid, friendUser.id, status)
+            friendship.status = status
+            response = { friend: convertFriendToDTO(friendship, friendUser) }
         }
 
         console.log("response", response);

@@ -11,8 +11,7 @@ import { removeFromArray } from "../utils/list-utils";
 
 const leaveGroupImpl = async (req: Request, res: Response, uid: string) => {
     logRequest(req)
-    const body = req.params.groupId
-    const groupId = body
+    const groupId = req.params.groupId
 
     try {
         const group: Group = await getGroupById(groupId);

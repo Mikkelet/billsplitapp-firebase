@@ -11,6 +11,5 @@ export const appVersionDoc = appDataCollection.doc("app-version")
  */
 export async function getAppVersion() : Promise<AppVersion> {
     const response = await appVersionDoc.get()
-    const appData = response.data() as AppVersion
-    return appData
+    return response.data() as AppVersion
 }

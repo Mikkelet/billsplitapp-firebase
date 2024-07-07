@@ -24,7 +24,7 @@ export async function addPerson(person: PersonWithId): Promise<PersonWithId> {
 /**
  * Retrieves user for given id, return null if not found
  * @param {string} userId id of user
- * @return {Person | null} Person if exist, else null
+ * @return {Person | null} Person if exists, else null
  */
 export async function getUserById(userId: string): Promise<Person | null> {
     try {
@@ -120,15 +120,14 @@ export async function getPeople(uids: string[]): Promise<Person[]> {
     const response = await firebase.auth().getUsers(userIdentifiers);
 
     const users = response.users;
-    const people: Person[] = users.map((user) => {
+    return users.map((user) => {
         return {
             id: user.uid ?? "",
             name: user.displayName ?? "",
             pfpUrl: user.photoURL ?? "",
             email: user.email ?? "",
         }
-    })
-    return people;
+    });
 }
 
 /**
@@ -159,12 +158,12 @@ export function findPerson<T extends PersonWithId>(people: T[], uid: string): T 
 /**
  * Update user
  * @param {string} uid for user
- * @param {UpdatePerson} updateData user to update
+ * @param {UpdateUserRequest} updateData user to update
  */
 export async function updateUser(uid: string, updateData: UpdateUserRequest) {
     const doc = await userCollection.doc(uid).get()
     if (doc.exists) {
-        await userCollection.doc(uid).update(updateData)
+        await userCollection.doc(uid).update(updateData as any)
     } else {
         await userCollection.doc(uid).set(updateData)
     }

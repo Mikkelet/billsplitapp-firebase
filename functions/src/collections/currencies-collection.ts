@@ -19,5 +19,5 @@ export async function getCurrencies(): Promise<Map<string, number>> {
  * @param {ExchangeRates} exchangeRates data to update
  */
 export async function updateCurrencies(exchangeRates: ExchangeRates) {
-    await currenciesCollection.update(exchangeRates)
+    await currenciesCollection.update(exchangeRates as any)
 }

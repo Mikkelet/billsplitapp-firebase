@@ -1,6 +1,6 @@
 import { Request, Response } from "firebase-functions";
 import logRequest from "../utils/log-utils";
-import { getCurrencies } from "../collections/currenciesCollecttion";
+import { getCurrencies } from "../collections/currencies-collection";
 import { handleError } from "../utils/error-utils";
 
 const getExchangeRatesImpl = async (req: Request, res: Response, _: string) => {

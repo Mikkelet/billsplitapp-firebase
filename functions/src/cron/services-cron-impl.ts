@@ -3,7 +3,7 @@ import { Request, Response } from "firebase-functions";
 import { insertEvent } from "../collections/events-collection";
 import { getAllServices } from "../collections/services-collection";
 import { ExpenseEvent } from "../interfaces/models/events";
-import { getCurrencies } from "../collections/currenciesCollecttion";
+import { getCurrencies } from "../collections/currencies-collection";
 import { updateGroupLastUpdated } from "../collections/group-collection";
 
 const scheduledServicesImpl = async (_: functions.EventContext) => {

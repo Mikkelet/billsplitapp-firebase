@@ -1,11 +1,12 @@
 import { Request, Response } from "firebase-functions";
 import { FriendRequestResponse } from "../interfaces/friend-request-response";
 import {
-    getFriendship, removeFriendRequest,
+    removeFriendRequest,
     updateFriendStatus,
 } from "../collections/friend-collection";
 import { billSplitError, handleError } from "../utils/error-utils";
 import { getUserById } from "../collections/user-collection";
+import getFriendshipHelper from "./helpers/get_friendship_helper";
 
 const respondToFriendRequestImpl = async (req: Request, res: Response, uid: string) => {
     const body = req.body as FriendRequestResponse
@@ -16,27 +17,24 @@ const respondToFriendRequestImpl = async (req: Request, res: Response, uid: stri
 
         if (accept) {
             const friendUser = await getUserById(friendUid)
+
             if (friendUser === null) {
                 throw billSplitError(404, "User not found")
             }
 
-            const sentTo = friendUser.id;
-            const user1 = uid > sentTo ? uid : sentTo;
-            const user2 = uid > sentTo ? sentTo : uid;
-            if (user1 === user2) {
-                throw billSplitError(500, "Unexpected error; could not normalize userIds");
-            }
-            const friend = await getFriendship(user1, user2)
-            const status = friend?.status
-            if (friend === null) {
+            const friendshipResponse = await getFriendshipHelper(friendUser, uid)
+            const friendship = friendshipResponse.friendship
+            const status = friendship?.status
+
+            if (friendship === null) {
                 throw billSplitError(404, "Could not find request")
-            } else if (friend.status === "accepted") {
+            } else if (status === "accepted") {
                 throw billSplitError(500, "You are already friends")
             } else if (status === "pending") {
-                if (uid === friend.createdBy) {
+                if (uid === friendship.createdBy) {
                     throw billSplitError(500, "You cannot respond to a request from yourself")
                 }
-                await updateFriendStatus(friend.id, "accepted");
+                await updateFriendStatus(friendship.id, "accepted");
             }
         } else {
             await removeFriendRequest(requestId)

@@ -21,7 +21,7 @@ export async function addGroup(group: Group): Promise<Group> {
  * @param {Group} group group to update
  */
 export async function updateGroup(group: Group) {
-    await groupCollection.doc(group.id).update(group)
+    await groupCollection.doc(group.id).update(group as any)
 }
 
 /**
@@ -32,7 +32,7 @@ export async function updateGroupLastUpdated(groupId: string) {
     const groupLastUpdated: GroupLastUpdated = {
         lastUpdated: Date.now(),
     }
-    await groupCollection.doc(groupId).update(groupLastUpdated)
+    await groupCollection.doc(groupId).update(groupLastUpdated as any)
 }
 
 /**
@@ -43,8 +43,7 @@ export async function updateGroupLastUpdated(groupId: string) {
 export async function getGroupById(groupId: string): Promise<Group> {
     const query = await groupCollection.doc(groupId).get();
     if (!query.exists) throw billSplitError(404, "Group not found")
-    const group: Group = query.data() as Group;
-    return group;
+    return query.data() as Group;
 }
 
 /**
@@ -55,18 +54,16 @@ export async function getGroupById(groupId: string): Promise<Group> {
 export async function getGroupsByUser(userId: string): Promise<Group[]> {
     const query = await groupCollection.where("people", "array-contains", userId).get();
     if (query.empty) return [];
-    const groups: Group[] = query.docs.map((doc) => doc.data() as Group);
-    return groups;
+    return query.docs.map((doc) => doc.data() as Group);
 }
 
 /**
  * Retrieves groups that has invited user id to join
- * @param {strign} userId userId
+ * @param {string} userId userId
  * @return {Promise<Group[]>} List of groups
  */
 export async function getGroupInvitesByUser(userId: string): Promise<Group[]> {
     const response = await groupCollection.where("invites", "array-contains", userId).get()
     if (response.empty) return [];
-    const groups: Group[] = response.docs.map((doc) => doc.data() as Group)
-    return groups
+    return response.docs.map((doc) => doc.data() as Group)
 }

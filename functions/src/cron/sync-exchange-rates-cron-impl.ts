@@ -1,6 +1,6 @@
 import * as functions from "firebase-functions";
 import ExchangeRates from "../interfaces/models/exchange-rate";
-import { updateCurrencies } from "../collections/currenciesCollecttion";
+import { updateCurrencies } from "../collections/currencies-collection";
 import axios from "axios"
 
 const syncExchangeRatesImpl = async (_: functions.EventContext) => {
