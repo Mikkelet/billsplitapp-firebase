@@ -82,6 +82,7 @@ app.all("*", functions.https.onRequest(async (_, res) => {
 }))
 
 export const v7 = functions.https.onRequest(app)
+export const dev = functions.https.onRequest(app)
 
 export const scheduledServicesV6 = functions.pubsub
     .schedule("0 0 1 * *")
