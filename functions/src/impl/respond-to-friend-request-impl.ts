@@ -1,4 +1,4 @@
-import { Request, Response } from "firebase-functions";
+import { Request, Response } from "express"
 import { FriendRequestResponse } from "../interfaces/friend-request-response";
 import {
     removeFriendRequest,

@@ -1,4 +1,4 @@
-import { Request, Response } from "firebase-functions";
+import { Request, Response } from "express"
 import { addGroup, updateGroup } from "../collections/group-collection";
 import { AddGroupRequest, AddGroupResponse } from "../interfaces/add-group";
 import { GroupDTO } from "../interfaces/dto/group-dto";

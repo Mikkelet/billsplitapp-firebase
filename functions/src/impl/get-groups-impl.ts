@@ -1,4 +1,4 @@
-import { Request, Response } from "firebase-functions";
+import { Request, Response } from "express"
 import { getGroupsByUser } from "../collections/group-collection";
 import { handleError } from "../utils/error-utils";
 import logRequest from "../utils/log-utils";

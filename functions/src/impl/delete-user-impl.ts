@@ -1,4 +1,4 @@
-import { Request, Response } from "firebase-functions";
+import { Request, Response } from "express"
 import { deleteUser } from "../collections/user-collection";
 import { handleError } from "../utils/error-utils";
 

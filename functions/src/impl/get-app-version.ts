@@ -1,4 +1,4 @@
-import { Request, Response } from "firebase-functions";
+import { Request, Response } from "express"
 import logRequest from "../utils/log-utils"
 import { appVersionDoc } from "../collections/app-data-collection";
 import { AppVersion } from "../interfaces/models/app-version";

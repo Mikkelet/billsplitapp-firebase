@@ -1,1 +1,0 @@
-cd functions; npm run-script deploy --only functions:$1; cd ..

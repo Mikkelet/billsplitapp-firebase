@@ -1,10 +1,11 @@
 import { Service } from "../interfaces/models/service";
 import { groupCollection } from "./group-collection";
 import * as firebase from "firebase-admin";
+import { serviceCollectionsVersion } from "./collections-versions";
 
 const serviceCollection = (groupId: string) =>
-    groupCollection.doc(groupId).collection("services-v2")
-const servicesCollectionGroup = firebase.firestore().collectionGroup("services-v2")
+    groupCollection.doc(groupId).collection(serviceCollectionsVersion)
+const servicesCollectionGroup = firebase.firestore().collectionGroup(serviceCollectionsVersion)
 
 
 interface ServiceWithGroupId {

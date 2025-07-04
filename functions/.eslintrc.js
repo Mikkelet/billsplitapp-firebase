@@ -33,8 +33,9 @@ module.exports = {
         "eol-last": 0,
         "max-len": ["error", {
             "comments": 150,
-            "code": 100,
+            "code": 120,
         }],
+        "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
         "padded-blocks": 0,
         "@typescript-eslint/no-explicit-any": "off",
     },

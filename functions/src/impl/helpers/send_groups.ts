@@ -1,4 +1,4 @@
-import { Response } from "firebase-functions";
+import { Response } from "express";
 import { Group } from "../../interfaces/models/group";
 import { GetGroupsResponse } from "../../interfaces/get-groups";
 import { findPerson, getPeople } from "../../collections/user-collection";

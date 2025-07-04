@@ -1,4 +1,4 @@
-import { Request, Response } from "firebase-functions";
+import { Request, Response } from "express"
 import { deleteEvent, eventExists } from "../collections/events-collection";
 import { getGroupById, updateGroup } from "../collections/group-collection";
 import logRequest from "../utils/log-utils";

@@ -1,9 +1,9 @@
-import * as functions from "firebase-functions";
+import { ScheduledEvent } from "firebase-functions/v2/scheduler";
 import ExchangeRates from "../interfaces/models/exchange-rate";
 import { updateCurrencies } from "../collections/currencies-collection";
 import axios from "axios"
 
-const syncExchangeRatesImpl = async (_: functions.EventContext) => {
+const syncExchangeRatesImpl = async (_event: ScheduledEvent) => {
     console.log("Starting sync exchange rates cron");
     try {
         const url = "https://api.apilayer.com/exchangerates_data/latest?base=USD"

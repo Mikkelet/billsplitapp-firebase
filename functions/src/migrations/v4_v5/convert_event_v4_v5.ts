@@ -8,7 +8,7 @@ import { ExpenseEventV5 } from "../models/expense/expense_v5";
  * @param {EventV4 | null} event expense
  * @return {EventV5 | null } expense
  */
-export function convertEventV4ToV5(event: EventV4 | null):
+export function convertEventV4ToV5(event: EventV4 | null | undefined):
     EventV5 | null {
     if (event === undefined) return null;
     if (event === null) return null;

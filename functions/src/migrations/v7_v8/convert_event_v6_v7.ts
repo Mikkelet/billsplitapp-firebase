@@ -1,6 +1,4 @@
-import { PaymentEvent } from "../../interfaces/models/events";
-import { EventV5 } from "../models/event/event_v5";
-import { ExpenseEventV5 } from "../models/expense/expense_v5";
+import { ExpenseEvent, PaymentEvent, Event } from "../../interfaces/models/events";
 import { PaymentEventV4 } from "../models/payment/payment_v4";
 import { ExpenseEventV6 } from "../models/expense/expense_v6";
 import { EventV6 } from "../models/event/event_v6";
@@ -10,7 +8,7 @@ import { EventV6 } from "../models/event/event_v6";
  * @param {ExpenseEventV4 | PaymentEvent | null} event expense
  * @return {Event | null } expense
  */
-export function convertEventV5ToV6(event: EventV5): EventV6 {
+export function convertEventV6ToV7(event: EventV6): Event {
     if (event.type === "payment") return convertPayment(event);
     return convertExpense(event);
 }
@@ -20,22 +18,20 @@ export function convertEventV5ToV6(event: EventV5): EventV6 {
  * @param {ExpenseEventV3} event expense event
  * @return {ExpenseEventV4}
  */
-function convertExpense(event: ExpenseEventV5): ExpenseEventV6 {
-    const date = new Date(0);
-    date.setUTCMilliseconds(event.timestamp)
-    const iso8601date = date.toISOString()
+function convertExpense(event: ExpenseEventV6): ExpenseEvent {
     return {
         createdBy: event.createdBy,
         currency: event.currency,
         description: event.description,
         id: event.id,
-        date: iso8601date,
+        date: event.date,
         payee: event.payee,
         receiptImageUrl: event.receiptImageUrl,
         sharedExpenses: event.sharedExpenses,
         timestamp: event.timestamp,
         type: event.type,
         tempParticipants: event.tempParticipants,
+        surcharges: [],
     }
 }
 

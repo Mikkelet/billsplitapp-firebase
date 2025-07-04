@@ -1,5 +1,5 @@
 import * as firebase from "firebase-admin";
-import { UserRecord } from "firebase-functions/v1/auth";
+import { AuthUserRecord } from "firebase-functions/v2/identity";
 import { Person, PersonWithId } from "../interfaces/models/person";
 import { billSplitError } from "../utils/error-utils";
 import { UpdateUserRequest } from "../interfaces/update-user";
@@ -28,14 +28,13 @@ export async function addPerson(person: PersonWithId): Promise<PersonWithId> {
  */
 export async function getUserById(userId: string): Promise<Person | null> {
     try {
-        const userRecord: UserRecord = await firebase.auth().getUser(userId)
-        const person: Person = {
+        const userRecord: AuthUserRecord = await firebase.auth().getUser(userId)
+        return {
             id: userRecord.uid,
             name: userRecord.displayName ?? "",
             email: userRecord.email ?? "",
             pfpUrl: userRecord.photoURL ?? "",
         };
-        return person;
     } catch (e) {
         console.error(e);
         return null;
@@ -56,14 +55,13 @@ export async function deleteUser(userId: string): Promise<void> {
  * @return {Person} Person if exist, else null
  */
 export async function getExistingUserById(userId: string): Promise<Person> {
-    const userRecord: UserRecord = await firebase.auth().getUser(userId)
-    const person: Person = {
+    const userRecord: AuthUserRecord = await firebase.auth().getUser(userId)
+    return {
         id: userRecord.uid,
         name: userRecord.displayName ?? "",
         email: userRecord.email ?? "",
         pfpUrl: userRecord.photoURL ?? "",
     };
-    return person;
 }
 
 /**
@@ -73,14 +71,13 @@ export async function getExistingUserById(userId: string): Promise<Person> {
  */
 export async function getUserByEmail(email: string): Promise<Person | null> {
     try {
-        const userRecord: UserRecord = await firebase.auth().getUserByEmail(email)
-        const person: Person = {
+        const userRecord: AuthUserRecord = await firebase.auth().getUserByEmail(email)
+        return {
             id: userRecord.uid,
             name: userRecord.displayName ?? "",
             email: userRecord.email ?? "",
             pfpUrl: userRecord.photoURL ?? "",
         };
-        return person;
     } catch (e) {
         console.error(e);
         return null;
@@ -94,15 +91,15 @@ export async function getUserByEmail(email: string): Promise<Person | null> {
  */
 export async function getUserByPhoneNumber(phoneNum: number): Promise<Person | null> {
     try {
-        const userRecord: UserRecord = await firebase.auth().getUserByPhoneNumber(`${phoneNum}`)
-        const person: Person = {
+        const userRecord: AuthUserRecord = await firebase.auth().getUserByPhoneNumber(`${phoneNum}`)
+        return {
             id: userRecord.uid,
             name: userRecord.displayName ?? "",
             email: userRecord.email ?? "",
             pfpUrl: userRecord.photoURL ?? "",
         }
-        return person
     } catch (e) {
+        console.error(e);
         return null;
     }
 }
@@ -147,6 +144,7 @@ export function findPerson<T extends PersonWithId>(people: T[], uid: string): T 
 
         return person;
     } catch (e) {
+        console.error(e);
         return {
             id: uid,
             name: "unknown user",

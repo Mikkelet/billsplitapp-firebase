@@ -2,6 +2,7 @@ import { EventDTO } from "../dto/event-dto";
 import { SharedExpense, convertDTOtoSharedExpenses } from "./shared-expenses";
 import Currency from "./currency";
 import TempParticipant from "./temp-participant";
+import { Surcharge } from "./surcharge";
 
 export type Event = ExpenseChangeEvent | PaymentEvent | ExpenseEvent
 
@@ -14,9 +15,10 @@ export interface ExpenseEvent {
     sharedExpenses: SharedExpense[],
     tempParticipants: TempParticipant[],
     timestamp: number;
-    date: string;
     receiptImageUrl: string,
     currency: Currency;
+    date: string;
+    surcharges: Surcharge[];
 }
 
 export interface PaymentEvent {
@@ -60,6 +62,7 @@ export function convertDTOtoEvent(createdByUid: string, event: EventDTO): Event 
             receiptImageUrl: event.receiptImageUrl,
             currency: event.currency,
             tempParticipants: event.tempParticipants,
+            surcharges: event.surcharges,
             sharedExpenses: convertDTOtoSharedExpenses(event.sharedExpenses),
         } as ExpenseEvent
     }
@@ -91,6 +94,7 @@ export function convertDTOtoEvent(createdByUid: string, event: EventDTO): Event 
                 receiptImageUrl: event.groupExpenseOriginal.receiptImageUrl,
                 tempParticipants: event.groupExpenseOriginal.tempParticipants,
                 currency: event.groupExpenseOriginal.currency,
+                surcharges: event.groupExpenseOriginal.surcharges,
                 sharedExpenses:
                     convertDTOtoSharedExpenses(event.groupExpenseOriginal.sharedExpenses),
             } as ExpenseEvent,
@@ -104,6 +108,7 @@ export function convertDTOtoEvent(createdByUid: string, event: EventDTO): Event 
                 receiptImageUrl: event.groupExpenseEdited.date,
                 tempParticipants: event.groupExpenseEdited.tempParticipants,
                 timestamp: event.groupExpenseEdited.timestamp,
+                surcharges: event.groupExpenseEdited.surcharges,
                 currency: event.groupExpenseEdited.currency,
                 sharedExpenses:
                     convertDTOtoSharedExpenses(event.groupExpenseEdited.sharedExpenses),

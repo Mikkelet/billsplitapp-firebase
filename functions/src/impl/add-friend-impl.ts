@@ -1,4 +1,4 @@
-import { Request, Response } from "firebase-functions";
+import { Request, Response } from "express"
 import { addFriend, updateFriendStatus } from "../collections/friend-collection";
 import { getUserByEmail, getUserById, getUserByPhoneNumber } from "../collections/user-collection";
 import {

@@ -1,9 +1,11 @@
 import BatchInstance from "../utils/batch_helper";
 import * as firebase from "firebase-admin";
+import { error } from "firebase-functions/lib/logger";
+
 const firestore = firebase.firestore()
 
 /**
- * Abstract class for database migration
+ * V2 of Abstract class for database migration
  */
 export abstract class DatabaseMigratorV2<G1, G2, E1, E2, S1, S2> {
 
@@ -13,12 +15,38 @@ export abstract class DatabaseMigratorV2<G1, G2, E1, E2, S1, S2> {
     readonly newEventsCollection: string
     readonly oldServicesCollection: string
     readonly newServicesCollection: string
+    readonly limit: number
+
+    /**
+     * If migration should be skipped
+     * @return {boolean}
+     */
+    skipGroupMigration(): boolean {
+        return this.oldGroupCollection === this.newGroupCollection
+    }
+
+    /**
+     * If migration should be skipped
+     * @return {boolean}
+     */
+    skipEventMigration(): boolean {
+        return this.skipGroupMigration() && this.oldEventsCollection === this.newEventsCollection
+    }
+
+    /**
+     * If migration should be skipped
+     * @return {boolean}
+     */
+    skipServicesMigration(): boolean {
+        return this.skipGroupMigration() && this.oldServicesCollection === this.newServicesCollection
+    }
 
     /**
      * New instance
      * @param {params} params params
      */
-    constructor(params: {
+    protected constructor(params: {
+        limit: number;
         oldGroupCollection: string,
         newGroupCollection: string,
         oldEventsCollection: string,
@@ -32,6 +60,17 @@ export abstract class DatabaseMigratorV2<G1, G2, E1, E2, S1, S2> {
         this.newEventsCollection = params.newEventsCollection
         this.oldServicesCollection = params.oldServicesCollection
         this.newServicesCollection = params.newServicesCollection
+        this.limit = params.limit
+    }
+
+    /**
+     * Perform migration
+     * return {Promise<void>}
+     */
+    async migrate(): Promise<void> {
+        await this.migrateGroups()
+        await this.migrateEvents()
+        await this.migrateServices()
     }
 
     /**
@@ -59,7 +98,11 @@ export abstract class DatabaseMigratorV2<G1, G2, E1, E2, S1, S2> {
      * Migrate groups
      * @param {number} limit limits docs that are migrated for debug purposes
      */
-    async migrateGroups(limit = 9999) {
+    async migrateGroups(limit: number = this.limit): Promise<void> {
+        if (this.skipGroupMigration()) {
+            console.log("Skip group migration");
+            return
+        }
         const batchBulk = new BatchInstance()
         const groupsRequest = await firestore
             .collectionGroup(this.oldGroupCollection)
@@ -81,7 +124,11 @@ export abstract class DatabaseMigratorV2<G1, G2, E1, E2, S1, S2> {
      * Migrate events
      * @param {number} limit limits docs that are migrated for debug purposes
      */
-    async migrateEvents(limit = 9999) {
+    async migrateEvents(limit: number = this.limit): Promise<void> {
+        if (this.skipEventMigration()) {
+            console.log("Skip event migration");
+            return
+        }
         console.log(`Migrating ${limit} events`);
         const batchBulk = new BatchInstance()
 
@@ -93,11 +140,15 @@ export abstract class DatabaseMigratorV2<G1, G2, E1, E2, S1, S2> {
             const event = doc.ref
             const groupId = event.parent.parent?.id
             if (!this.isDocInOldGroupCollection(event)) continue;
+            if (!groupId) {
+                console.error(`Group ${groupId} not found`);
+                continue
+            }
             if (counter >= limit) break;
 
             const ref = firestore
                 .collection(this.newGroupCollection)
-                .doc(groupId!)
+                .doc(groupId)
                 .collection(this.newEventsCollection)
                 .doc(doc.id)
             const migratedEvent = this.convertEvent(doc.data() as E1) as E2
@@ -111,6 +162,10 @@ export abstract class DatabaseMigratorV2<G1, G2, E1, E2, S1, S2> {
      * Migrate services
      */
     async migrateServices() {
+        if (this.skipServicesMigration()) {
+            console.log("Skip service migration");
+            return
+        }
         console.log("Migrating services...");
         const batchBulk = new BatchInstance()
 
@@ -120,11 +175,15 @@ export abstract class DatabaseMigratorV2<G1, G2, E1, E2, S1, S2> {
         for (const doc of services.docs) {
             const service = doc.ref
             const groupId = service.parent.parent?.id
+            if (!groupId) {
+                error(`Service for ${groupId} not found`);
+                continue
+            }
             if (!this.isDocInOldGroupCollection(service)) continue;
 
             const ref = firestore
                 .collection(this.newGroupCollection)
-                .doc(groupId!)
+                .doc(groupId)
                 .collection(this.newServicesCollection)
                 .doc(doc.id)
             const migratedService = this.convertService(doc.data() as S1) as S2
@@ -144,8 +203,6 @@ export abstract class DatabaseMigratorV2<G1, G2, E1, E2, S1, S2> {
         const oldGroupCollectionId = this.oldGroupCollection
 
         if (!groupId) return false
-        if (docParentGroupId !== oldGroupCollectionId) return false
-        return true
-
+        return docParentGroupId === oldGroupCollectionId;
     }
 }

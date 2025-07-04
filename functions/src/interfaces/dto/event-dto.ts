@@ -11,6 +11,7 @@ import Currency from "../models/currency";
 import { PersonDTO } from "./person-dto";
 import { SharedExpenseDTO, convertSharedExpensesToDTO } from "./shared-expense-dto";
 import TempParticipant from "../models/temp-participant";
+import { Surcharge } from "../models/surcharge";
 
 export interface FriendStatusDTO {
     type: FriendStatus
@@ -33,6 +34,7 @@ export interface ExpenseEventDTO {
     timestamp: number;
     date: string;
     currency: Currency;
+    surcharges: Surcharge[];
 }
 
 export interface PaymentEventDTO {
@@ -77,6 +79,7 @@ export function convertEventToDTO(event: Event, people: PersonWithId[]): EventDT
             date: expense.date,
             tempParticipants: expense.tempParticipants,
             currency: expense.currency,
+            surcharges: event.surcharges,
         } as ExpenseEventDTO
     }
     if (event.type === "change") {
@@ -99,6 +102,7 @@ export function convertEventToDTO(event: Event, people: PersonWithId[]): EventDT
                 timestamp: change.groupExpenseEdited.timestamp,
                 date: change.groupExpenseEdited.date,
                 currency: change.groupExpenseEdited.currency,
+                surcharges: change.groupExpenseEdited.surcharges,
             } as ExpenseEventDTO,
             groupExpenseOriginal: {
                 type: change.groupExpenseOriginal.type,
@@ -114,6 +118,7 @@ export function convertEventToDTO(event: Event, people: PersonWithId[]): EventDT
                 payee: findPerson(people, change.groupExpenseOriginal.payee),
                 timestamp: change.groupExpenseOriginal.timestamp,
                 currency: change.groupExpenseOriginal.currency,
+                surcharges: change.groupExpenseOriginal.surcharges,
             } as ExpenseEventDTO,
         } as ExpenseChangeEventDTO
     }

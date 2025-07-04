@@ -7,7 +7,8 @@ firebase.initializeApp({
 
 import * as express from "express"
 import * as cors from "cors"
-import * as functions from "firebase-functions";
+import * as scheduler from "firebase-functions/v2/scheduler";
+import * as functions from "firebase-functions/v2/https";
 import authInterceptor from "./middleware/auth-interceptor";
 import addEventImpl from "./impl/add-event-impl";
 import addFriendImpl from "./impl/add-friend-impl";
@@ -47,8 +48,7 @@ app.post("/group", (req, res) => authInterceptor(req, res, addGroupImpl))
 app.post("/group/invite", (req, res) => authInterceptor(req, res, inviteToGroupImpl))
 app.post("/group/invitation", (req, res) => authInterceptor(req, res, respondToGroupInviteImpl))
 app.get("/group/:groupId", (req, res) => authInterceptor(req, res, getGroupImpl))
-app.delete("/group/:groupId/events/:eventId", (req, res) =>
-    authInterceptor(req, res, deleteEventImpl))
+app.delete("/group/:groupId/events/:eventId", (req, res) => authInterceptor(req, res, deleteEventImpl))
 app.get("/group/:groupId/events", (req, res) => authInterceptor(req, res, getEventsImpl))
 app.delete("/group/:groupId/user/:userId", (req, res) => authInterceptor(req, res, leaveGroupImpl))
 app.get("/leaveGroup/:groupId", (req, res) => authInterceptor(req, res, leaveGroupImpl))
@@ -76,18 +76,17 @@ app.get("/appVersion", (req, res) => getAppVersionImpl(req, res))
 // Users
 app.delete("/user", (req, res) => authInterceptor(req, res, deleteUserImpl))
 
+// migrate
+// app.get("/migrate", (_, res) => migrateV7toV8(res))
+
 // catch all
-app.all("*", functions.https.onRequest(async (_, res) => {
-    res.status(404).send("Invalid request")
-}))
+app.all("*", (_, res) => res.status(404).send("Invalid request"))
 
-export const v7 = functions.https.onRequest(app)
-export const dev = functions.https.onRequest(app)
+export const v8 = functions.onRequest(app)
+// export const dev = functions.onRequest(app)
 
-export const scheduledServicesV6 = functions.pubsub
-    .schedule("0 0 1 * *")
-    .onRun(scheduledServicesImpl)
+exports.scheduledServicesV7 = scheduler
+    .onSchedule("0 0 1 * *", scheduledServicesImpl)
 
-export const scheduledSyncExchangeRates = functions.pubsub
-    .schedule("0 */3 * * *")
-    .onRun(syncExchangeRatesImpl)
+exports.scheduledSyncExchangeRatesV2 = scheduler
+    .onSchedule("0 */3 * * *", syncExchangeRatesImpl)

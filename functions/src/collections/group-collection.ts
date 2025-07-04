@@ -1,9 +1,10 @@
 import * as firebase from "firebase-admin";
 import { Group, GroupLastUpdated } from "../interfaces/models/group";
 import { billSplitError } from "../utils/error-utils";
+import { groupsCollectionVersion } from "./collections-versions";
 
 const firestore = firebase.firestore();
-export const groupCollection = firestore.collection("groups-v8");
+export const groupCollection = firestore.collection(groupsCollectionVersion);
 
 /**
  * Add group

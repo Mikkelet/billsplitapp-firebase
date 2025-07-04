@@ -1,5 +1,6 @@
 import * as firebase from "firebase-admin";
-import { Request, Response } from "firebase-functions";
+import { Response, Request } from "express"
+
 
 export interface AuthError {
     errorInfo: ErrorInfo;
@@ -11,7 +12,9 @@ interface ErrorInfo {
     message: string;
 }
 
-const checkAuth = async (req: Request, res: Response,
+const checkAuth = async (
+    req: Request,
+    res: Response,
     callback: (req: Request, res: Response, uid: string) => void) => {
 
     const token = req.headers.authorization
@@ -45,7 +48,7 @@ const checkAuth = async (req: Request, res: Response,
  * @param {Callback} callback Callback for request
  * @return {Promise<void>}
  */
-export default function authInterceptor(
+export default async function authInterceptor(
     req: Request,
     res: Response,
     callback: (req: Request, res: Response, uid: string) => Promise<void>): Promise<void> {

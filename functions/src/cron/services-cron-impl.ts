@@ -1,12 +1,12 @@
-import * as functions from "firebase-functions";
-import { Request, Response } from "firebase-functions";
+import { Request, Response } from "express"
+import { ScheduledEvent } from "firebase-functions/v2/scheduler";
 import { insertEvent } from "../collections/events-collection";
 import { getAllServices } from "../collections/services-collection";
 import { ExpenseEvent } from "../interfaces/models/events";
 import { getCurrencies } from "../collections/currencies-collection";
 import { updateGroupLastUpdated } from "../collections/group-collection";
 
-const scheduledServicesImpl = async (_: functions.EventContext) => {
+const scheduledServicesImpl = async (_event: ScheduledEvent) => {
     await runServices()
 }
 
@@ -64,6 +64,7 @@ async function runServices() {
                 currency: { symbol: service.currency, rateSnapshot: rateSnapshot },
                 timestamp: Date.now(),
                 type: "expense",
+                surcharges: [],
             }
 
             await updateGroupLastUpdated(groupId)

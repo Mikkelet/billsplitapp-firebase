@@ -1,4 +1,4 @@
-import { Request, Response } from "firebase-functions";
+import { Request, Response } from "express"
 import { updateUser } from "../collections/user-collection";
 import { UpdateUserRequest } from "../interfaces/update-user";
 import logRequest from "../utils/log-utils";

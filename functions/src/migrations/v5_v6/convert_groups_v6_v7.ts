@@ -11,7 +11,7 @@ export function convertGroupV6toV7(group: GroupV6): GroupV7 {
     return {
         id: group.id,
         createdBy: group.createdBy,
-        latestEvent: convertEventV4ToV5(group.latestEvent!),
+        latestEvent: convertEventV4ToV5(group.latestEvent),
         lastUpdated: Date.now(),
         coverImageUrl: group.coverImageUrl,
         name: group.name,

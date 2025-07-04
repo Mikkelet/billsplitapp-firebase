@@ -1,4 +1,4 @@
-import { Response } from "firebase-functions";
+import { Response } from "express"
 
 interface BillSplitError {
     code: number;

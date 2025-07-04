@@ -1,4 +1,3 @@
-import { Event } from "../../interfaces/models/events";
 import { Group } from "../../interfaces/models/group";
 import { Service } from "../../interfaces/models/service";
 import logRequest from "../../utils/log-utils";
@@ -9,11 +8,12 @@ import { convertEventV5ToV6 } from "./convert_event_v5_v6";
 import { convertGroupV7V8 } from "./convert_group_v7_v8";
 import { GroupV7 } from "../models/group/group_v7";
 import { DatabaseMigratorV2 } from "../migrator_v2";
+import { EventV6 } from "../models/event/event_v6";
 
 /**
  * Migrate database V5 to V6
  */
-class MigrateV6V7 extends DatabaseMigratorV2<GroupV7, Group, EventV5, Event, Service, Service> {
+class MigrateV6V7 extends DatabaseMigratorV2<GroupV7, Group, EventV5, EventV6, Service, Service> {
 
     /**
      * new instance
@@ -26,6 +26,7 @@ class MigrateV6V7 extends DatabaseMigratorV2<GroupV7, Group, EventV5, Event, Ser
             newEventsCollection: "events-v6",
             oldServicesCollection: "services",
             newServicesCollection: "services-v2",
+            limit: 9999,
         })
     }
 
@@ -43,7 +44,7 @@ class MigrateV6V7 extends DatabaseMigratorV2<GroupV7, Group, EventV5, Event, Ser
      * @param {Event} event migrate events
      * @return {Event}
      */
-    convertEvent(event: EventV5): Event {
+    convertEvent(event: EventV5): EventV6 {
         return convertEventV5ToV6(event)
     }
 

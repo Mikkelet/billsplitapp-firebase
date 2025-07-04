@@ -1,4 +1,4 @@
-import { DatabaseMigrator } from "../migrator";
+import { DatabaseMigrator } from "../_old_migrators/migrator";
 import { Event } from "../../interfaces/models/events";
 import { GroupV6 } from "../models/group/group_v6";
 import { Group } from "../../interfaces/models/group";

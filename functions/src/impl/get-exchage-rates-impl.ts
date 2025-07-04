@@ -1,4 +1,4 @@
-import { Request, Response } from "firebase-functions";
+import { Request, Response } from "express"
 import logRequest from "../utils/log-utils";
 import { getCurrencies } from "../collections/currencies-collection";
 import { handleError } from "../utils/error-utils";

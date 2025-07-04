@@ -1,8 +1,9 @@
 import { Event, ExpenseEvent } from "../interfaces/models/events";
 import { groupCollection } from "./group-collection";
+import { eventsCollectionVersion } from "./collections-versions";
 
 const eventsCollection = (groupId: string) =>
-    groupCollection.doc(groupId).collection("events-v6");
+    groupCollection.doc(groupId).collection(eventsCollectionVersion);
 
 /**
  * Get events related to group
@@ -11,8 +12,7 @@ const eventsCollection = (groupId: string) =>
  */
 export async function getEvents(groupId: string): Promise<Event[]> {
     const query = await eventsCollection(groupId).get()
-    const events: Event[] = query.docs.map((doc) => doc.data() as Event)
-    return events;
+    return query.docs.map((doc) => doc.data() as Event);
 }
 
 /**
@@ -37,8 +37,7 @@ export async function insertEvent(groupId: string, event: Event): Promise<Event>
     });
 
     if (event.id === undefined || event.id === "") {
-        const eventId = eventsCollection(groupId).doc().id
-        event.id = eventId;
+        event.id = eventsCollection(groupId).doc().id;
     }
     await eventsCollection(groupId).doc(event.id).set(event);
     return event;

@@ -1,4 +1,4 @@
-import { Request, Response } from "firebase-functions";
+import { Request, Response } from "express"
 import { GetFriendsResponse } from "../interfaces/get-friends";
 import { getFriends } from "../collections/friend-collection";
 import { convertFriendToDTO } from "../interfaces/dto/friend-dto";

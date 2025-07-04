@@ -1,4 +1,4 @@
-import { Request, Response } from "firebase-functions";
+import { Request, Response } from "express"
 import { Group } from "../interfaces/models/group";
 import { getGroupById, updateGroup } from "../collections/group-collection";
 import { LeaveGroupResponse } from "../interfaces/leave-group";

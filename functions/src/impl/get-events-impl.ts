@@ -1,4 +1,4 @@
-import { Request, Response } from "firebase-functions";
+import { Request, Response } from "express"
 import { getEvents } from "../collections/events-collection";
 import { getGroupById } from "../collections/group-collection";
 import { getPeople } from "../collections/user-collection";

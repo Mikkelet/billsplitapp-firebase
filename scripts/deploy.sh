@@ -1,0 +1,1 @@
+cd functions; firebase deploy --only functions:$1; cd ..

@@ -1,4 +1,4 @@
-import { Request, Response } from "firebase-functions";
+import { Request, Response } from "express"
 import { updateService } from "../collections/services-collection";
 import { ServiceDTO } from "../interfaces/dto/service-dto";
 import { convertDTOtoService, Service } from "../interfaces/models/service";

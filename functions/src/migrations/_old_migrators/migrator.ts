@@ -1,9 +1,11 @@
-import BatchInstance from "../utils/batch_helper";
+import BatchInstance from "../../utils/batch_helper";
 import * as firebase from "firebase-admin";
+
 const firestore = firebase.firestore()
 
 /**
- * Abstract class for database migration
+ * V1 of Abstract class for database migration
+ * Used for v5 -> v6
  */
 export abstract class DatabaseMigrator<G1, G2, E1, E2, S1, S2> {
 
@@ -17,7 +19,7 @@ export abstract class DatabaseMigrator<G1, G2, E1, E2, S1, S2> {
      * @param {string} oldGroupCollection collection id of group collection to be migrated
      * @param {string} newGroupCollection collection id of new group collection
      */
-    constructor(oldGroupCollection: string, newGroupCollection: string) {
+    protected constructor(oldGroupCollection: string, newGroupCollection: string) {
         this.oldGroupCollection = firestore.collection(oldGroupCollection);
         this.newGroupCollection = firestore.collection(newGroupCollection);
     }
@@ -72,9 +74,13 @@ export abstract class DatabaseMigrator<G1, G2, E1, E2, S1, S2> {
             const event = doc.ref
             const groupId = event.parent.parent?.id
             if (!this.isDocInOldGroupCollection(event)) continue;
+            if (!groupId) {
+                console.error(`GroupId ${groupId} not found!`);
+                continue
+            }
 
             const ref = this.newGroupCollection
-                .doc(groupId!)
+                .doc(groupId)
                 .collection("events")
                 .doc(doc.id)
             const migratedEvent = this.convertEvent(doc.data() as E1) as E2
@@ -96,9 +102,12 @@ export abstract class DatabaseMigrator<G1, G2, E1, E2, S1, S2> {
             const service = doc.ref
             const groupId = service.parent.parent?.id
             if (!this.isDocInOldGroupCollection(service)) continue;
-
+            if (!groupId) {
+                console.error(`GroupId ${groupId} not found!`);
+                continue
+            }
             const ref = this.newGroupCollection
-                .doc(groupId!)
+                .doc(groupId)
                 .collection("services")
                 .doc(doc.id)
             const migratedService = this.convertService(doc.data() as S1) as S2
